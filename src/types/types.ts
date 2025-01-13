@@ -1,6 +1,7 @@
 import { Timestamp } from "firebase/firestore";
 
 export interface Artwork {
+  id: number;
   title: string;
   artist: string;
   imageUrl: string;
