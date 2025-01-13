@@ -1,24 +1,18 @@
 import React from "react";
+import { Artwork } from "../types/types";
 
-interface ArtworkProps {
-  title: string;
-  artist: string;
-  imageUrl: string;
-  description: string;
+interface ArtworkCardProps {
+  artwork: Artwork;
 }
 
-const ArtworkCard: React.FC<ArtworkProps> = ({
-  title,
-  artist,
-  imageUrl,
-  description,
-}) => {
+const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
   return (
     <div className="artwork-card">
-      <img src={imageUrl} alt={title} />
-      <h3>{title}</h3>
-      <p>{artist}</p>
-      <p>{description}</p>
+      <img src={artwork.imageUrl} alt={artwork.title} />
+      <h3>{artwork.title}</h3>
+      <p>{artwork.artist}</p>
+      <p>{artwork.date}</p>
+      <p>{artwork.medium}</p>
     </div>
   );
 };
