@@ -1,4 +1,4 @@
-const Profile = () => (
+export const Profile = () => (
   <div>
     <h2>Profile</h2>
     <p>Your information goes here.</p>
@@ -6,4 +6,4 @@ const Profile = () => (
   </div>
 );
 
-export default Profile;
+
