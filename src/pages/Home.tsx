@@ -6,7 +6,12 @@ import SearchBar from "../components/SearchBar";
 import FilterPanel from "../components/FilterPanel";
 
 const Home: React.FC = () => {
-  const [artworks, setArtworks] = useState<any[]>([]);
+  const [, setArtworks] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  
+    const handleSearch = (query: string) => {
+      setSearchQuery(query);
+    };
 
   useEffect(() => {
     const fetchArtworks = async () => {
@@ -22,9 +27,9 @@ const Home: React.FC = () => {
 
   return (
     <div>
-      <SearchBar />
+      <SearchBar onSearch={handleSearch} />
       <FilterPanel />
-      <ArtworkList artworks={artworks} />
+      <ArtworkList searchQuery={searchQuery} />
     </div>
   );
 };
