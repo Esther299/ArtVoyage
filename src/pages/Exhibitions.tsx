@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { db } from "../firebase/firebase";
 import { doc, getDoc } from "firebase/firestore";
 
-const Exhibitions: React.FC = () => {
+export const Exhibitions: React.FC = () => {
   const { id } = useParams();
   const [exhibition, setExhibition] = useState<any>(null);
 
@@ -34,4 +34,3 @@ const Exhibitions: React.FC = () => {
   );
 };
 
-export default Exhibitions;

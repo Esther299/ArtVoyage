@@ -5,7 +5,7 @@ import ArtworkList from "../components/ArtworkList";
 import SearchBar from "../components/SearchBar";
 import FilterPanel from "../components/FilterPanel";
 
-const Home: React.FC = () => {
+export const Home: React.FC = () => {
   const [, setArtworks] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   
@@ -34,4 +34,3 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
