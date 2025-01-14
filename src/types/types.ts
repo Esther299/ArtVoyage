@@ -1,22 +1,9 @@
-import { Timestamp } from "firebase/firestore";
-
 export interface Artwork {
   id: number;
   title: string;
-  artist: string;
+  artist_display: string;
   imageUrl: string;
-  date: string,
-  medium: string;
+  date: string;
+  medium_display: string;
+  source: string;
 }
-
-export interface Exhibition {
-  title: string;
-  description: string;
-  createDate: Timestamp;
-  location: string;
-  curator: string;
-  artworks: Artwork[];
-}
-
-
-

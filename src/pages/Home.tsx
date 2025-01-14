@@ -1,36 +1,117 @@
-import React, { useEffect, useState } from "react";
-import { db } from "../firebase/firebase";
-import { collection, getDocs } from "firebase/firestore";
-import ArtworkList from "../components/ArtworkList";
+import React, { useState, useEffect } from "react";
 import SearchBar from "../components/SearchBar";
-import FilterPanel from "../components/FilterPanel";
+import ArtworkList from "../components/ArtworkList";
+// import { fetchChicagoArtworks } from "../api/chicagoApi";
+import { fetchMetArtworkDetails } from "../api/metApi";
+import { Artwork } from "../types/types";
 
-export const Home: React.FC = () => {
-  const [, setArtworks] = useState<any[]>([]);
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  
-    const handleSearch = (query: string) => {
-      setSearchQuery(query);
-    };
+// Helper function for debouncing
+const useDebounce = (value: string, delay: number) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
 
   useEffect(() => {
-    const fetchArtworks = async () => {
-      const querySnapshot = await getDocs(collection(db, "artworks"));
-      const artworksList: any[] = [];
-      querySnapshot.forEach((doc) => {
-        artworksList.push(doc.data());
-      });
-      setArtworks(artworksList);
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
     };
-    fetchArtworks();
-  }, []);
+  }, [value, delay]);
+
+  return debouncedValue;
+};
+
+const Home: React.FC = () => {
+  const [artworks, setArtworks] = useState<Artwork[]>([]);
+  const [selectedMuseum, setSelectedMuseum] = useState("met");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  const [type, setType] = useState("artist");
+
+  const debouncedQuery = useDebounce(query, 500);
+
+  useEffect(() => {
+    const fetchArtworksData = async () => {
+      if (!debouncedQuery) {
+        console.log("No debounced query, skipping API call.");
+        return;
+      }
+
+      console.log(
+        `Fetching artworks for query: "${debouncedQuery}" with type: "${type}"`
+      );
+
+      setLoading(true);
+      setError(null);
+      let fetchedArtworks: Artwork[] = [];
+
+      try {
+        if (selectedMuseum === "met") {
+          console.log("Calling fetchMetArtworkDetails...");
+          fetchedArtworks = await fetchMetArtworkDetails(type, debouncedQuery);
+        // } else if (selectedMuseum === "chicago") {
+        //   console.log("Calling fetchChicagoArtworks...");
+        //   fetchedArtworks = await fetchChicagoArtworks(debouncedQuery, type);
+        }
+        console.log("Fetched artworks:", fetchedArtworks);
+
+        if (!fetchedArtworks || fetchedArtworks.length === 0) {
+          console.log("No artworks found.");
+          setError("No artworks found. Please try another search.");
+        }
+
+        setArtworks(fetchedArtworks);
+      } catch (err:any) {
+        console.error("Error fetching artworks:", err.message || err);
+        setError(
+          "An error occurred while fetching artworks. Please try again."
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArtworksData();
+  }, [selectedMuseum, debouncedQuery, type]);
+
+  const handleSearch = (type: string, query: string) => {
+    console.log(
+      "Handle search triggered with query:",
+      query,
+      "and type:",
+      type
+    );
+    setQuery(query);
+    setType(type);
+  };
 
   return (
     <div>
-      <SearchBar onSearch={handleSearch} />
-      <FilterPanel />
-      <ArtworkList searchQuery={searchQuery} />
+      <h1>Artworks Search</h1>
+      <div>
+        <select
+          value={selectedMuseum}
+          onChange={(e) => setSelectedMuseum(e.target.value)}
+        >
+          <option value="met">Metropolitan Museum of Art</option>
+          <option value="chicago">Art Institute of Chicago</option>
+        </select>
+      </div>
+
+      <SearchBar onSearch={handleSearch} selectedMuseum={selectedMuseum} />
+
+      {loading && <div>Loading...</div>}
+      {error && <div style={{ color: "red" }}>{error}</div>}
+
+      {artworks.length === 0 && !loading && !error && (
+        <div>No artworks found. Try searching again.</div>
+      )}
+
+      <ArtworkList artworks={artworks} />
     </div>
   );
 };
 
+export default Home;
