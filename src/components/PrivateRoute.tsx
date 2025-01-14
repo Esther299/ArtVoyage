@@ -1,17 +1,17 @@
-import React from "react";
-import { Navigate } from "react-router-dom";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../firebase/firebase";
+// import React from "react";
+// import { Navigate } from "react-router-dom";
+// import { useAuthState } from "react-firebase-hooks/auth";
+// import { auth } from "../firebase/firebase";
 
-interface PrivateRouteProps {
-  children: JSX.Element;
-}
+// interface PrivateRouteProps {
+//   children: JSX.Element;
+// }
 
-export const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
-  const [user, loading] = useAuthState(auth);
+// export const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
+//   const [user, loading] = useAuthState(auth);
 
-  if (loading) return <p>Loading...</p>;
-  if (!user) return <Navigate to="/login" />;
+//   if (loading) return <p>Loading...</p>;
+//   if (!user) return <Navigate to="/login" />;
 
-  return children;
-};
+//   return children;
+// };
