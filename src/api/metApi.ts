@@ -1,38 +1,39 @@
 import axios from "axios";
 import { Artwork } from "../types/types";
 
-const MET_API_URL =
-  "https://collectionapi.metmuseum.org/public/collection/v1/search";
-
-
-export const fetchFromMetMuseum = async (
-  query: string,
+export const fetchMetArtworkDetails = async (
+  type: string,
+  query: string
 ): Promise<Artwork[]> => {
-  const searchResponse = await axios.get(MET_API_URL, {
-    params: { q: query },
-  });
-
-  const searchData = searchResponse.data;
-
-  if (!searchData.objectIDs) return [];
-
-  const artworks: Artwork[] = [];
-
-  for (const id of searchData.objectIDs) {
-    const objectResponse = await axios.get(
-      `https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`
+  try {
+    const response = await axios.get<Artwork[]>(
+      `/.netlify/functions/fetchMetArtworkDetails`,
+      {
+        params: { type, q: query },
+      }
     );
-    const objectData = objectResponse.data;
-    artworks.push({
-      id: objectData.objectID,
-      title: objectData.title || "Untitled",
-      artist: objectData.artistDisplayName || "Unknown",
-      imageUrl: objectData.primaryImage || "",
-      date: objectData.objectDate || "Unknown",
-      medium: objectData.medium || "Unknown",
-    });
-  }
 
-  return artworks;
+    console.log(response.data);
+    // const resposeData = response.data
+    //  const artworks = resposeData.map((object) => {
+    //    return {
+    //      id: object.objectID,
+    //      title: object.title,
+    //      artistName: object.artistDisplayName,
+    //      image: object.primaryImage || "",
+    //      date: object.objectDate || "Unknown",
+    //      department: object.department,
+    //      medium: object.medium,
+    //      dimensions: object.dimensions,
+    //      source: "Met Museum",
+    //    };
+    //  });
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    throw new Error("Failed to fetch artwork details.");
+  }
 };
 
+export default fetchMetArtworkDetails;
