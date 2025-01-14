@@ -7,13 +7,15 @@ interface ArtworkCardProps {
 
 const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
   return (
-    <div className="artwork-card">
-      <img src={artwork.imageUrl} alt={artwork.title} />
+    <li>
       <h3>{artwork.title}</h3>
-      <p>{artwork.artist}</p>
-      <p>{artwork.date}</p>
-      <p>{artwork.medium}</p>
-    </div>
+      <p>
+        <strong>Artist:</strong> {artwork.artist_display}
+      </p>
+      <p>
+        <strong>Medium:</strong> {artwork.medium_display}
+      </p>
+    </li>
   );
 };
 
