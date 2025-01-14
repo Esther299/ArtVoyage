@@ -1,25 +1,42 @@
 import React, { useState } from "react";
 
 interface SearchBarProps {
-  onSearch: (query: string) => void;
+  onSearch: (type: string, query: string, museum: string) => void;
+  selectedMuseum: string;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
-  const [query, setQuery] = useState("");
+const SearchBar: React.FC<SearchBarProps> = ({ onSearch, selectedMuseum }) => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchType, setSearchType] = useState("artist");
 
   const handleSearch = () => {
-    onSearch(query);
+    if (searchQuery.trim() === "") {
+      alert("Please enter a search query.");
+      return;
+    }
+    onSearch(searchType, searchQuery, selectedMuseum);
+    setSearchQuery(""); // Clear the input after search
   };
 
   return (
     <div>
       <input
         type="text"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search for artworks..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        placeholder="Search artworks..."
       />
-      <button onClick={handleSearch}>Search</button>
+      <select
+        value={searchType}
+        onChange={(e) => setSearchType(e.target.value)}
+      >
+        <option value="artistOrCulture">Artist</option>
+        <option value="title">Title</option>
+        <option value="medium">Medium</option>
+      </select>
+      <button onClick={handleSearch} disabled={!searchQuery.trim()}>
+        Search
+      </button>
     </div>
   );
 };
