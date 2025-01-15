@@ -5,13 +5,10 @@ const QueryContext = createContext<any>(undefined);
 export const useQuery = () => useContext(QueryContext);
 
 export const QueryProvider = ({ children }: { children: ReactNode }) => {
-  const [metQuery, setMetQuery] = useState<string>("");
-  const [chicagoQuery, setChicagoQuery] = useState<string>("");
+  const [query, setQuery] = useState<string>("");
 
   return (
-    <QueryContext.Provider
-      value={{ metQuery, setMetQuery, chicagoQuery, setChicagoQuery }}
-    >
+    <QueryContext.Provider value={{ query, setQuery }}>
       {children}
     </QueryContext.Provider>
   );
