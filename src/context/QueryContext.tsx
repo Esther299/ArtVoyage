@@ -1,28 +1,18 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 
-interface QueryContextType {
-  query: string;
-  setQuery: React.Dispatch<React.SetStateAction<string>>;
-}
+const QueryContext = createContext<any>(undefined);
 
-const QueryContext = createContext<QueryContextType | undefined>(undefined);
+export const useQuery = () => useContext(QueryContext);
 
-export const QueryProvider: React.FC<{ children: ReactNode }> = ({
-  children,
-}) => {
-  const [query, setQuery] = useState<string>("");
+export const QueryProvider = ({ children }: { children: ReactNode }) => {
+  const [metQuery, setMetQuery] = useState<string>("");
+  const [chicagoQuery, setChicagoQuery] = useState<string>("");
 
   return (
-    <QueryContext.Provider value={{ query, setQuery }}>
+    <QueryContext.Provider
+      value={{ metQuery, setMetQuery, chicagoQuery, setChicagoQuery }}
+    >
       {children}
     </QueryContext.Provider>
   );
-};
-
-export const useQuery = (): QueryContextType => {
-  const context = useContext(QueryContext);
-  if (!context) {
-    throw new Error("useQuery must be used within a QueryProvider");
-  }
-  return context;
 };

@@ -8,7 +8,7 @@ interface ArtworksListProps {
 
 const ArtworkList: React.FC<ArtworksListProps> = ({ artworks }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const artworksPerPage = 10; // Adjust as needed
+  const artworksPerPage = 10;
 
   // Calculate the artworks to display based on current page
   const indexOfLastArtwork = currentPage * artworksPerPage;
