@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import SearchBar from "../components/SearchBar";
 import ArtworkList from "../components/ArtworkList";
-// import { fetchChicagoArtworks } from "../api/chicagoApi";
+import { fetchChicagoArtworks } from "../api/chicagoApi";
 import { fetchMetArtworkDetails } from "../api/metApi";
 import { Artwork } from "../types/types";
 
@@ -47,15 +47,36 @@ const Home: React.FC = () => {
       setError(null);
       let fetchedArtworks: Artwork[] = [];
 
+      const metTypeMap: Record<string, string> = {
+        artist: "artistOrCulture",
+        title: "title",
+        medium: "medium",
+      };
+
+      const chicagoTypeMap: Record<string, string> = {
+        artist: "artist_display",
+        title: "title",
+        medium: "medium_display",
+      };
+
       try {
         if (selectedMuseum === "met") {
           console.log("Calling fetchMetArtworkDetails...");
-          fetchedArtworks = await fetchMetArtworkDetails(type, debouncedQuery);
-        // } else if (selectedMuseum === "chicago") {
-        //   console.log("Calling fetchChicagoArtworks...");
-        //   fetchedArtworks = await fetchChicagoArtworks(debouncedQuery, type);
+          const metType = metTypeMap[type] || "artistOrCulture";
+          fetchedArtworks = await fetchMetArtworkDetails(
+            metType,
+            debouncedQuery
+          );
+          console.log("artworks fetched")
+        } else if (selectedMuseum === "chicago") {
+          console.log("Calling fetchChicagoArtworks...");
+          const chicagoType = chicagoTypeMap[type] || "artist_display";
+          fetchedArtworks = await fetchChicagoArtworks(
+            debouncedQuery,
+            chicagoType
+          );
+          console.log("artworks fetched");
         }
-        console.log("Fetched artworks:", fetchedArtworks);
 
         if (!fetchedArtworks || fetchedArtworks.length === 0) {
           console.log("No artworks found.");
@@ -63,7 +84,7 @@ const Home: React.FC = () => {
         }
 
         setArtworks(fetchedArtworks);
-      } catch (err:any) {
+      } catch (err: any) {
         console.error("Error fetching artworks:", err.message || err);
         setError(
           "An error occurred while fetching artworks. Please try again."
