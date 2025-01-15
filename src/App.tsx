@@ -10,23 +10,30 @@ import { NavBar } from "./components/NavBar";
 import Home from "./pages/Home";
 import { Profile } from "./pages/Profile";
 import { Search } from "./pages/Search";
+import MetMuseumPage from "./pages/MetMuseumSearch";
+import ChicagoMuseumPage from "./pages/ChicagoMuseumSearch";
+import AllProviders from "./context/AllProviders";
 // import { Exhibitions } from "./pages/Exhibitions";
 // import { PrivateRoute } from "./components/PrivateRoute";
 
 const App: React.FC = () => (
-  <Router>
-    <div>
-      <NavBar />
-      <Routes>
-        {/* <Route path="/login" element={<Login />} /> */}
-        <Route path="/home" element={<Home />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/search" element={<Search />} />
-        {/* <Route path="/exhibitions" element={<Exhibitions />} /> */}
-        <Route path="/" element={<Navigate to="/login" />} />
-      </Routes>
-    </div>
-  </Router>
+  <AllProviders>
+        <Router>
+          <div>
+            <NavBar />
+            <Routes>
+              {/* <Route path="/login" element={<Login />} /> */}
+              <Route path="/home" element={<Home />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/search" element={<Search />} />
+              {/* <Route path="/exhibitions" element={<Exhibitions />} /> */}
+              <Route path="/met" element={<MetMuseumPage />} />
+              <Route path="/chicago" element={<ChicagoMuseumPage />} />
+              <Route path="/" element={<Navigate to="/login" />} />
+            </Routes>
+          </div>
+        </Router>
+      </AllProviders>
 );
 
 export default App;
