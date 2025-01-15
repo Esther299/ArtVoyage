@@ -6,9 +6,12 @@ export const fetchMetArtworkDetails = async (
   query: string
 ): Promise<Artwork[]> => {
   try {
-    const response = await axios.get<Artwork[]>(`/.netlify/functions/proxy`, {
-      params: { type, q: query },
-    });
+    const response = await axios.get<Artwork[]>(
+      `/.netlify/functions/fetchMetArtworkDetails`,
+      {
+        params: { type, q: query },
+      }
+    );
 
     const resposeData = response.data;
     const artworks = resposeData.map((object: any) => {

@@ -2,7 +2,7 @@ const axios = require("axios");
 
 const fetchMetArtworkDetails = async (type, query) => {
   try {
-    const searchUrl = `https://collectionapi.metmuseum.org/public/collection/v1/search?${type}=true&q=${query}`;
+    const searchUrl = `https://collectionapi.metmuseum.org/public/collection/v1/search?isOnView=true&${type}=true&q=${query}`;
     console.log(`Fetching data from: ${searchUrl}`);
 
     // Fetch object IDs from the Met search API
@@ -17,34 +17,30 @@ const fetchMetArtworkDetails = async (type, query) => {
       throw new Error("No object IDs returned from search response");
     }
 
-    // Limit to 200 object IDs
-    const objectIDs = searchData.objectIDs.slice(0, 200);
+    const objectIDs = searchData.objectIDs;
 
     // Fetch artwork details for each object ID
     const fetchPromises = objectIDs.map(async (id) => {
       try {
         const objectUrl = `https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`;
         const response = await axios.get(objectUrl);
-        return response.data; // Return the artwork data if valid
+        return response.data;
       } catch (error) {
-        // Log the error and skip this object if it's not valid
         console.error(`Error fetching object with ID ${id}: ${error.message}`);
-        return null; // Return null to indicate an invalid object
+        return null;
       }
     });
 
     const responses = await Promise.all(fetchPromises);
 
-    // Filter out null values (invalid objects) and limit the results to 200
+    // Filter out null values (invalid objects)
     const validArtworks = responses
-      .filter((artwork) => artwork !== null)
-      .slice(0, 200);
+      .filter((artwork) => artwork !== null);
 
     if (validArtworks.length === 0) {
       throw new Error("No valid artworks found.");
     }
 
-    console.log("Fetched valid artworks:", validArtworks);
     return validArtworks;
   } catch (error) {
     console.error("Error fetching data from the Met API:", error);
