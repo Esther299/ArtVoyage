@@ -32,7 +32,6 @@ export const fetchChicagoArtworks = async (
         "Content-Type": "application/json",
       },
     });
-    console.log(response.data.data, "<--searchData");
 
     const searchData = response.data.data;
 
@@ -46,10 +45,8 @@ export const fetchChicagoArtworks = async (
 
     const artworkData = await Promise.all(fetchArtworkData);
 
-    console.log(artworkData, "<---artworkData")
     const artworks: Artwork[] = artworkData.map((response) => {
       const itemData = response.data.data;
-      console.log(itemData)
       return {
         id: itemData.id,
         title: itemData.title,
