@@ -13,23 +13,19 @@ export const fetchMetArtworkDetails = async (
       }
     );
 
-    console.log(response.data);
-    // const resposeData = response.data
-    //  const artworks = resposeData.map((object) => {
-    //    return {
-    //      id: object.objectID,
-    //      title: object.title,
-    //      artistName: object.artistDisplayName,
-    //      image: object.primaryImage || "",
-    //      date: object.objectDate || "Unknown",
-    //      department: object.department,
-    //      medium: object.medium,
-    //      dimensions: object.dimensions,
-    //      source: "Met Museum",
-    //    };
-    //  });
-
-    return response.data;
+    const resposeData = response.data;
+    const artworks = resposeData.map((object: any) => {
+      return {
+        id: object.objectID,
+        title: object.title,
+        artist_display: object.artistDisplayName + object.artistDisplayBio,
+        imageUrl: object.primaryImage || "",
+        date: object.objectDate || "Unknown",
+        medium_display: object.medium,
+        source: "Met Museum",
+      };
+    });
+    return artworks;
   } catch (error) {
     console.error("Error fetching data:", error);
     throw new Error("Failed to fetch artwork details.");
