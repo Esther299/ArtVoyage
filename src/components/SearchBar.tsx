@@ -15,7 +15,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, selectedMuseum }) => {
       return;
     }
     onSearch(searchType, searchQuery, selectedMuseum);
-    setSearchQuery(""); // Clear the input after search
+    setSearchQuery("");
   };
 
   return (
@@ -30,7 +30,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, selectedMuseum }) => {
         value={searchType}
         onChange={(e) => setSearchType(e.target.value)}
       >
-        <option value="artistOrCulture">Artist</option>
+        <option value="artist">Artist</option>
         <option value="title">Title</option>
         <option value="medium">Medium</option>
       </select>

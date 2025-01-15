@@ -15,6 +15,15 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
       <p>
         <strong>Medium:</strong> {artwork.medium_display}
       </p>
+      <p>
+        <strong>Image:</strong> {artwork.imageUrl}
+      </p>
+      <p>
+        <strong>Date:</strong> {artwork.date}
+      </p>
+      <p>
+        <strong>Source:</strong> {artwork.source}
+      </p>
     </li>
   );
 };
