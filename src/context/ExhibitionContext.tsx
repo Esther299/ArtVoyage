@@ -1,17 +1,14 @@
-import React, { createContext, useContext, useState } from "react";
-import { Artwork } from "../types/types";
-
-interface Exhibition {
-  id: string;
-  name: string;
-  date: string;
-  artworks: Artwork[];
-}
+import React, { createContext, useContext } from "react";
+import useExhibition from "../hooks/useExhibition";
+import { Artwork, Exhibition } from "../types/types";
 
 interface ExhibitionContextType {
   exhibitions: Exhibition[];
-  addExhibition: (exhibition: Exhibition) => void;
-  addArtworkToExhibition: (exhibitionId: string, artwork: Artwork) => void;
+  addExhibition: (exhibition: Omit<Exhibition, "id">) => Promise<void>;
+  addArtworkToExhibition: (
+    exhibitionId: string,
+    artwork: Artwork
+  ) => Promise<void>;
 }
 
 const ExhibitionContext = createContext<ExhibitionContextType | undefined>(
@@ -21,29 +18,8 @@ const ExhibitionContext = createContext<ExhibitionContextType | undefined>(
 export const ExhibitionProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [exhibitions, setExhibitions] = useState<Exhibition[]>([
-    {
-      id: "1",
-      name: "Impressionist Masterpieces",
-      date: "2025-05-10",
-      artworks: [],
-    },
-    { id: "2", name: "Modern Art Wonders", date: "2025-06-15", artworks: [] },
-  ]);
-
-  const addExhibition = (exhibition: Exhibition) => {
-    setExhibitions([...exhibitions, exhibition]);
-  };
-
-  const addArtworkToExhibition = (exhibitionId: string, artwork: Artwork) => {
-    setExhibitions(
-      exhibitions.map((ex) =>
-        ex.id === exhibitionId
-          ? { ...ex, artworks: [...ex.artworks, artwork] }
-          : ex
-      )
-    );
-  };
+  const { exhibitions, addExhibition, addArtworkToExhibition } =
+    useExhibition();
 
   return (
     <ExhibitionContext.Provider
