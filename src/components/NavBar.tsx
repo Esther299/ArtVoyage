@@ -1,18 +1,20 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
-// import { signOut } from "firebase/auth";
-// import { auth } from "../firebase/firebase";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export const NavBar: React.FC = () => {
-  // const handleSignOut = () => {
-  //   signOut(auth)
-  //     .then(() => {
-  //       console.log("User signed out");
-  //     })
-  //     .catch((error) => {
-  //       console.error("Sign out error:", error);
-  //     });
-  // };
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    try {
+      await logout();
+      console.log("User signed out");
+      navigate("/auth");
+    } catch (error) {
+      console.error("Sign out error:", error);
+    }
+  };
 
   return (
     <nav>
@@ -29,11 +31,16 @@ export const NavBar: React.FC = () => {
         <li>
           <NavLink to="/exhibitions">My Exhibitions</NavLink>
         </li>
-        {/* <li>
-          <button onClick={handleSignOut}>Sign Out</button>
-        </li> */}
+        {user ? (
+          <li>
+            <button onClick={handleSignOut}>Sign Out</button>
+          </li>
+        ) : (
+          <li>
+            <NavLink to="/auth">Login/Register</NavLink>
+          </li>
+        )}
       </ul>
     </nav>
   );
 };
-
