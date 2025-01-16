@@ -1,36 +1,38 @@
-// import React, { useEffect, useState } from "react";
-// import { useParams } from "react-router-dom";
-// import { db } from "../firebase/firebase";
-// import { doc, getDoc } from "firebase/firestore";
+import React from "react";
+import { useExhibitions } from "../context/ExhibitionContext";
 
-// export const Exhibitions: React.FC = () => {
-//   const { id } = useParams();
-//   const [exhibition, setExhibition] = useState<any>(null);
+const Exhibitions: React.FC = () => {
+  const { exhibitions } = useExhibitions();
 
-//   useEffect(() => {
-//     const fetchExhibition = async () => {
-//       const docRef = doc(db, "exhibitions", id!);
-//       const docSnap = await getDoc(docRef);
+  return (
+    <div>
+      <h1>Exhibitions</h1>
+      <ul>
+        {exhibitions.map((exhibition) => (
+          <li key={exhibition.id}>
+            <h3>{exhibition.name}</h3>
+            <p>
+              <strong>Date:</strong> {exhibition.date}
+            </p>
+            <h4>Artworks:</h4>
+            <ul>
+              {exhibition.artworks.map((artwork) => (
+                <li key={artwork.id}>
+                  <h5>{artwork.title}</h5>
+                  <p>
+                    <strong>Artist:</strong> {artwork.artist_display}
+                  </p>
+                  <p>
+                    <strong>Medium:</strong> {artwork.medium_display}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
-//       if (docSnap.exists()) {
-//         setExhibition(docSnap.data());
-//       }
-//     };
-
-//     fetchExhibition();
-//   }, [id]);
-
-//   return (
-//     <div>
-//       {exhibition ? (
-//         <>
-//           <h2>{exhibition.title}</h2>
-//           <p>{exhibition.description}</p>
-//         </>
-//       ) : (
-//         <p>Loading...</p>
-//       )}
-//     </div>
-//   );
-// };
-
+export default Exhibitions;
