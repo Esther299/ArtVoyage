@@ -19,7 +19,7 @@ hosting/.cache
 /emulator-ui/
 
 # Firebase configuration
-scr/firebase/firebase.ts
+src/firebase/firebase.ts
 
 # Firestore files
 firestore.rules

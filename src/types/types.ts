@@ -7,3 +7,10 @@ export interface Artwork {
   medium_display: string;
   source: string;
 }
+
+export interface Exhibition {
+  id: string;
+  name: string;
+  date: string;
+  artworks: Artwork[];
+}
