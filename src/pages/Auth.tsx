@@ -8,47 +8,62 @@ const Auth: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
 
   return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
-      <h1>Welcome to the Exhibition Platform</h1>
-      <div style={{ margin: "20px" }}>
-        <button
-          onClick={() => setIsLogin(true)}
-          style={{ marginRight: "10px" }}
-        >
-          Login
-        </button>
-        <button onClick={() => setIsLogin(false)}>Register</button>
-      </div>
-
-      {isLogin ? (
-        <div>
-          <h2>Login</h2>
-          <Login />
-          <p>
-            Don't have an account?{" "}
-            <span
-              style={{ color: "blue", cursor: "pointer" }}
-              onClick={() => setIsLogin(false)}
-            >
-              Register here.
-            </span>
-          </p>
-        </div>
-      ) : (
-        <div>
-          <h2>Register</h2>
-          <Register />
-          <p>
-            Already have an account?{" "}
-            <span
-              style={{ color: "blue", cursor: "pointer" }}
+    <div className="container my-5">
+      <div className="row justify-content-center">
+        <div className="col-md-8 col-lg-6">
+          <h1 className="text-center mb-4">
+            Welcome to the Exhibition Platform
+          </h1>
+          <div className="d-flex justify-content-center mb-3">
+            <button
+              className={`btn ${
+                isLogin ? "btn-primary" : "btn-outline-primary"
+              } me-2`}
               onClick={() => setIsLogin(true)}
             >
-              Login here.
-            </span>
-          </p>
+              Login
+            </button>
+            <button
+              className={`btn ${
+                !isLogin ? "btn-primary" : "btn-outline-primary"
+              }`}
+              onClick={() => setIsLogin(false)}
+            >
+              Register
+            </button>
+          </div>
+
+          {isLogin ? (
+            <div>
+              <Login />
+              <p className="text-center mt-3">
+                Don't have an account?{" "}
+                <span
+                  className="text-primary"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => setIsLogin(false)}
+                >
+                  Register here.
+                </span>
+              </p>
+            </div>
+          ) : (
+            <div>
+              <Register />
+              <p className="text-center mt-3">
+                Already have an account?{" "}
+                <span
+                  className="text-primary"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => setIsLogin(true)}
+                >
+                  Login here.
+                </span>
+              </p>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };

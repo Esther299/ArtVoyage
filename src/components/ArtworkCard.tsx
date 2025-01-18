@@ -65,7 +65,7 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
   };
 
   return (
-    <li>
+    <li className="list-group-item shadow-sm mb-3 p-3">
       <h3>{artwork.title}</h3>
       <p>
         <strong>Artist:</strong> {artwork.artist_display}
@@ -82,54 +82,76 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
       <p>
         <strong>Source:</strong> {artwork.source}
       </p>
-      <button onClick={handleAddToExhibitionClick}>Add to Exhibition</button>
+      <button onClick={handleAddToExhibitionClick} className="btn btn-primary">
+        Add to Exhibition
+      </button>
 
       {isFormVisible && (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="mt-3">
           <h4>Select or Create Exhibition</h4>
-          {error && <p style={{ color: "red" }}>{error}</p>}
-          <div>
-            <label>
+          {error && <div className="alert alert-danger">{error}</div>}
+
+          <div className="mb-3">
+            <label htmlFor="existingExhibition" className="form-label">
               Existing Exhibition:
-              <select
-                onChange={(e) => setSelectedExhibitionId(e.target.value)}
-                value={selectedExhibitionId || ""}
-              >
-                <option value="">Select an exhibition</option>
-                {exhibitions.map((exhibition) => (
-                  <option key={exhibition.id} value={exhibition.id}>
-                    {exhibition.name} ({exhibition.date})
-                  </option>
-                ))}
-              </select>
             </label>
+            <select
+              id="existingExhibition"
+              className="form-select"
+              onChange={(e) => setSelectedExhibitionId(e.target.value)}
+              value={selectedExhibitionId || ""}
+            >
+              <option value="">Select an exhibition</option>
+              {exhibitions.map((exhibition) => (
+                <option key={exhibition.id} value={exhibition.id}>
+                  {exhibition.name} ({exhibition.date})
+                </option>
+              ))}
+            </select>
           </div>
-          <div>
-            <label>
+
+          <div className="mb-3">
+            <label htmlFor="newExhibitionName" className="form-label">
               New Exhibition Name:
-              <input
-                type="text"
-                value={newExhibitionName}
-                onChange={(e) => setNewExhibitionName(e.target.value)}
-              />
             </label>
+            <input
+              type="text"
+              id="newExhibitionName"
+              className="form-control"
+              value={newExhibitionName}
+              onChange={(e) => setNewExhibitionName(e.target.value)}
+            />
           </div>
-          <div>
-            <label>
+
+          <div className="mb-3">
+            <label htmlFor="newExhibitionDate" className="form-label">
               New Exhibition Date:
-              <input
-                type="date"
-                value={newExhibitionDate}
-                onChange={(e) => setNewExhibitionDate(e.target.value)}
-              />
             </label>
+            <input
+              type="date"
+              id="newExhibitionDate"
+              className="form-control"
+              value={newExhibitionDate}
+              onChange={(e) => setNewExhibitionDate(e.target.value)}
+            />
           </div>
-          <button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Submitting..." : "Add"}
-          </button>
-          <button type="button" onClick={() => setIsFormVisible(false)}>
-            Cancel
-          </button>
+
+          <div className="d-flex justify-content-between">
+            <button
+              type="submit"
+              className="btn btn-success"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Submitting..." : "Add"}
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => setIsFormVisible(false)}
+            >
+              Cancel
+            </button>
+          </div>
         </form>
       )}
     </li>
