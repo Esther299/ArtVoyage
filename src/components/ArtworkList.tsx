@@ -27,9 +27,9 @@ const ArtworkList: React.FC<ArtworksListProps> = ({ artworks }) => {
   const totalPages = Math.ceil(artworks.length / artworksPerPage);
 
   return (
-    <div>
+    <div className="container my-4">
       {currentArtworks.length > 0 ? (
-        <ul>
+        <ul className="list-group">
           {currentArtworks.map((artwork) => (
             <ArtworkCard key={artwork.id} artwork={artwork} />
           ))}
@@ -38,12 +38,15 @@ const ArtworkList: React.FC<ArtworksListProps> = ({ artworks }) => {
         <p>No artworks found</p>
       )}
 
-      <div>
-        {totalPages > 1 && (
-          <ul className="pagination">
+      {totalPages > 1 && (
+        <nav>
+          <ul className="pagination justify-content-center mt-4">
             {Array.from({ length: totalPages }, (_, index) => (
-              <li key={index + 1}>
+              <li key={index + 1} className="page-item">
                 <button
+                  className={`page-link ${
+                    index + 1 === currentPage ? "active" : ""
+                  }`}
                   onClick={() => handlePageChange(index + 1)}
                   disabled={index + 1 === currentPage}
                 >
@@ -52,8 +55,8 @@ const ArtworkList: React.FC<ArtworksListProps> = ({ artworks }) => {
               </li>
             ))}
           </ul>
-        )}
-      </div>
+        </nav>
+      )}
     </div>
   );
 };

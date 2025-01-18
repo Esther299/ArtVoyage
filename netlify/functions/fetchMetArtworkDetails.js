@@ -48,7 +48,7 @@ const fetchMetArtworkDetails = async (type, query) => {
   }
 };
 
-exports.handler = async (event, context) => {
+export const handler = async (event, context) => {
   const query = event.queryStringParameters?.q || "";
   const type = event.queryStringParameters?.type || "";
 

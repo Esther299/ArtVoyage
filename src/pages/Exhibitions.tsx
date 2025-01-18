@@ -14,44 +14,50 @@ const Exhibitions: React.FC = () => {
   }, [navigate]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="text-center my-5">Loading...</div>;
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return (
+      <div className="alert alert-danger my-5 text-center">Error: {error}</div>
+    );
   }
 
   return (
-    <div>
-      <h1>Exhibitions</h1>
-      <ul>
-        {exhibitions.length > 0 ? (
-          exhibitions.map((exhibition) => (
-            <li key={exhibition.id}>
-              <h3>{exhibition.name}</h3>
-              <p>
-                <strong>Date:</strong> {exhibition.date}
-              </p>
-              <h4>Artworks:</h4>
-              <ul>
-                {exhibition.artworks.map((artwork) => (
-                  <li key={artwork.id}>
-                    <h5>{artwork.title}</h5>
-                    <p>
-                      <strong>Artist:</strong> {artwork.artist_display}
-                    </p>
-                    <p>
-                      <strong>Medium:</strong> {artwork.medium_display}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </li>
-          ))
-        ) : (
-          <p>No exhibitions found.</p>
-        )}
-      </ul>
+    <div className="container my-5">
+      <h1 className="text-center mb-4">Exhibitions</h1>
+      {exhibitions.length > 0 ? (
+        <div className="row">
+          {exhibitions.map((exhibition) => (
+            <div className="col-md-6 col-lg-4 mb-4" key={exhibition.id}>
+              <div className="card h-100">
+                <div className="card-body">
+                  <h3 className="card-title">{exhibition.name}</h3>
+                  <p className="card-text">
+                    <strong>Date:</strong> {exhibition.date}
+                  </p>
+                  <h4>Artworks:</h4>
+                  <ul className="list-unstyled">
+                    {exhibition.artworks.map((artwork) => (
+                      <li key={artwork.id} className="mb-2">
+                        <h5>{artwork.title}</h5>
+                        <p>
+                          <strong>Artist:</strong> {artwork.artist_display}
+                        </p>
+                        <p>
+                          <strong>Medium:</strong> {artwork.medium_display}
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="text-center">No exhibitions found.</p>
+      )}
     </div>
   );
 };
