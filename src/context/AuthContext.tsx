@@ -6,6 +6,8 @@ import {
   createUserWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
+import { db } from "../firebase/firebase";
+import { setDoc, doc } from "firebase/firestore"; // Import Firestore functions
 
 interface AuthContextType {
   user: User | null;
@@ -29,11 +31,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   const register = async (email: string, password: string) => {
-    await createUserWithEmailAndPassword(auth, email, password);
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+
+      const userRef = doc(db, "users", user.uid);
+      await setDoc(userRef, {
+        email: user.email,
+        uid: user.uid,
+        createdAt: new Date(),
+      });
+    } catch (error) {
+      console.error("Error registering user:", error);
+    }
   };
 
   const login = async (email: string, password: string) => {
-    await signInWithEmailAndPassword(auth, email, password);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (error) {
+      console.error("Error logging in user:", error);
+    }
   };
 
   const logout = async () => {
