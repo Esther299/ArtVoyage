@@ -9,7 +9,7 @@ import ArtworkList from "../components/ArtworkList";
 const MetMuseumPage: React.FC = () => {
   const { query, setQuery } = useQuery();
   const { type, setType } = useType();
-  const { selectedMuseum } = useMuseum();
+  const { selectedMuseum, setSelectedMuseum } = useMuseum();
 
   const { artworks, loading, error, setArtworks } = useArtworks(selectedMuseum, query, type);
 
@@ -17,17 +17,14 @@ const MetMuseumPage: React.FC = () => {
     setQuery("");
     setType("artist");
     setArtworks([]);
-  }, [selectedMuseum, setQuery, setType]);
+    setSelectedMuseum("met")
+  }, [ setQuery, setType]);
 
-  const handleSearch = (type: string, query: string) => {
-    setQuery(query);
-    setType(type);
-  };
 
   return (
     <div>
       <h1>Met museum</h1>
-      <SearchBar onSearch={handleSearch} />
+      <SearchBar />
       {loading && <div>Loading...</div>}
       {error && <div style={{ color: "red" }}>{error}</div>}
       <ArtworkList artworks={artworks} />

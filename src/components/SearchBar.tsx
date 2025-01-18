@@ -1,29 +1,23 @@
-import React, { useState, useEffect } from "react";
-import { useMuseum } from "../context/MuseumContext";
+import React, { useState } from "react";
+import { useQuery } from "../context/QueryContext";
+import { useType } from "../context/TypeContext";
 
-interface SearchBarProps {
-  onSearch: (type: string, query: string, museum: string) => void;
-}
 
-const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchType, setSearchType] = useState("artist");
+
+const SearchBar: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const { selectedMuseum } = useMuseum();
-
-  useEffect(() => {
-    setSearchQuery("");
-    setErrorMessage(null);
-  }, [selectedMuseum]);
+  const { setQuery} = useQuery();
+  const {type, setType} =useType();
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const handleSearch = () => {
     if (searchQuery.trim() === "") {
       setErrorMessage("Please enter a search query.");
       return;
     }
-    onSearch(searchType, searchQuery, selectedMuseum);
-    setSearchQuery("");
+    setQuery(searchQuery);
     setErrorMessage(null);
+    setSearchQuery("");
   };
 
   return (
@@ -36,8 +30,8 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
         aria-label="Search artworks"
       />
       <select
-        value={searchType}
-        onChange={(e) => setSearchType(e.target.value)}
+        value={type}
+        onChange={(e) => setType(e.target.value)}
         aria-label="Search type"
       >
         <option value="artist">Artist</option>
@@ -46,7 +40,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
       </select>
       <button
         onClick={handleSearch}
-        disabled={!searchQuery.trim() || !!errorMessage}
         aria-label="Search"
       >
         Search
