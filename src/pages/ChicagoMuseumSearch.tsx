@@ -9,7 +9,7 @@ import ArtworkList from "../components/ArtworkList";
 const ChicagoMuseumPage: React.FC = () => {
   const { query, setQuery } = useQuery();
   const { type, setType } = useType();
-  const { selectedMuseum } = useMuseum();
+  const { selectedMuseum, setSelectedMuseum } = useMuseum();
 
   const { artworks, loading, error, setArtworks } = useArtworks(
     selectedMuseum,
@@ -21,16 +21,14 @@ const ChicagoMuseumPage: React.FC = () => {
     setQuery("");
     setType("artist");
     setArtworks([]);
-  }, [selectedMuseum, setQuery, setType, setArtworks]);
+    setSelectedMuseum("chicago")
+  }, [ setQuery, setType, setArtworks]);
 
-  const handleSearch = (type: string, query: string) => {
-    setQuery(query);
-    setType(type);
-  };
+
   return (
     <div>
       <h1>Art Institute of Chicago</h1>
-      <SearchBar onSearch={handleSearch} />
+      <SearchBar />
       {loading && <div>Loading...</div>}
       {error && <div style={{ color: "red" }}>{error}</div>}
       <ArtworkList artworks={artworks} />

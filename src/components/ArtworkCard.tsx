@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Artwork } from "../types/types";
 import { useExhibitions } from "../context/ExhibitionContext";
+import { auth } from "../firebase/firebase";
 
 interface ArtworkCardProps {
   artwork: Artwork;
@@ -15,24 +16,52 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
   >(null);
   const [newExhibitionName, setNewExhibitionName] = useState("");
   const [newExhibitionDate, setNewExhibitionDate] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleAddToExhibitionClick = () => {
     setIsFormVisible(true);
   };
 
-  const handleSubmit = () => {
-    if (selectedExhibitionId) {
-      addArtworkToExhibition(selectedExhibitionId, artwork);
-    } else if (newExhibitionName && newExhibitionDate) {
-      const newExhibition = {
-        id: `${Date.now()}`,
-        name: newExhibitionName,
-        date: newExhibitionDate,
-        artworks: [artwork],
-      };
-      addExhibition(newExhibition);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setIsSubmitting(true);
+
+    const user = auth.currentUser;
+
+    if (!user) {
+      setError("User is not authenticated.");
+      setIsSubmitting(false);
+      return;
     }
-    setIsFormVisible(false);
+
+    try {
+      if (selectedExhibitionId) {
+        await addArtworkToExhibition(selectedExhibitionId, artwork);
+      } else if (newExhibitionName && newExhibitionDate) {
+        const newExhibition = {
+          id: `${Date.now()}`,
+          name: newExhibitionName,
+          date: newExhibitionDate,
+          artworks: [artwork],
+          userId: user.uid,
+        };
+        await addExhibition(newExhibition);
+      } else {
+        setError("Please fill in the required fields.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      setIsFormVisible(false);
+      setNewExhibitionName("");
+      setNewExhibitionDate("");
+    } catch (err) {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -56,13 +85,9 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
       <button onClick={handleAddToExhibitionClick}>Add to Exhibition</button>
 
       {isFormVisible && (
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSubmit();
-          }}
-        >
+        <form onSubmit={handleSubmit}>
           <h4>Select or Create Exhibition</h4>
+          {error && <p style={{ color: "red" }}>{error}</p>}
           <div>
             <label>
               Existing Exhibition:
@@ -99,7 +124,9 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
               />
             </label>
           </div>
-          <button type="submit">Add</button>
+          <button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Submitting..." : "Add"}
+          </button>
           <button type="button" onClick={() => setIsFormVisible(false)}>
             Cancel
           </button>
