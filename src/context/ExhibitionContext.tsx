@@ -9,6 +9,8 @@ interface ExhibitionContextType {
     exhibitionId: string,
     artwork: Artwork
   ) => Promise<void>;
+  loading: boolean;
+  error: string | null;
 }
 
 const ExhibitionContext = createContext<ExhibitionContextType | undefined>(
@@ -18,12 +20,18 @@ const ExhibitionContext = createContext<ExhibitionContextType | undefined>(
 export const ExhibitionProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { exhibitions, addExhibition, addArtworkToExhibition } =
+  const { exhibitions, addExhibition, addArtworkToExhibition, loading, error } =
     useExhibition();
 
   return (
     <ExhibitionContext.Provider
-      value={{ exhibitions, addExhibition, addArtworkToExhibition }}
+      value={{
+        exhibitions,
+        addExhibition,
+        addArtworkToExhibition,
+        loading,
+        error,
+      }}
     >
       {children}
     </ExhibitionContext.Provider>

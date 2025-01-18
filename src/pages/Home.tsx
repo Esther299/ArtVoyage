@@ -1,11 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useMuseum } from "../context/MuseumContext";
+import { useMuseum } from "../context/MuseumContext"
+import { useQuery } from "../context/QueryContext";
 
 const Home: React.FC = () => {
   const { selectedMuseum, setSelectedMuseum } = useMuseum();
+  const {setQuery} = useQuery();
 
   const handleSetSelectedMuseum = (museum: string) => {
+    setQuery("")
     setSelectedMuseum(museum);
   };
 
