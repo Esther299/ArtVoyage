@@ -13,27 +13,25 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div>
-      <h1>Artworks Search</h1>
-      <div>
+    <div className="container my-5">
+      <h1 className="text-center mb-4">Artworks Search</h1>
+      <div className="d-flex justify-content-center">
         <Link
           to="/met"
           onClick={() => handleSetSelectedMuseum("met")}
-          style={{
-            marginRight: "20px",
-            textDecoration: "none",
-            color: selectedMuseum === "met" ? "blue" : "black",
-          }}
+          className={`btn btn-link ${
+            selectedMuseum === "met" ? "text-primary" : "text-dark"
+          }`}
+          style={{ marginRight: "20px" }}
         >
           Metropolitan Museum of Art
         </Link>
         <Link
           to="/chicago"
           onClick={() => handleSetSelectedMuseum("chicago")}
-          style={{
-            textDecoration: "none",
-            color: selectedMuseum === "chicago" ? "blue" : "black",
-          }}
+          className={`btn btn-link ${
+            selectedMuseum === "chicago" ? "text-primary" : "text-dark"
+          }`}
         >
           Art Institute of Chicago
         </Link>

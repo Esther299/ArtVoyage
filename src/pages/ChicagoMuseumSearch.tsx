@@ -26,11 +26,11 @@ const ChicagoMuseumPage: React.FC = () => {
 
 
   return (
-    <div>
-      <h1>Art Institute of Chicago</h1>
+    <div className="container my-5">
+      <h1 className="text-center mb-4">Chicago museum</h1>
       <SearchBar />
-      {loading && <div>Loading...</div>}
-      {error && <div style={{ color: "red" }}>{error}</div>}
+      {loading && <div className="text-center mt-3">Loading...</div>}
+      {error && <div className="alert alert-danger mt-3">{error}</div>}
       <ArtworkList artworks={artworks} />
     </div>
   );
