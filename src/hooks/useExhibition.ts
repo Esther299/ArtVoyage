@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { auth, db } from "../firebase/firebase";
+import { db } from "../firebase/firebase";
 import {
   collection,
   addDoc,
@@ -11,8 +11,10 @@ import {
   doc,
 } from "firebase/firestore";
 import { Artwork, Exhibition } from "../types/types";
+import { useAuth } from "../context/AuthContext";
 
 const useExhibition = () => {
+  const { user, loading: authLoading } = useAuth();
   const [exhibitions, setExhibitions] = useState<Exhibition[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -22,13 +24,16 @@ const useExhibition = () => {
     setError(err.message || fallbackMessage);
   };
 
-  const getCurrentUser = () => {
-    return auth.currentUser;
-  };
-
   useEffect(() => {
-    const unsubscribeAuth = auth.onAuthStateChanged((user) => {
-      if (user) {
+    const fetchUserExhibitions = async () => {
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+
+      const userRef = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+      if (userSnap.exists()) {
         const q = query(
           collection(db, "exhibitions"),
           where("userId", "==", user.uid)
@@ -55,18 +60,18 @@ const useExhibition = () => {
         return () => {
           unsubscribeFirestore();
         };
-      } else {
-        setLoading(false);
       }
-    });
-
-    return () => {
-      unsubscribeAuth();
     };
-  }, []);
+
+    if (!authLoading) {
+      fetchUserExhibitions().catch((err) => {
+        setLoading(false);
+        handleFirestoreError(err, "Failed to fetch user exhibitions.");
+      });
+    }
+  }, [user, authLoading]);
 
   const addExhibition = async (exhibition: Omit<Exhibition, "id">) => {
-    const user = getCurrentUser();
     if (user) {
       try {
         const docRef = await addDoc(collection(db, "exhibitions"), {
@@ -92,7 +97,6 @@ const useExhibition = () => {
     exhibitionId: string,
     artwork: Artwork
   ) => {
-    const user = getCurrentUser();
     if (user) {
       try {
         const exhibitionRef = doc(db, "exhibitions", exhibitionId);
