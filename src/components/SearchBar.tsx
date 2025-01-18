@@ -21,30 +21,35 @@ const SearchBar: React.FC = () => {
   };
 
   return (
-    <div>
-      <input
-        type="text"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        placeholder="Search artworks..."
-        aria-label="Search artworks"
-      />
-      <select
-        value={type}
-        onChange={(e) => setType(e.target.value)}
-        aria-label="Search type"
-      >
-        <option value="artist">Artist</option>
-        <option value="title">Title</option>
-        <option value="medium">Medium</option>
-      </select>
-      <button
-        onClick={handleSearch}
-        aria-label="Search"
-      >
-        Search
-      </button>
-      {errorMessage && <div style={{ color: "red" }}>{errorMessage}</div>}
+    <div className="container my-3">
+      <div className="input-group">
+        <input
+          type="text"
+          className="form-control"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search artworks..."
+          aria-label="Search artworks"
+        />
+        <select
+          className="form-select"
+          value={type}
+          onChange={(e) => setType(e.target.value)}
+          aria-label="Search type"
+        >
+          <option value="artist">Artist</option>
+          <option value="title">Title</option>
+          <option value="medium">Medium</option>
+        </select>
+        <button
+          className="btn btn-primary"
+          onClick={handleSearch}
+          aria-label="Search"
+        >
+          Search
+        </button>
+      </div>
+      {errorMessage && <div className="text-danger mt-2">{errorMessage}</div>}
     </div>
   );
 };
