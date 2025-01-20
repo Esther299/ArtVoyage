@@ -9,6 +9,7 @@ import {
   updateDoc,
   getDoc,
   doc,
+  deleteDoc,
   serverTimestamp,
 } from "firebase/firestore";
 import { Artwork, Exhibition } from "../types/types";
@@ -122,9 +123,71 @@ const useExhibitionData = () => {
     }
   };
 
-  
+  const deleteArtworkFromExhibition = async (
+    exhibitionId: string,
+    artworkId: number
+  ) => {
+    if (user) {
+      try {
+        const exhibitionRef = doc(db, "exhibitions", exhibitionId);
+        const docSnapshot = await getDoc(exhibitionRef);
 
-  return { exhibitions, addExhibition, addArtworkToExhibition, loading, error };
+        if (docSnapshot.exists()) {
+          const existingArtworks = docSnapshot.data()?.artworks || [];
+          const updatedArtworks = existingArtworks.filter(
+            (artwork: Artwork) => artwork.id !== artworkId
+          );
+          await updateDoc(exhibitionRef, {
+            artworks: updatedArtworks,
+          });
+          setExhibitions((prev) =>
+            prev.map((exhibition) =>
+              exhibition.id === exhibitionId
+                ? { ...exhibition, artworks: updatedArtworks }
+                : exhibition
+            )
+          );
+        } else {
+          setError("Exhibition not found.");
+        }
+      } catch (err) {
+        handleFirestoreError(
+          err,
+          "An error occurred while deleting the artwork."
+        );
+      }
+    } else {
+      setError("User not authenticated.");
+    }
+  };
+
+  const deleteExhibition = async (exhibitionId: string) => {
+    if (user) {
+      try {
+        await deleteDoc(doc(db, "exhibitions", exhibitionId));
+        setExhibitions((prev) =>
+          prev.filter((exhibition) => exhibition.id !== exhibitionId)
+        );
+      } catch (err) {
+        handleFirestoreError(
+          err,
+          "An error occurred while deleting the exhibition."
+        );
+      }
+    } else {
+      setError("User not authenticated.");
+    }
+  };
+
+  return {
+    exhibitions,
+    addExhibition,
+    addArtworkToExhibition,
+    deleteArtworkFromExhibition,
+    deleteExhibition,
+    loading,
+    error,
+  };
 };
 
 export default useExhibitionData;
