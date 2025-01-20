@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { fetchMetArtworkDetails } from "../api/metApi";
+import { fetchMetApi } from "../api/metApi";
 import { fetchChicagoArtworks } from "../api/chicagoApi";
 import { Artwork } from "../types/types";
 
@@ -10,23 +10,18 @@ export const useArtworks = (museum: string, query: string, type: string) => {
 
   useEffect(() => {
     const fetchArtworks = async () => {
-      if (!query.trim()) {
-        return;
-      }
-
       setLoading(true);
       setError(null);
 
       const typeMap: Record<string, string> = {
         artist: museum === "met" ? "artistOrCulture" : "artist_display",
         title: "title",
-        medium: museum === "met" ? "medium" : "medium_display",
       };
 
       try {
         const artworkData =
           museum === "met"
-            ? await fetchMetArtworkDetails(
+            ? await fetchMetApi(
                 typeMap[type] || "artistOrCulture",
                 query
               )
@@ -38,7 +33,8 @@ export const useArtworks = (museum: string, query: string, type: string) => {
         setArtworks(artworkData);
       } catch (err: any) {
         setError(
-          "An error occurred while fetching artworks. Please try again."
+          err.response?.data?.error ||
+            "An error occurred while fetching artworks. Please try again."
         );
       } finally {
         setLoading(false);

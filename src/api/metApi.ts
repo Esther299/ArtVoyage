@@ -1,20 +1,20 @@
 import axios from "axios";
 import { Artwork } from "../types/types";
 
-export const fetchMetArtworkDetails = async (
+export const fetchMetApi = async (
   type: string,
   query: string
 ): Promise<Artwork[]> => {
   try {
     const response = await axios.get<Artwork[]>(
-      `/.netlify/functions/fetchMetArtworkDetails`,
+      "/.netlify/functions/fetchMetArtworkDetails",
       {
         params: { type, q: query },
       }
     );
 
-    const resposeData = response.data;
-    const artworks = resposeData.map((object: any) => {
+    const responseData = response.data;
+    const artworks = responseData.map((object: any) => {
       return {
         id: object.objectID,
         title: object.title,
@@ -27,9 +27,6 @@ export const fetchMetArtworkDetails = async (
     });
     return artworks;
   } catch (error) {
-    console.error("Error fetching data:", error);
-    throw new Error("Failed to fetch artwork details.");
+    throw error;
   }
 };
-
-export default fetchMetArtworkDetails;

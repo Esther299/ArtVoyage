@@ -5,21 +5,15 @@ const fetchMetArtworkDetails = async (type, query) => {
     const searchUrl = `https://collectionapi.metmuseum.org/public/collection/v1/search?isOnView=true&${type}=true&q=${query}`;
     console.log(`Fetching data from: ${searchUrl}`);
 
-    // Fetch object IDs from the Met search API
     const searchResponse = await axios.get(searchUrl);
     const searchData = searchResponse.data;
 
-    if (
-      !searchData ||
-      !searchData.objectIDs ||
-      searchData.objectIDs.length === 0
-    ) {
-      throw new Error("No object IDs returned from search response");
+    if (!searchData.objectIDs) {
+      throw new Error("No results found for this search.");
     }
 
     const objectIDs = searchData.objectIDs;
 
-    // Fetch artwork details for each object ID
     const fetchPromises = objectIDs.map(async (id) => {
       try {
         const objectUrl = `https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`;
@@ -32,19 +26,16 @@ const fetchMetArtworkDetails = async (type, query) => {
     });
 
     const responses = await Promise.all(fetchPromises);
-
-    // Filter out null values (invalid objects)
-    const validArtworks = responses
-      .filter((artwork) => artwork !== null);
+    const validArtworks = responses.filter((artwork) => artwork !== null);
 
     if (validArtworks.length === 0) {
-      throw new Error("No valid artworks found.");
+      throw new Error("No artworks found.");
     }
 
     return validArtworks;
   } catch (error) {
-    console.error("Error fetching data from the Met API:", error);
-    throw new Error("Unable to fetch data. Please try again later.");
+    console.error("Error fetching from Met:", error);
+    throw error;
   }
 };
 
@@ -73,7 +64,7 @@ export const handler = async (event, context) => {
     console.error("Error in proxy function:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "Unable to fetch data" }),
+      body: JSON.stringify({ error: error.message }),
     };
   }
 };

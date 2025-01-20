@@ -39,7 +39,6 @@ const SearchBar: React.FC = () => {
         >
           <option value="artist">Artist</option>
           <option value="title">Title</option>
-          <option value="medium">Medium</option>
         </select>
         <button
           className="btn btn-primary"

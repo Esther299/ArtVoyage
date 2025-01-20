@@ -13,7 +13,6 @@ const MuseumPage: React.FC = () => {
   const { type, setType } = useType();
   const { setSelectedMuseum } = useMuseum();
   const [museumDisplay, setMuseumDisplay] = useState("")
-  console.log("Museum Name:", museumName);
 
   useEffect(() => {
     if (museumName === "met") {
