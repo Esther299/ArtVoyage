@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from "react";
-import useExhibition from "../hooks/useExhibition";
+import useExhibitionData from "../hooks/useExhibitionData";
 import { Artwork, Exhibition } from "../types/types";
 
 interface ExhibitionContextType {
@@ -9,6 +9,11 @@ interface ExhibitionContextType {
     exhibitionId: string,
     artwork: Artwork
   ) => Promise<void>;
+  deleteArtworkFromExhibition: (
+    exhibitionId: string,
+    artworkId: number
+  ) => Promise<void>;
+  deleteExhibition: (exhibitionId: string) => Promise<void>;
   loading: boolean;
   error: string | null;
 }
@@ -20,8 +25,15 @@ const ExhibitionContext = createContext<ExhibitionContextType | undefined>(
 export const ExhibitionProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { exhibitions, addExhibition, addArtworkToExhibition, loading, error } =
-    useExhibition();
+  const {
+    exhibitions,
+    addExhibition,
+    addArtworkToExhibition,
+    deleteArtworkFromExhibition,
+    deleteExhibition,
+    loading,
+    error,
+  } = useExhibitionData();
 
   return (
     <ExhibitionContext.Provider
@@ -29,6 +41,8 @@ export const ExhibitionProvider: React.FC<{ children: React.ReactNode }> = ({
         exhibitions,
         addExhibition,
         addArtworkToExhibition,
+        deleteArtworkFromExhibition,
+        deleteExhibition,
         loading,
         error,
       }}
