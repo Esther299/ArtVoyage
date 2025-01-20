@@ -9,11 +9,13 @@ import {
   updateDoc,
   getDoc,
   doc,
+  deleteDoc,
+  serverTimestamp,
 } from "firebase/firestore";
 import { Artwork, Exhibition } from "../types/types";
 import { useAuth } from "../context/AuthContext";
 
-const useExhibition = () => {
+const useExhibitionData = () => {
   const { user, loading: authLoading } = useAuth();
   const [exhibitions, setExhibitions] = useState<Exhibition[]>([]);
   const [loading, setLoading] = useState(true);
@@ -56,7 +58,6 @@ const useExhibition = () => {
             handleFirestoreError(err, "Failed to fetch exhibitions.");
           }
         );
-
         return () => {
           unsubscribeFirestore();
         };
@@ -77,6 +78,7 @@ const useExhibition = () => {
         const docRef = await addDoc(collection(db, "exhibitions"), {
           ...exhibition,
           userId: user.uid,
+          createdAt: serverTimestamp(),
         });
         setExhibitions((prevExhibitions) => [
           ...prevExhibitions,
@@ -108,7 +110,7 @@ const useExhibition = () => {
             artworks: [...existingArtworks, artwork],
           });
         } else {
-          console.log("Exhibition not found!");
+          setError("Exhibition not found.");
         }
       } catch (err) {
         handleFirestoreError(
@@ -121,7 +123,71 @@ const useExhibition = () => {
     }
   };
 
-  return { exhibitions, addExhibition, addArtworkToExhibition, loading, error };
+  const deleteArtworkFromExhibition = async (
+    exhibitionId: string,
+    artworkId: number
+  ) => {
+    if (user) {
+      try {
+        const exhibitionRef = doc(db, "exhibitions", exhibitionId);
+        const docSnapshot = await getDoc(exhibitionRef);
+
+        if (docSnapshot.exists()) {
+          const existingArtworks = docSnapshot.data()?.artworks || [];
+          const updatedArtworks = existingArtworks.filter(
+            (artwork: Artwork) => artwork.id !== artworkId
+          );
+          await updateDoc(exhibitionRef, {
+            artworks: updatedArtworks,
+          });
+          setExhibitions((prev) =>
+            prev.map((exhibition) =>
+              exhibition.id === exhibitionId
+                ? { ...exhibition, artworks: updatedArtworks }
+                : exhibition
+            )
+          );
+        } else {
+          setError("Exhibition not found.");
+        }
+      } catch (err) {
+        handleFirestoreError(
+          err,
+          "An error occurred while deleting the artwork."
+        );
+      }
+    } else {
+      setError("User not authenticated.");
+    }
+  };
+
+  const deleteExhibition = async (exhibitionId: string) => {
+    if (user) {
+      try {
+        await deleteDoc(doc(db, "exhibitions", exhibitionId));
+        setExhibitions((prev) =>
+          prev.filter((exhibition) => exhibition.id !== exhibitionId)
+        );
+      } catch (err) {
+        handleFirestoreError(
+          err,
+          "An error occurred while deleting the exhibition."
+        );
+      }
+    } else {
+      setError("User not authenticated.");
+    }
+  };
+
+  return {
+    exhibitions,
+    addExhibition,
+    addArtworkToExhibition,
+    deleteArtworkFromExhibition,
+    deleteExhibition,
+    loading,
+    error,
+  };
 };
 
-export default useExhibition;
+export default useExhibitionData;

@@ -4,7 +4,13 @@ import { useNavigate } from "react-router-dom";
 import { auth } from "../firebase/firebase";
 
 const Exhibitions: React.FC = () => {
-  const { exhibitions, loading, error } = useExhibitions();
+  const {
+    exhibitions,
+    loading,
+    error,
+    deleteArtworkFromExhibition,
+    deleteExhibition,
+  } = useExhibitions();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,6 +28,14 @@ const Exhibitions: React.FC = () => {
       <div className="alert alert-danger my-5 text-center">Error: {error}</div>
     );
   }
+
+  const handleDeleteExhibition = (exhibitionId: string) => {
+    deleteExhibition(exhibitionId);
+  };
+
+  const handleDeleteArtwork = (exhibitionId: string, artworkId: number) => {
+    deleteArtworkFromExhibition(exhibitionId, artworkId);
+  };
 
   return (
     <div className="container my-5">
@@ -45,11 +59,25 @@ const Exhibitions: React.FC = () => {
                           <strong>Artist:</strong> {artwork.artist_display}
                         </p>
                         <p>
-                          <strong>Medium:</strong> {artwork.medium_display}
+                          <strong>Title:</strong> {artwork.title}
                         </p>
+                        <button
+                          onClick={() =>
+                            handleDeleteArtwork(exhibition.id, artwork.id)
+                          }
+                          className="btn btn-danger btn-sm"
+                        >
+                          Delete Artwork
+                        </button>
                       </li>
                     ))}
                   </ul>
+                  <button
+                    onClick={() => handleDeleteExhibition(exhibition.id)}
+                    className="btn btn-danger btn-sm"
+                  >
+                    Delete Exhibition
+                  </button>
                 </div>
               </div>
             </div>
