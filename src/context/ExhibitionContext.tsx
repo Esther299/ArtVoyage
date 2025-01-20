@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from "react";
-import useExhibition from "../hooks/useExhibition";
+import useExhibitionData from "../hooks/useExhibitionData";
 import { Artwork, Exhibition } from "../types/types";
 
 interface ExhibitionContextType {
@@ -21,7 +21,7 @@ export const ExhibitionProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const { exhibitions, addExhibition, addArtworkToExhibition, loading, error } =
-    useExhibition();
+    useExhibitionData();
 
   return (
     <ExhibitionContext.Provider

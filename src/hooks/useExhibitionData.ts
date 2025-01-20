@@ -9,11 +9,12 @@ import {
   updateDoc,
   getDoc,
   doc,
+  serverTimestamp,
 } from "firebase/firestore";
 import { Artwork, Exhibition } from "../types/types";
 import { useAuth } from "../context/AuthContext";
 
-const useExhibition = () => {
+const useExhibitionData = () => {
   const { user, loading: authLoading } = useAuth();
   const [exhibitions, setExhibitions] = useState<Exhibition[]>([]);
   const [loading, setLoading] = useState(true);
@@ -56,7 +57,6 @@ const useExhibition = () => {
             handleFirestoreError(err, "Failed to fetch exhibitions.");
           }
         );
-
         return () => {
           unsubscribeFirestore();
         };
@@ -77,6 +77,7 @@ const useExhibition = () => {
         const docRef = await addDoc(collection(db, "exhibitions"), {
           ...exhibition,
           userId: user.uid,
+          createdAt: serverTimestamp(),
         });
         setExhibitions((prevExhibitions) => [
           ...prevExhibitions,
@@ -108,7 +109,7 @@ const useExhibition = () => {
             artworks: [...existingArtworks, artwork],
           });
         } else {
-          console.log("Exhibition not found!");
+          setError("Exhibition not found.");
         }
       } catch (err) {
         handleFirestoreError(
@@ -121,7 +122,9 @@ const useExhibition = () => {
     }
   };
 
+  
+
   return { exhibitions, addExhibition, addArtworkToExhibition, loading, error };
 };
 
-export default useExhibition;
+export default useExhibitionData;
