@@ -14,4 +14,5 @@ export interface Exhibition {
   date: string;
   artworks: Artwork[];
   userId: string;
+  createdAt: Date;
 }
