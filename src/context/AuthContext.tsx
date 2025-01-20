@@ -10,7 +10,12 @@ import { doc, setDoc, getDoc } from "firebase/firestore";
 
 interface AuthContextType {
   user: User | null;
-  register: (email: string, password: string) => Promise<void>;
+  register: (
+    email: string,
+    password: string,
+    firstName: string,
+    lastName: string
+  ) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   loading: boolean;
@@ -22,67 +27,101 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
-        const userRef = doc(db, "users", user.uid);
-        getDoc(userRef).then((docSnap) => {
+        try {
+          const userRef = doc(db, "users", user.uid);
+          const docSnap = await getDoc(userRef);
           if (!docSnap.exists()) {
-            setDoc(userRef, {
+            await setDoc(userRef, {
               uid: user.uid,
               email: user.email,
             });
           }
-        });
+          setUser(user);
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      } else {
+        setUser(null);
       }
-      setUser(user);
       setLoading(false);
     });
+
     return unsubscribe;
   }, []);
 
-  const register = async (email: string, password: string) => {
-    const userCredential = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-    const user = userCredential.user;
+  const register = async (
+    email: string,
+    password: string,
+    firstName: string,
+    lastName: string
+  ) => {
+    setLoading(true);
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
 
-    const userRef = doc(db, "users", user.uid);
-    await setDoc(userRef, {
-      uid: user.uid,
-      email: user.email,
-    });
-  };
-
-  const login = async (email: string, password: string) => {
-    const userCredential = await signInWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-    const user = userCredential.user;
-
-    const userRef = doc(db, "users", user.uid);
-    const docSnap = await getDoc(userRef);
-    if (!docSnap.exists()) {
+      const userRef = doc(db, "users", user.uid);
       await setDoc(userRef, {
         uid: user.uid,
         email: user.email,
+        firstName,
+        lastName,
       });
+
+      setUser(user);
+    } catch (error) {
+      console.error("Error during registration:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const login = async (email: string, password: string) => {
+    setLoading(true);
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+
+      const userRef = doc(db, "users", user.uid);
+      const docSnap = await getDoc(userRef);
+      if (!docSnap.exists()) {
+        await setDoc(userRef, {
+          uid: user.uid,
+          email: user.email,
+        });
+      }
+
+      setUser(user);
+    } catch (error) {
+      console.error("Error during login:", error);
+      throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
   const logout = async () => {
+    setLoading(true);
     try {
       await signOut(auth);
       setUser(null);
-      setLoading(true);
     } catch (error) {
       console.error("Error signing out:", error);
+    } finally {
       setLoading(false);
     }
   };
