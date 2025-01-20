@@ -12,7 +12,7 @@ const Auth: React.FC = () => {
       <div className="row justify-content-center">
         <div className="col-md-8 col-lg-6">
           <h1 className="text-center mb-4">
-            Welcome to the Exhibition Platform
+            Welcome to ArtVoyage
           </h1>
           <div className="d-flex justify-content-center mb-3">
             <button
