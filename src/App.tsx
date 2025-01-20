@@ -5,12 +5,11 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
+import AllProviders from "./context/AllProviders";
 import { NavBar } from "./components/NavBar";
 import Home from "./pages/Home";
 import { Profile } from "./pages/Profile";
-import MetMuseumPage from "./pages/MetMuseumSearch";
-import ChicagoMuseumPage from "./pages/ChicagoMuseumSearch";
-import AllProviders from "./context/AllProviders";
+import MuseumSearch from "./pages/MuseumSearch"
 import Exhibitions from "./pages/Exhibitions";
 import Auth from "./pages/Auth";
 import { useAuth } from "./context/AuthContext";
@@ -26,8 +25,7 @@ const AppContent: React.FC = () => {
           <>
             <Route path="/home" element={<Home />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/met" element={<MetMuseumPage />} />
-            <Route path="/chicago" element={<ChicagoMuseumPage />} />
+            <Route path="/museum/:museumName" element={<MuseumSearch />} />
             <Route path="/exhibitions" element={<Exhibitions />} />
             <Route path="*" element={<Navigate to="/home" />} />
           </>

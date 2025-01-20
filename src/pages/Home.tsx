@@ -1,14 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useMuseum } from "../context/MuseumContext"
+import { useMuseum } from "../context/MuseumContext";
 import { useQuery } from "../context/QueryContext";
 
 const Home: React.FC = () => {
   const { selectedMuseum, setSelectedMuseum } = useMuseum();
-  const {setQuery} = useQuery();
+  const { setQuery } = useQuery();
 
   const handleSetSelectedMuseum = (museum: string) => {
-    setQuery("")
+    setQuery("");
     setSelectedMuseum(museum);
   };
 
@@ -17,7 +17,7 @@ const Home: React.FC = () => {
       <h1 className="text-center mb-4">Artworks Search</h1>
       <div className="d-flex justify-content-center">
         <Link
-          to="/met"
+          to="/museum/met"
           onClick={() => handleSetSelectedMuseum("met")}
           className={`btn btn-link ${
             selectedMuseum === "met" ? "text-primary" : "text-dark"
@@ -27,7 +27,7 @@ const Home: React.FC = () => {
           Metropolitan Museum of Art
         </Link>
         <Link
-          to="/chicago"
+          to="/museum/chicago"
           onClick={() => handleSetSelectedMuseum("chicago")}
           className={`btn btn-link ${
             selectedMuseum === "chicago" ? "text-primary" : "text-dark"
