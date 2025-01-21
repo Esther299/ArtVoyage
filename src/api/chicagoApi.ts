@@ -4,10 +4,12 @@ import { Artwork } from "../types/types";
 interface ChicagoArtworksResponse {
   data: {
     id: number;
+    image_id: string;
   }[];
 }
 
 const API_URL = "https://api.artic.edu/api/v1/artworks/search";
+const IIIF_BASE_URL = "https://www.artic.edu/iiif/2";
 
 export const fetchChicagoArtworks = async (
   searchQuery: string,
@@ -35,10 +37,11 @@ export const fetchChicagoArtworks = async (
 
     const searchData = response.data.data;
 
-    const fetchArtworkData = searchData.map((item: any) =>
+    const fetchArtworkData = searchData.map((item) =>
       axios.get(`https://api.artic.edu/api/v1/artworks/${item.id}`, {
         params: {
-          fields: "id,title,artist_display,thumbnail,date_display,medium_display",
+          fields:
+            "id,title,artist_display,image_id,date_display,medium_display",
         },
       })
     );
@@ -47,23 +50,33 @@ export const fetchChicagoArtworks = async (
 
     const artworks: Artwork[] = artworkData.map((response) => {
       const itemData = response.data.data;
+      const imageUrl = itemData.image_id
+        ? `${IIIF_BASE_URL}/${itemData.image_id}/full/843,/0/default.jpg`
+        : "";
+
       return {
         id: itemData.id,
         title: itemData.title,
         artist_display: itemData.artist_display,
-        imageUrl: itemData.thumbnail.lqip || "",
+        imageUrl: imageUrl || "",
         date: itemData.date_display,
         medium_display: itemData.medium_display,
-        source: "Chicago Art Museum",
+        source: "Chicago Art Institute",
       };
     });
 
     return artworks;
   } catch (error: any) {
-    console.error(
-      "Error fetching artworks from Chicago:",
-      error.message || error
-    );
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        `Axios error fetching artworks from Chicago: ${error.message}
+        `
+      );
+    } else {
+      throw new Error(
+        `Unexpected error fetching artworks from Chicago: ${error} `
+      );
+    }
     return [];
   }
 };
