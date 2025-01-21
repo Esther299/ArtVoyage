@@ -12,16 +12,17 @@ const MuseumPage: React.FC = () => {
   const { query, setQuery } = useQuery();
   const { type, setType } = useType();
   const { setSelectedMuseum } = useMuseum();
-  const [museumDisplay, setMuseumDisplay] = useState("")
+  const [museumDisplay, setMuseumDisplay] = useState("");
+  const [sortOption, setSortOption] = useState<string>("artist");
 
   useEffect(() => {
-    if (museumName === "met") {
-      setMuseumDisplay("The Metropolitan Museum of Art");
-    } else if (museumName === "chicago") {
-      setMuseumDisplay("The Art Institute of Chicago");
-    } else {
-      setMuseumDisplay("No museum selected");
-    }
+    const museumDisplayMap: Record<string, string> = {
+      met: "The Metropolitan Museum of Art",
+      chicago: "The Art Institute of Chicago",
+    };
+    setMuseumDisplay(
+      museumDisplayMap[museumName || ""] || "No museum selected"
+    );
   }, [museumName]);
 
   const { artworks, loading, error, setArtworks } = useArtworks(
@@ -39,14 +40,13 @@ const MuseumPage: React.FC = () => {
     }
   }, [setQuery, setType, setArtworks, setSelectedMuseum, museumName]);
 
-
   return (
     <div className="container my-5">
       <h1 className="text-center mb-4">{museumDisplay}</h1>
-      <SearchBar />
+      <SearchBar  sortOption={sortOption} setSortOption={setSortOption} />
       {loading && <div className="text-center mt-3">Loading...</div>}
-      {error && <div className="alert alert-danger mt-3">{error}</div>}
-      <ArtworkList artworks={artworks} />
+      {error && <div className="alert alert-danger mt-3">Error: {error}</div>}
+      <ArtworkList artworks={artworks} sortOption={sortOption} />
     </div>
   );
 };

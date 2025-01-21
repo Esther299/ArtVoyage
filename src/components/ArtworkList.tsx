@@ -5,15 +5,27 @@ import Pagination from "./Pagination";
 
 interface ArtworksListProps {
   artworks: Artwork[];
+  sortOption: string;
 }
 
-const ArtworkList: React.FC<ArtworksListProps> = ({ artworks }) => {
+const ArtworkList: React.FC<ArtworksListProps> = ({ artworks, sortOption }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const artworksPerPage = 10;
 
+  const sortedArtworks = [...artworks].sort((a, b) => {
+    if (sortOption === "artist") {
+      return a.artist_display.localeCompare(b.artist_display);
+    } else if (sortOption === "title") {
+      return a.title.localeCompare(b.title);
+    } else if (sortOption === "date") {
+      return new Date(a.date).getTime() - new Date(b.date).getTime();
+    }
+    return 0;
+  });
+
   const indexOfLastArtwork = currentPage * artworksPerPage;
   const indexOfFirstArtwork = indexOfLastArtwork - artworksPerPage;
-  const currentArtworks = artworks.slice(
+  const currentArtworks = sortedArtworks.slice(
     indexOfFirstArtwork,
     indexOfLastArtwork
   );
