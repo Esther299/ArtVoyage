@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Artwork } from "../types/types";
 import ArtworkCard from "./ArtworkCard";
+import Pagination from "./Pagination";
 
 interface ArtworksListProps {
   artworks: Artwork[];
@@ -10,7 +11,6 @@ const ArtworkList: React.FC<ArtworksListProps> = ({ artworks }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const artworksPerPage = 10;
 
-  // Calculate the artworks to display based on current page
   const indexOfLastArtwork = currentPage * artworksPerPage;
   const indexOfFirstArtwork = indexOfLastArtwork - artworksPerPage;
   const currentArtworks = artworks.slice(
@@ -18,12 +18,6 @@ const ArtworkList: React.FC<ArtworksListProps> = ({ artworks }) => {
     indexOfLastArtwork
   );
 
-  // Handle page change
-  const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-  };
-
-  // Calculate the total number of pages
   const totalPages = Math.ceil(artworks.length / artworksPerPage);
 
   return (
@@ -39,23 +33,18 @@ const ArtworkList: React.FC<ArtworksListProps> = ({ artworks }) => {
       )}
 
       {totalPages > 1 && (
-        <nav>
-          <ul className="pagination justify-content-center mt-4">
-            {Array.from({ length: totalPages }, (_, index) => (
-              <li key={index + 1} className="page-item">
-                <button
-                  className={`page-link ${
-                    index + 1 === currentPage ? "active" : ""
-                  }`}
-                  onClick={() => handlePageChange(index + 1)}
-                  disabled={index + 1 === currentPage}
-                >
-                  {index + 1}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        <>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+          <div className="text-center mt-2">
+            <small className="text-muted">
+              Page {currentPage} of {totalPages}
+            </small>
+          </div>
+        </>
       )}
     </div>
   );
