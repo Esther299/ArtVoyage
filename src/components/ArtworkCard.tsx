@@ -68,7 +68,14 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
         <strong>Medium:</strong> {artwork.medium_display}
       </p>
       <p>
-        <strong>Image:</strong> {artwork.imageUrl}
+        <strong>Image:</strong>{" "}
+        <img
+          src={artwork.imageUrl}
+          alt={artwork.title}
+          width="400"
+          height="300"
+        />
+        
       </p>
       <p>
         <strong>Date:</strong> {artwork.date}
