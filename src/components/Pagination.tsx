@@ -23,9 +23,46 @@ const Pagination: React.FC<PaginationProps> = ({
     }
   };
 
+  const handleFirstPage = () => onPageChange(1);
+  const handleLastPage = () => onPageChange(totalPages);
+
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    for (
+      let i = Math.max(1, currentPage - 1);
+      i <= Math.min(totalPages, currentPage + 1);
+      i++
+    ) {
+      pageNumbers.push(
+        <li
+          key={i}
+          className={`page-item ${i === currentPage ? "active" : ""}`}
+        >
+          <button
+            className="page-link"
+            onClick={() => onPageChange(i)}
+            disabled={i === currentPage}
+          >
+            {i}
+          </button>
+        </li>
+      );
+    }
+    return pageNumbers;
+  };
+
   return (
     <nav aria-label="Pagination" className="my-4">
       <ul className="pagination justify-content-center">
+        <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+          <button
+            className="page-link"
+            onClick={handleFirstPage}
+            disabled={currentPage === 1}
+          >
+            First
+          </button>
+        </li>
         <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
           <button
             className="page-link"
@@ -36,9 +73,7 @@ const Pagination: React.FC<PaginationProps> = ({
           </button>
         </li>
 
-        <li className="page-item disabled">
-          <span className="page-link">Page {currentPage}</span>
-        </li>
+        {renderPageNumbers()}
 
         <li
           className={`page-item ${
@@ -51,6 +86,19 @@ const Pagination: React.FC<PaginationProps> = ({
             disabled={currentPage === totalPages}
           >
             Next &raquo;
+          </button>
+        </li>
+        <li
+          className={`page-item ${
+            currentPage === totalPages ? "disabled" : ""
+          }`}
+        >
+          <button
+            className="page-link"
+            onClick={handleLastPage}
+            disabled={currentPage === totalPages}
+          >
+            Last
           </button>
         </li>
       </ul>
