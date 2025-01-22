@@ -1,0 +1,13 @@
+.card:hover {
+  background-color: #9b8ba5 !important;
+  color: #fff;
+}
+
+.app-background {
+  background-image: url("./assets/background.jpg");
+  background-size: "cover";
+  background-position: "center";
+  opacity: 0.5;
+  z-index: -1;
+  height: "100%";
+}
