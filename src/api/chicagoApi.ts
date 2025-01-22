@@ -86,6 +86,5 @@ export const fetchChicagoArtworks = async (
         `Unexpected error fetching artworks from Chicago: ${error} `
       );
     }
-    return [];
   }
 };

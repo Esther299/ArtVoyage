@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useExhibitions } from "../context/ExhibitionContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { auth } from "../firebase/firebase";
 import { Modal } from "react-bootstrap";
 
@@ -81,11 +81,16 @@ const Exhibitions: React.FC = () => {
                         key={artwork.id}
                         className="d-flex justify-content-between align-items-center mb-3 border-bottom border-top pt-3 pb-3"
                       >
-                        <span className="ms-2">
-                          {artwork.title}
-                          <br></br>
-                           by <i>{artwork.artist_title}</i>
-                        </span>
+                        <Link
+                          to={`/artwork/${artwork.id}`}
+                          className="text-decoration-none text-dark"
+                          aria-label={`View details for artwork titled ${artwork.title}`}
+                        >
+                          <span className="ms-2">
+                            {artwork.title}
+                            <br /> by <i>{artwork.artist_title}</i>
+                          </span>
+                        </Link>
                         <button
                           onClick={() =>
                             handleShowModal(exhibition.id, artwork.id)
