@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { Artwork } from "../types/types";
 import { useExhibitions } from "../context/ExhibitionContext";
 import { auth } from "../firebase/firebase";
@@ -17,6 +18,7 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
   const [newExhibitionName, setNewExhibitionName] = useState("");
   const [newExhibitionDate, setNewExhibitionDate] = useState("");
   const [pageError, setPageError] = useState<string | null>(null);
+  const [isHovered, setIsHovered] = useState(false);
 
   const handleAddToExhibitionClick = () => {
     setIsFormVisible(true);
@@ -24,7 +26,7 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setPageError(null)
+    setPageError(null);
 
     const user = auth.currentUser;
 
@@ -53,37 +55,59 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
       setIsFormVisible(false);
       setNewExhibitionName("");
       setNewExhibitionDate("");
+      setSelectedExhibitionId(null);
     } catch (err) {
       setPageError("An unexpected error occurred. Please try again.");
     }
   };
 
   return (
-    <li className="list-group-item shadow-sm mb-3 p-3">
-      <h3>{artwork.title}</h3>
-      <p>
-        <strong>Artist:</strong> {artwork.artist_display}
-      </p>
-      <p>
-        <strong>Medium:</strong> {artwork.medium_display}
-      </p>
-      <p>
-        <strong>Image:</strong>{" "}
-        <img
-          src={artwork.imageUrl}
-          alt={artwork.title}
-          width="400"
-          height="300"
-        />
-        
-      </p>
-      <p>
-        <strong>Date:</strong> {artwork.date}
-      </p>
-      <p>
-        <strong>Source:</strong> {artwork.source}
-      </p>
-      <button onClick={handleAddToExhibitionClick} className="btn btn-primary">
+    <li
+      className={`list-group-item shadow-sm mb-3 p-3 ${
+        isHovered ? "bg-light border-primary" : ""
+      }`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      role="button"
+      aria-label={`View details of ${artwork.title}`}
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          window.location.href = `/artwork/${artwork.id}`;
+        }
+      }}
+    >
+      <Link
+        to={`/artwork/${artwork.id}`}
+        className="text-decoration-none text-reset"
+      >
+        <h3>{artwork.title}</h3>
+        <p>
+          <strong>Artist:</strong> {artwork.artist_display}
+        </p>
+        <p>
+          <strong>Medium:</strong> {artwork.medium_display}
+        </p>
+        {artwork.imageUrl && (
+          <img
+            src={artwork.imageUrl}
+            alt={`Artwork titled "${artwork.title}"`}
+            width="400"
+            height="300"
+            className="img-fluid my-3"
+          />
+        )}
+        <p>
+          <strong>Date:</strong> {artwork.date}
+        </p>
+        <p>
+          <strong>Source:</strong> {artwork.source}
+        </p>
+      </Link>
+      <button
+        onClick={handleAddToExhibitionClick}
+        className="btn btn-primary mt-2"
+      >
         Add to Exhibition
       </button>
 
