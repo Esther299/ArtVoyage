@@ -56,8 +56,8 @@ const Login: React.FC = () => {
   return (
     <div className="container my-5">
       <div className="row justify-content-center">
-        <div className="col-md-6 col-lg-4">
-          <h2 className="text-center mb-4">Login</h2>
+        <div className="col-12 col-md-8 col-lg-6">
+          <h2 className="text-center mb-4 fs-1">Login</h2>
           {error && error.field === "form" && (
             <div className="alert alert-danger">{error.message}</div>
           )}

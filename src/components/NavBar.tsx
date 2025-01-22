@@ -17,7 +17,10 @@ export const NavBar: React.FC = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+    <nav
+      className="navbar navbar-expand-lg navbar-dark"
+      style={{ backgroundColor: "#6A4C9C" }}
+    >
       <div className="container-fluid">
         <NavLink className="navbar-brand" to="/home">
           ArtVoyage
@@ -57,7 +60,11 @@ export const NavBar: React.FC = () => {
             </li>
             {user ? (
               <li className="nav-item">
-                <button className="btn btn-danger" onClick={handleSignOut}>
+                <button
+                  className="btn btn-outline-light"
+                  onClick={handleSignOut}
+                  aria-label="Sign out"
+                >
                   Sign Out
                 </button>
               </li>
@@ -73,4 +80,5 @@ export const NavBar: React.FC = () => {
       </div>
     </nav>
   );
+
 };

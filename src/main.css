@@ -1,0 +1,40 @@
+.homecard:hover {
+  background-color: #9c8ba5 !important;
+  color: #fff;
+}
+
+.app-background {
+  background-image: url("./assets/background.jpg");
+  background-size: "cover";
+  background-position: "center";
+  opacity: 0.5;
+  z-index: -1;
+  height: "100%";
+}
+
+.authcard {
+  background-color: #ccaee9;
+  border: none;
+}
+
+.custom-btn {
+  border: 2px solid #6a1b9a;
+  color: #6a1b9a;
+  background-color: transparent;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.custom-btn.active-btn {
+  background-color: #6a1b9a;
+  color: white;
+}
+
+.custom-btn.inactive-btn:hover {
+  background-color: #e1bee7;
+  color: #6a1b9a;
+}
+
+.custom-btn:focus {
+  box-shadow: 0 0 5px 2px #d500f9;
+}
+
