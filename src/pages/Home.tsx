@@ -18,7 +18,7 @@ const Home: React.FC = () => {
       <h1 className="text-center mb-4">Artworks Search</h1>
       <div className="d-flex justify-content-center">
         <div
-          className="card mx-3 bg-light shadow-sm hover:bg-dark"
+          className="card homecard mx-3 bg-light shadow-sm hover:bg-dark"
           style={{
             width: "22rem",
             cursor: "pointer",
