@@ -8,6 +8,7 @@ import {
   where,
   updateDoc,
   getDoc,
+  getDocs,
   doc,
   deleteDoc,
   serverTimestamp,
@@ -75,6 +76,20 @@ const useExhibitionData = () => {
   const addExhibition = async (exhibition: Omit<Exhibition, "id">) => {
     if (user) {
       try {
+        const existingExhibitionsQuery = query(
+          collection(db, "exhibitions"),
+          where("name", "==", exhibition.name),
+          where("userId", "==", user.uid)
+        );
+        const existingExhibitionsSnapshot = await getDocs(
+          existingExhibitionsQuery
+        );
+
+        if (!existingExhibitionsSnapshot.empty) {
+          setError("An exhibition with this name already exists.");
+          return;
+        }
+
         const docRef = await addDoc(collection(db, "exhibitions"), {
           ...exhibition,
           userId: user.uid,

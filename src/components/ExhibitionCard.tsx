@@ -2,6 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Exhibition } from "../types/types";
 import { useMuseum } from "../context/MuseumContext";
+import { Timestamp } from "firebase/firestore";
+import formatExhibitionDateRange from "../utils/dateFormatting";
 
 interface ExhibitionCardProps {
   exhibition: Exhibition;
@@ -23,13 +25,25 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
       setSelectedMuseum("chicago");
     }
   };
+
+  const startDate =
+    exhibition.startDate instanceof Timestamp
+      ? exhibition.startDate.toDate()
+      : null;
+  const endDate =
+    exhibition.endDate instanceof Timestamp
+      ? exhibition.endDate.toDate()
+      : null;
+
+  const formattedDateRange = formatExhibitionDateRange(startDate, endDate);
+
   return (
     <div className="col-md-6 col-lg-4">
       <div className="card h-100 shadow-sm">
         <div className="card-body d-flex flex-column">
-          <h3 className="card-title">{exhibition.name}</h3>
-          <p className="card-text">
-            <strong>Date:</strong> {exhibition.date}
+          <h2 className="card-title text-center py-3">{exhibition.name}</h2>
+          <p className="card-text text-center text-muted">
+            {formattedDateRange}
           </p>
           <ul
             className="list-unstyled flex-grow-1 overflow-auto"
@@ -57,6 +71,7 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
                   onClick={() => handleShowModal(exhibition.id, artwork.id)}
                   className="btn btn-outline-danger btn-sm"
                   aria-label={`Delete artwork titled ${artwork.title} from exhibition ${exhibition.name}`}
+                  aria-pressed="false"
                 >
                   Delete
                 </button>
@@ -67,6 +82,7 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
             onClick={() => handleDeleteExhibition(exhibition.id)}
             className="btn btn-outline-warning btn-sm mt-3 w-100"
             aria-label={`Delete exhibition ${exhibition.name}`}
+            aria-pressed="false"
           >
             Delete Exhibition
           </button>
