@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { fetchMetApi } from "../api/metApi";
 import { fetchChicagoArtworks } from "../api/chicagoApi";
-import { Artwork } from "../types/types";
+import { useArtworksData } from "../context/ArtworksContext";
 
 export const useArtworks = (museum: string, query: string, type: string) => {
-  const [artworks, setArtworks] = useState<Artwork[]>([]);
+  const { artworks, setArtworks} = useArtworksData(); 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -21,10 +21,7 @@ export const useArtworks = (museum: string, query: string, type: string) => {
       try {
         const artworkData =
           museum === "met"
-            ? await fetchMetApi(
-                typeMap[type] || "artistOrCulture",
-                query
-              )
+            ? await fetchMetApi(typeMap[type] || "artistOrCulture", query)
             : await fetchChicagoArtworks(
                 query,
                 typeMap[type] || "artist_display"
@@ -46,7 +43,7 @@ export const useArtworks = (museum: string, query: string, type: string) => {
     } else {
       setArtworks([]);
     }
-  }, [query, type, museum]);
+  }, [query, type, museum, setArtworks]);
 
   return { artworks, loading, error, setArtworks };
 };
