@@ -14,7 +14,8 @@ export interface Artwork {
 export interface Exhibition {
   id: string;
   name: string;
-  date: string;
+  startDate: Date;
+  endDate: Date;
   artworks: Artwork[];
   userId: string;
   createdAt: Date;
