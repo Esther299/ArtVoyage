@@ -57,9 +57,6 @@ export const fetchChicagoArtworks = async (
         const artistBio = itemData.artist_display.match(/\(([^)]+)\)/);
         const bio = artistBio ? artistBio[1] : null;
 
-        console.log(itemData)
-
-
       return {
         id: itemData.id,
         title: itemData.title,

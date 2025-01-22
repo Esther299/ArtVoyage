@@ -26,8 +26,6 @@ export const fetchSingleArtworkChicagoDetails = async (
       const artistBio = itemData.artist_display.match(/\(([^)]+)\)/);
       const bio = artistBio ? artistBio[1] : null;
 
-      console.log(itemData);
-
       return [
         {
           id: itemData.id,

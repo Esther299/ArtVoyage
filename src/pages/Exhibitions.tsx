@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useExhibitions } from "../context/ExhibitionContext";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { auth } from "../firebase/firebase";
-import { Modal } from "react-bootstrap";
+import ExhibitionCard from "../components/ExhibitionCard";
+import DeleteArtworkModal from "../components/DeleteArtworkModal";
 
 const Exhibitions: React.FC = () => {
   const {
@@ -65,92 +66,27 @@ const Exhibitions: React.FC = () => {
       {exhibitions.length > 0 ? (
         <div className="row g-4">
           {exhibitions.map((exhibition) => (
-            <div className="col-md-6 col-lg-4" key={exhibition.id}>
-              <div className="card h-100 shadow-sm">
-                <div className="card-body d-flex flex-column">
-                  <h3 className="card-title">{exhibition.name}</h3>
-                  <p className="card-text">
-                    <strong>Date:</strong> {exhibition.date}
-                  </p>
-                  <ul
-                    className="list-unstyled flex-grow-1 overflow-auto"
-                    style={{ maxHeight: "200px", padding: "10px" }}
-                  >
-                    {exhibition.artworks.map((artwork) => (
-                      <li
-                        key={artwork.id}
-                        className="d-flex justify-content-between align-items-center mb-3 border-bottom border-top pt-3 pb-3"
-                      >
-                        <Link
-                          to={`/artwork/${artwork.id}`}
-                          className="text-decoration-none text-dark"
-                          aria-label={`View details for artwork titled ${artwork.title}`}
-                        >
-                          <span className="ms-2">
-                            {artwork.title}
-                            <br /> by <i>{artwork.artist_title}</i>
-                          </span>
-                        </Link>
-                        <button
-                          onClick={() =>
-                            handleShowModal(exhibition.id, artwork.id)
-                          }
-                          className="btn btn-outline-danger btn-sm"
-                          aria-label={`Delete artwork titled ${artwork.title} from exhibition ${exhibition.name}`}
-                        >
-                          Delete
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                  <button
-                    onClick={() => handleDeleteExhibition(exhibition.id)}
-                    className="btn btn-outline-warning btn-sm mt-3 w-100"
-                    aria-label={`Delete exhibition ${exhibition.name}`}
-                  >
-                    Delete Exhibition
-                  </button>
-                </div>
-              </div>
-            </div>
+            <ExhibitionCard
+              key={exhibition.id}
+              exhibition={exhibition}
+              handleDeleteExhibition={handleDeleteExhibition}
+              handleShowModal={handleShowModal}
+            />
           ))}
         </div>
       ) : (
         <p className="text-center">No exhibitions found.</p>
       )}
 
-      <Modal
+      <DeleteArtworkModal
         show={showModal}
-        onHide={handleCloseModal}
-        aria-labelledby="deleteModalLabel"
-      >
-        <Modal.Header closeButton>
-          <Modal.Title id="deleteModalLabel">Confirm Deletion</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>Are you sure you want to delete this artwork?</p>
-        </Modal.Body>
-        <Modal.Footer>
-          <button className="btn btn-secondary" onClick={handleCloseModal}>
-            Cancel
-          </button>
-          <button
-            className="btn btn-danger"
-            onClick={() => {
-              if (selectedExhibitionId && selectedArtworkId !== null) {
-                handleDeleteArtwork(selectedExhibitionId, selectedArtworkId);
-              }
-              handleCloseModal();
-            }}
-          >
-            Confirm
-          </button>
-        </Modal.Footer>
-      </Modal>
+        handleClose={handleCloseModal}
+        handleDeleteArtwork={handleDeleteArtwork}
+        selectedExhibitionId={selectedExhibitionId}
+        selectedArtworkId={selectedArtworkId}
+      />
     </div>
   );
 };
-
-
 
 export default Exhibitions;
