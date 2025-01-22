@@ -83,7 +83,7 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
       >
         <h3>{artwork.title}</h3>
         <p>
-          <strong>Artist:</strong> {artwork.artist_display}
+          <strong>Artist:</strong> {artwork.artist_title}
         </p>
         <p>
           <strong>Medium:</strong> {artwork.medium_display}
