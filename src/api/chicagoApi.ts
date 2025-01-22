@@ -41,7 +41,7 @@ export const fetchChicagoArtworks = async (
       axios.get(`https://api.artic.edu/api/v1/artworks/${item.id}`, {
         params: {
           fields:
-            "id,title,artist_display,image_id,date_display,medium_display",
+            "id,title,artist_display,artist_title,medium_display,image_id,date_display,description",
         },
       })
     );
@@ -54,14 +54,23 @@ export const fetchChicagoArtworks = async (
         ? `${IIIF_BASE_URL}/${itemData.image_id}/full/843,/0/default.jpg`
         : "";
 
+        const artistBio = itemData.artist_display.match(/\(([^)]+)\)/);
+        const bio = artistBio ? artistBio[1] : null;
+
+        console.log(itemData)
+
+
       return {
         id: itemData.id,
         title: itemData.title,
-        artist_display: itemData.artist_display,
-        imageUrl: imageUrl || "",
+        artist_title: itemData.artist_title,
+        artist_bio: bio,
         date: itemData.date_display,
         medium_display: itemData.medium_display,
-        source: "Chicago Art Institute",
+        imageUrl: imageUrl || "",
+        source: "The Chicago Art Institute",
+        objectUrl: "https://www.artic.edu/collection",
+        description: itemData.description,
       };
     });
 

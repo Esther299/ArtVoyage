@@ -14,7 +14,7 @@ const ArtworkList: React.FC<ArtworksListProps> = ({ artworks, sortOption }) => {
 
   const sortedArtworks = [...artworks].sort((a, b) => {
     if (sortOption === "artist") {
-      return a.artist_display.localeCompare(b.artist_display);
+      return a.artist_title.localeCompare(b.artist_title);
     } else if (sortOption === "title") {
       return a.title.localeCompare(b.title);
     } else if (sortOption === "date") {
