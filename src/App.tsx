@@ -8,7 +8,7 @@ import {
 import AllProviders from "./context/AllProviders";
 import { NavBar } from "./components/NavBar";
 import Home from "./pages/Home";
-import { Profile } from "./pages/Profile";
+import Profile from "./pages/Profile";
 import MuseumSearch from "./pages/MuseumSearch";
 import Exhibitions from "./pages/Exhibitions";
 import Auth from "./pages/Auth";
@@ -28,7 +28,7 @@ const AppContent: React.FC = () => {
             {user ? (
               <>
                 <Route path="/home" element={<Home />} />
-                <Route path="/profile" element={<Profile />} />
+                <Route path="/profile" element={<Profile user = {user} />} />
                 <Route path="/artwork/:id" element={<ArtworkDetail />} />
                 <Route path="/museum/:museumName" element={<MuseumSearch />} />
                 <Route path="/exhibitions" element={<Exhibitions />} />
