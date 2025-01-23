@@ -1,23 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useExhibitions } from "../context/ExhibitionContext";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../firebase/firebase";
-import { Modal } from "react-bootstrap";
+import ExhibitionCard from "../components/ExhibitionCard";
+import DeleteArtworkModal from "../components/DeleteArtworkModal";
+import EditExhibitionModal from "../components/EditExhibitionModal";
+import { Exhibition } from "../types/types";
 
 const Exhibitions: React.FC = () => {
   const {
     exhibitions,
     loading,
     error,
+    editExhibition,
     deleteArtworkFromExhibition,
     deleteExhibition,
   } = useExhibitions();
   const navigate = useNavigate();
-  const [showModal, setShowModal] = useState(false);
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+
   const [selectedExhibitionId, setSelectedExhibitionId] = useState<
     string | null
   >(null);
   const [selectedArtworkId, setSelectedArtworkId] = useState<number | null>(
+    null
+  );
+
+  const [editingExhibition, setEditingExhibition] = useState<Exhibition | null>(
     null
   );
 
@@ -27,24 +38,43 @@ const Exhibitions: React.FC = () => {
     }
   }, [navigate]);
 
-  const handleDeleteExhibition = (exhibitionId: string) => {
-    deleteExhibition(exhibitionId);
-  };
+  const handleDeleteExhibition = useCallback(
+    (exhibitionId: string) => {
+      deleteExhibition(exhibitionId);
+    },
+    [deleteExhibition]
+  );
 
-  const handleDeleteArtwork = (exhibitionId: string, artworkId: number) => {
-    deleteArtworkFromExhibition(exhibitionId, artworkId);
-  };
+  const handleDeleteArtwork = useCallback(
+    (exhibitionId: string, artworkId: number) => {
+      deleteArtworkFromExhibition(exhibitionId, artworkId);
+    },
+    [deleteArtworkFromExhibition]
+  );
 
-  const handleShowModal = (exhibitionId: string, artworkId: number) => {
-    setSelectedExhibitionId(exhibitionId);
-    setSelectedArtworkId(artworkId);
-    setShowModal(true);
-  };
+  const handleShowDeleteModal = useCallback(
+    (exhibitionId: string, artworkId: number) => {
+      setSelectedExhibitionId(exhibitionId);
+      setSelectedArtworkId(artworkId);
+      setShowDeleteModal(true);
+    },
+    []
+  );
 
-  const handleCloseModal = () => {
-    setShowModal(false);
+  const handleShowEditModal = useCallback((exhibition: Exhibition) => {
+    setEditingExhibition(exhibition);
+    setShowEditModal(true);
+  }, []);
+
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
     setSelectedExhibitionId(null);
     setSelectedArtworkId(null);
+  };
+
+  const closeEditModal = () => {
+    setShowEditModal(false);
+    setEditingExhibition(null);
   };
 
   if (loading) {
@@ -54,7 +84,7 @@ const Exhibitions: React.FC = () => {
   if (error) {
     return (
       <div className="alert alert-danger my-5 text-center" role="alert">
-        Error: {error}
+        {error}
       </div>
     );
   }
@@ -65,87 +95,41 @@ const Exhibitions: React.FC = () => {
       {exhibitions.length > 0 ? (
         <div className="row g-4">
           {exhibitions.map((exhibition) => (
-            <div className="col-md-6 col-lg-4" key={exhibition.id}>
-              <div className="card h-100 shadow-sm">
-                <div className="card-body d-flex flex-column">
-                  <h3 className="card-title">{exhibition.name}</h3>
-                  <p className="card-text">
-                    <strong>Date:</strong> {exhibition.date}
-                  </p>
-                  <ul
-                    className="list-unstyled flex-grow-1 overflow-auto"
-                    style={{ maxHeight: "200px", padding: "10px" }}
-                  >
-                    {exhibition.artworks.map((artwork) => (
-                      <li
-                        key={artwork.id}
-                        className="d-flex justify-content-between align-items-center mb-3 border-bottom border-top pt-3 pb-3"
-                      >
-                        <span className="ms-2">
-                          {artwork.title}
-                          <br></br>
-                           by <i>{artwork.artist_title}</i>
-                        </span>
-                        <button
-                          onClick={() =>
-                            handleShowModal(exhibition.id, artwork.id)
-                          }
-                          className="btn btn-outline-danger btn-sm"
-                          aria-label={`Delete artwork titled ${artwork.title} from exhibition ${exhibition.name}`}
-                        >
-                          Delete
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                  <button
-                    onClick={() => handleDeleteExhibition(exhibition.id)}
-                    className="btn btn-outline-warning btn-sm mt-3 w-100"
-                    aria-label={`Delete exhibition ${exhibition.name}`}
-                  >
-                    Delete Exhibition
-                  </button>
-                </div>
-              </div>
-            </div>
+            <ExhibitionCard
+              key={exhibition.id}
+              exhibition={exhibition}
+              handleDeleteExhibition={handleDeleteExhibition}
+              handleShowModal={handleShowDeleteModal}
+              handleShowEditModal={handleShowEditModal}
+            />
           ))}
         </div>
       ) : (
         <p className="text-center">No exhibitions found.</p>
       )}
 
-      <Modal
-        show={showModal}
-        onHide={handleCloseModal}
-        aria-labelledby="deleteModalLabel"
-      >
-        <Modal.Header closeButton>
-          <Modal.Title id="deleteModalLabel">Confirm Deletion</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>Are you sure you want to delete this artwork?</p>
-        </Modal.Body>
-        <Modal.Footer>
-          <button className="btn btn-secondary" onClick={handleCloseModal}>
-            Cancel
-          </button>
-          <button
-            className="btn btn-danger"
-            onClick={() => {
-              if (selectedExhibitionId && selectedArtworkId !== null) {
-                handleDeleteArtwork(selectedExhibitionId, selectedArtworkId);
-              }
-              handleCloseModal();
-            }}
-          >
-            Confirm
-          </button>
-        </Modal.Footer>
-      </Modal>
+      {showEditModal && editingExhibition && (
+        <EditExhibitionModal
+          show={showEditModal}
+          handleClose={closeEditModal}
+          handleEditExhibition={editExhibition}
+          exhibition={editingExhibition}
+        />
+      )}
+
+      {showDeleteModal &&
+        selectedExhibitionId &&
+        selectedArtworkId !== null && (
+          <DeleteArtworkModal
+            show={showDeleteModal}
+            handleClose={closeDeleteModal}
+            handleDeleteArtwork={handleDeleteArtwork}
+            selectedExhibitionId={selectedExhibitionId}
+            selectedArtworkId={selectedArtworkId}
+          />
+        )}
     </div>
   );
 };
-
-
 
 export default Exhibitions;

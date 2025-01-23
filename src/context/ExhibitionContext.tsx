@@ -9,6 +9,10 @@ interface ExhibitionContextType {
     exhibitionId: string,
     artwork: Artwork
   ) => Promise<void>;
+  editExhibition: (
+    exhibitionId: string,
+    updatedFields: Partial<Omit<Exhibition, "id">>
+  ) => Promise<void>;
   deleteArtworkFromExhibition: (
     exhibitionId: string,
     artworkId: number
@@ -29,6 +33,7 @@ export const ExhibitionProvider: React.FC<{ children: React.ReactNode }> = ({
     exhibitions,
     addExhibition,
     addArtworkToExhibition,
+    editExhibition,
     deleteArtworkFromExhibition,
     deleteExhibition,
     loading,
@@ -41,6 +46,7 @@ export const ExhibitionProvider: React.FC<{ children: React.ReactNode }> = ({
         exhibitions,
         addExhibition,
         addArtworkToExhibition,
+        editExhibition,
         deleteArtworkFromExhibition,
         deleteExhibition,
         loading,
