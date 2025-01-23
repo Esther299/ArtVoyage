@@ -15,6 +15,7 @@ import {
 } from "firebase/firestore";
 import { Artwork, Exhibition } from "../types/types";
 import { useAuth } from "../context/AuthContext";
+import { getRandomImage } from "../utils/randomImage";
 
 const useExhibitionData = () => {
   const { user, loading: authLoading } = useAuth();
@@ -73,7 +74,9 @@ const useExhibitionData = () => {
     }
   }, [user, authLoading]);
 
-  const addExhibition = async (exhibition: Omit<Exhibition, "id">) => {
+  const addExhibition = async (
+    exhibition: Omit<Exhibition, "id" | "image">
+  ) => {
     if (user) {
       try {
         const existingExhibitionsQuery = query(
@@ -90,14 +93,22 @@ const useExhibitionData = () => {
           return;
         }
 
+        const randomImage = getRandomImage();
+
         const docRef = await addDoc(collection(db, "exhibitions"), {
           ...exhibition,
+          image: randomImage,
           userId: user.uid,
           createdAt: serverTimestamp(),
         });
         setExhibitions((prevExhibitions) => [
           ...prevExhibitions,
-          { id: docRef.id, ...exhibition, userId: user.uid },
+          {
+            id: docRef.id,
+            ...exhibition,
+            image: randomImage,
+            userId: user.uid,
+          },
         ]);
       } catch (err) {
         handleFirestoreError(
