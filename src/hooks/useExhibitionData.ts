@@ -88,7 +88,7 @@ const useExhibitionData = () => {
         );
 
         if (!existingExhibitionsSnapshot.empty) {
-          throw new Error("An exhibition with this name already exists.");
+          throw new Error("An exhibition with this name already exists. Please try another name");
         }
 
         const randomImage = getRandomImage();
@@ -137,7 +137,7 @@ const useExhibitionData = () => {
 
           if (artworkExists) {
             throw new Error(
-              "This artwork has already been added to the exhibition."
+              "This artwork has already been added to this exhibition. Please choose a different artwork or a different exhibition"
             );
           }
 

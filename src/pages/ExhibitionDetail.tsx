@@ -9,14 +9,19 @@ const ExhibitionDetail: React.FC = () => {
   const {
     exhibitions,
     loading,
-    error,
     editExhibition,
     deleteArtworkFromExhibition,
     deleteExhibition,
   } = useExhibitions();
   const [exhibition, setExhibition] = useState<Exhibition | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+
+  const handleFirestoreError = (err: any, fallbackMessage: string) => {
+    console.error("Firestore Error:", err);
+    return err.message || fallbackMessage;
+  };
 
   useEffect(() => {
     if (exhibitionId) {
@@ -34,28 +39,52 @@ const ExhibitionDetail: React.FC = () => {
   };
 
   const handleEditExhibition = useCallback(
-    (
+    async (
       exhibitionId: string,
       updatedFields: { name: string; startDate: string; endDate: string }
     ) => {
-      editExhibition(exhibitionId, updatedFields);
-      setSuccessMessage("Exhibition editted successfully.");
+      try {
+        await editExhibition(exhibitionId, updatedFields);
+        setSuccessMessage("Exhibition edited successfully.");
+      } catch (err: any) {
+        const errorMessage = handleFirestoreError(
+          err,
+          "Failed to edit the exhibition"
+        );
+        setError(errorMessage);
+      }
     },
-    [deleteArtworkFromExhibition]
+    [editExhibition]
   );
 
   const handleDeleteExhibition = useCallback(
-    (exhibitionId: string) => {
-      deleteExhibition(exhibitionId);
-      setSuccessMessage("Exhibition deleted successfully.");
+    async (exhibitionId: string) => {
+      try {
+        await deleteExhibition(exhibitionId);
+        setSuccessMessage("Exhibition deleted successfully.");
+      } catch (err: any) {
+        const errorMessage = handleFirestoreError(
+        err,
+        "Failed to delete the exhibition."
+      );
+      setError(errorMessage);
+      }
     },
     [deleteExhibition]
   );
 
   const handleDeleteArtwork = useCallback(
-    (exhibitionId: string, artworkId: number) => {
-      deleteArtworkFromExhibition(exhibitionId, artworkId);
-      setSuccessMessage("Artwork deleted successfully.");
+    async (exhibitionId: string, artworkId: number) => {
+      try {
+        await deleteArtworkFromExhibition(exhibitionId, artworkId);
+        setSuccessMessage("Artwork deleted successfully.");
+      } catch (err: any) {
+        const errorMessage = handleFirestoreError(
+          err,
+          "Failed to delete the artwork."
+        );
+        setError(errorMessage);
+      }
     },
     [deleteArtworkFromExhibition]
   );
