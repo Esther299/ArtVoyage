@@ -35,13 +35,42 @@ const ArtworkList: React.FC<ArtworksListProps> = ({ artworks, sortOption }) => {
   return (
     <div className="container my-4">
       {currentArtworks.length > 0 ? (
-        <ul className="list-group">
+        <ul
+          className="d-flex flex-wrap list-unstyled"
+          style={{ gap: "1.5rem", justifyContent: "center" }}
+        >
           {currentArtworks.map((artwork) => (
-            <ArtworkCard key={artwork.id} artwork={artwork} />
+            <li
+              key={artwork.id}
+              className="shadow-sm p-3 text-center"
+              style={{
+                background: "rgba(173, 146, 194, 0.84)",
+                flex: "1 1 calc(50% - 1.5rem)",
+                maxWidth: "calc(50% - 1.5rem)",
+                borderRadius: "10px",
+                transition: "transform 0.3s, box-shadow 0.3s",
+                cursor: "pointer",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "scale(1.03)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "scale(1)";
+              }}
+              aria-label={`View details of ${artwork.title}`}
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  window.location.href = `/artwork/${artwork.id}`;
+                }
+              }}
+            >
+              <ArtworkCard artwork={artwork} />
+            </li>
           ))}
         </ul>
       ) : (
-        <p>No artworks found</p>
+        <p>No artworks </p>
       )}
 
       {totalPages > 1 && (
