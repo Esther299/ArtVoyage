@@ -32,6 +32,8 @@ const Exhibitions: React.FC = () => {
     null
   );
 
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
   useEffect(() => {
     if (!auth.currentUser) {
       navigate("/login");
@@ -41,6 +43,7 @@ const Exhibitions: React.FC = () => {
   const handleDeleteExhibition = useCallback(
     (exhibitionId: string) => {
       deleteExhibition(exhibitionId);
+      setSuccessMessage("Exhibition deleted successfully.");
     },
     [deleteExhibition]
   );
@@ -48,6 +51,7 @@ const Exhibitions: React.FC = () => {
   const handleDeleteArtwork = useCallback(
     (exhibitionId: string, artworkId: number) => {
       deleteArtworkFromExhibition(exhibitionId, artworkId);
+      setSuccessMessage("Artwork deleted successfully.");
     },
     [deleteArtworkFromExhibition]
   );
@@ -75,7 +79,17 @@ const Exhibitions: React.FC = () => {
   const closeEditModal = () => {
     setShowEditModal(false);
     setEditingExhibition(null);
+    setSuccessMessage("Exhibition edited successfully.");
   };
+
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
 
   if (loading) {
     return <div className="text-center my-5">Loading...</div>;
@@ -92,6 +106,13 @@ const Exhibitions: React.FC = () => {
   return (
     <div className="container my-5">
       <h1 className="text-center mb-4">Exhibitions</h1>
+
+      {successMessage && (
+        <div className="alert alert-success my-3 text-center" role="alert">
+          {successMessage}
+        </div>
+      )}
+
       {exhibitions.length > 0 ? (
         <div className="row g-4">
           {exhibitions.map((exhibition) => (
