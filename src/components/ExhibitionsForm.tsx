@@ -35,9 +35,11 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({
   setIsFormVisible,
 }) => {
   return (
-    <form onSubmit={handleSubmit} className="mt-3">
-      <h4>Select or Create Exhibition</h4>
-
+    <form
+      onSubmit={handleSubmit}
+      className="mt-4 p-4 rounded shadow-sm"
+      style={{ background: "rgba(204, 173, 227, 0.84)" }}
+    >
       {error && <div className="alert alert-danger">{error}</div>}
       {pageError && (
         <div className="alert alert-danger" role="alert">
@@ -45,34 +47,36 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({
         </div>
       )}
 
-      <div className="mb-3">
-        <label htmlFor="existingExhibition" className="form-label">
-          Existing Exhibition:
+      <div className="mb-4">
+        <label htmlFor="existingExhibition" className="form-label fw-bold">
+          Select an one of your exhibitions:
         </label>
         <select
           id="existingExhibition"
           className="form-select"
           onChange={(e) => setSelectedExhibitionId(e.target.value)}
           value={selectedExhibitionId || ""}
-          aria-label="Select an existing exhibition"
+          aria-label="Select an one of your exhibitions"
         >
           <option value="">Select an exhibition</option>
           {exhibitions.map((exhibition) => (
             <option key={exhibition.id} value={exhibition.id}>
-              {exhibition.name} {formatDate(exhibition.startDate, exhibition.endDate)}
+              {exhibition.name}{" "}
+              {formatDate(exhibition.startDate, exhibition.endDate)}
             </option>
           ))}
         </select>
       </div>
 
-      <div className="mb-3">
-        <label htmlFor="newExhibitionName" className="form-label">
-          Exhibition Name:
+      <div className="mb-4">
+        <label htmlFor="newExhibitionName" className="form-label fw-bold">
+          Create a new exhibition:
         </label>
         <input
           type="text"
           id="newExhibitionName"
           className="form-control"
+          placeholder="Exhibition name"
           value={newExhibitionName}
           onChange={(e) => setNewExhibitionName(e.target.value)}
           required
@@ -80,11 +84,7 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({
         />
       </div>
 
-      <div className="mb-3">
-        <label htmlFor="newExhibitionDates" className="form-label">
-          Exhibition Dates:
-        </label>
-        <br />
+      <div className="mb-4">
         <ReactDatePicker
           selected={newExhibitionStartDate}
           onChange={handleDateChange}

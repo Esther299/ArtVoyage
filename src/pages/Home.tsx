@@ -15,7 +15,7 @@ const Home: React.FC = () => {
 
   return (
     <div className="container my-5">
-      <h1 className="text-center mb-4">Artworks Search</h1>
+      <h1 className="text-center mb-4">Choose a museum to start searching:</h1>
       <div className="d-flex justify-content-center">
         <div
           className="card homecard mx-3 bg-light shadow-sm hover:bg-dark"
@@ -46,7 +46,7 @@ const Home: React.FC = () => {
         </div>
 
         <div
-          className="card mx-3 bg-light shadow-sm hover:bg-dark"
+          className="homecard mx-3 bg-light shadow-sm hover:bg-dark"
           style={{
             width: "22rem",
             cursor: "pointer",
