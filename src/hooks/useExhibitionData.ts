@@ -138,6 +138,38 @@ const useExhibitionData = () => {
     }
   };
 
+  const editExhibition = async (
+    exhibitionId: string,
+    updatedFields: Partial<Omit<Exhibition, "id">>
+  ) => {
+    if (user) {
+      try {
+        const exhibitionRef = doc(db, "exhibitions", exhibitionId);
+        const docSnapshot = await getDoc(exhibitionRef);
+
+        if (docSnapshot.exists()) {
+          await updateDoc(exhibitionRef, updatedFields);
+          setExhibitions((prev) =>
+            prev.map((exhibition) =>
+              exhibition.id === exhibitionId
+                ? { ...exhibition, ...updatedFields }
+                : exhibition
+            )
+          );
+        } else {
+          setError("Exhibition not found.");
+        }
+      } catch (err) {
+        handleFirestoreError(
+          err,
+          "An error occurred while editing the exhibition."
+        );
+      }
+    } else {
+      setError("User not authenticated.");
+    }
+  };
+
   const deleteArtworkFromExhibition = async (
     exhibitionId: string,
     artworkId: number
@@ -198,6 +230,7 @@ const useExhibitionData = () => {
     exhibitions,
     addExhibition,
     addArtworkToExhibition,
+    editExhibition,
     deleteArtworkFromExhibition,
     deleteExhibition,
     loading,

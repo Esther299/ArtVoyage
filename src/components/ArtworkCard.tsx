@@ -44,14 +44,16 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
       if (selectedExhibitionId) {
         await addArtworkToExhibition(selectedExhibitionId, artwork);
       } else if (
-        newExhibitionName &&
-        newExhibitionStartDate &&
+        newExhibitionName && newExhibitionStartDate &&
         newExhibitionEndDate
       ) {
+        const startDateString = new Date(newExhibitionStartDate).toISOString();
+        const endDateString = new Date(newExhibitionEndDate).toISOString();
+
         const newExhibition = {
           name: newExhibitionName,
-          startDate: newExhibitionStartDate,
-          endDate: newExhibitionEndDate,
+          startDate: startDateString,
+          endDate: endDateString,
           artworks: [artwork],
           userId: user.uid,
           createdAt: new Date(),
@@ -74,8 +76,9 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
 
   const handleDateChange = (dates: [Date | null, Date | null]) => {
     const [start, end] = dates;
-    setNewExhibitionStartDate(start);
-    setNewExhibitionEndDate(end);
+
+      setNewExhibitionStartDate(start);
+      setNewExhibitionEndDate(end);
   };
 
   return (

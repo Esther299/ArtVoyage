@@ -58,9 +58,7 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({
           <option value="">Select an exhibition</option>
           {exhibitions.map((exhibition) => (
             <option key={exhibition.id} value={exhibition.id}>
-              {exhibition.name} (
-              {new Date(exhibition.startDate).toLocaleDateString()} -{" "}
-              {new Date(exhibition.endDate).toLocaleDateString()})
+              {exhibition.name} ({exhibition.startDate.substring(0, 10).replace(/-/g, "/")} - {exhibition.endDate.substring(0, 10).replace(/-/g, "/")})
             </option>
           ))}
         </select>

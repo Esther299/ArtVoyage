@@ -1,24 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useExhibitions } from "../context/ExhibitionContext";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../firebase/firebase";
 import ExhibitionCard from "../components/ExhibitionCard";
 import DeleteArtworkModal from "../components/DeleteArtworkModal";
+import EditExhibitionModal from "../components/EditExhibitionModal";
+import { Exhibition } from "../types/types";
 
 const Exhibitions: React.FC = () => {
   const {
     exhibitions,
     loading,
     error,
+    editExhibition,
     deleteArtworkFromExhibition,
     deleteExhibition,
   } = useExhibitions();
   const navigate = useNavigate();
-  const [showModal, setShowModal] = useState(false);
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+
   const [selectedExhibitionId, setSelectedExhibitionId] = useState<
     string | null
   >(null);
   const [selectedArtworkId, setSelectedArtworkId] = useState<number | null>(
+    null
+  );
+
+  const [editingExhibition, setEditingExhibition] = useState<Exhibition | null>(
     null
   );
 
@@ -28,24 +38,43 @@ const Exhibitions: React.FC = () => {
     }
   }, [navigate]);
 
-  const handleDeleteExhibition = (exhibitionId: string) => {
-    deleteExhibition(exhibitionId);
-  };
+  const handleDeleteExhibition = useCallback(
+    (exhibitionId: string) => {
+      deleteExhibition(exhibitionId);
+    },
+    [deleteExhibition]
+  );
 
-  const handleDeleteArtwork = (exhibitionId: string, artworkId: number) => {
-    deleteArtworkFromExhibition(exhibitionId, artworkId);
-  };
+  const handleDeleteArtwork = useCallback(
+    (exhibitionId: string, artworkId: number) => {
+      deleteArtworkFromExhibition(exhibitionId, artworkId);
+    },
+    [deleteArtworkFromExhibition]
+  );
 
-  const handleShowModal = (exhibitionId: string, artworkId: number) => {
-    setSelectedExhibitionId(exhibitionId);
-    setSelectedArtworkId(artworkId);
-    setShowModal(true);
-  };
+  const handleShowDeleteModal = useCallback(
+    (exhibitionId: string, artworkId: number) => {
+      setSelectedExhibitionId(exhibitionId);
+      setSelectedArtworkId(artworkId);
+      setShowDeleteModal(true);
+    },
+    []
+  );
 
-  const handleCloseModal = () => {
-    setShowModal(false);
+  const handleShowEditModal = useCallback((exhibition: Exhibition) => {
+    setEditingExhibition(exhibition);
+    setShowEditModal(true);
+  }, []);
+
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
     setSelectedExhibitionId(null);
     setSelectedArtworkId(null);
+  };
+
+  const closeEditModal = () => {
+    setShowEditModal(false);
+    setEditingExhibition(null);
   };
 
   if (loading) {
@@ -55,7 +84,7 @@ const Exhibitions: React.FC = () => {
   if (error) {
     return (
       <div className="alert alert-danger my-5 text-center" role="alert">
-        Error: {error}
+        {error}
       </div>
     );
   }
@@ -70,7 +99,8 @@ const Exhibitions: React.FC = () => {
               key={exhibition.id}
               exhibition={exhibition}
               handleDeleteExhibition={handleDeleteExhibition}
-              handleShowModal={handleShowModal}
+              handleShowModal={handleShowDeleteModal}
+              handleShowEditModal={handleShowEditModal}
             />
           ))}
         </div>
@@ -78,13 +108,26 @@ const Exhibitions: React.FC = () => {
         <p className="text-center">No exhibitions found.</p>
       )}
 
-      <DeleteArtworkModal
-        show={showModal}
-        handleClose={handleCloseModal}
-        handleDeleteArtwork={handleDeleteArtwork}
-        selectedExhibitionId={selectedExhibitionId}
-        selectedArtworkId={selectedArtworkId}
-      />
+      {showEditModal && editingExhibition && (
+        <EditExhibitionModal
+          show={showEditModal}
+          handleClose={closeEditModal}
+          handleEditExhibition={editExhibition}
+          exhibition={editingExhibition}
+        />
+      )}
+
+      {showDeleteModal &&
+        selectedExhibitionId &&
+        selectedArtworkId !== null && (
+          <DeleteArtworkModal
+            show={showDeleteModal}
+            handleClose={closeDeleteModal}
+            handleDeleteArtwork={handleDeleteArtwork}
+            selectedExhibitionId={selectedExhibitionId}
+            selectedArtworkId={selectedArtworkId}
+          />
+        )}
     </div>
   );
 };
