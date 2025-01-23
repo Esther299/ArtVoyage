@@ -9,7 +9,7 @@ import {
 } from "../utils/dateFormatting";
 
 const Exhibitions: React.FC = () => {
-  const { exhibitions, loading, error } = useExhibitions();
+  const { exhibitions, loading } = useExhibitions();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,14 +20,6 @@ const Exhibitions: React.FC = () => {
 
   if (loading) {
     return <div className="text-center my-5">Loading...</div>;
-  }
-
-  if (error) {
-    return (
-      <div className="alert alert-danger my-5 text-center" role="alert">
-        {error}
-      </div>
-    );
   }
 
   return (

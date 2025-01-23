@@ -10,7 +10,7 @@ interface ArtworkCardProps {
 }
 
 const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
-  const { exhibitions, addExhibition, addArtworkToExhibition, loading, error } =
+  const { exhibitions, addExhibition, addArtworkToExhibition, loading } =
     useExhibitions();
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [selectedExhibitionId, setSelectedExhibitionId] = useState<
@@ -22,7 +22,7 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
   const [newExhibitionEndDate, setNewExhibitionEndDate] = useState<Date | null>(
     null
   );
-  const [pageError, setPageError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -31,14 +31,19 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
     setSuccessMessage(null);
   };
 
+  const handleFirestoreError = (err: any, fallbackMessage: string) => {
+    console.error("Firestore Error:", err);
+    return err.message || fallbackMessage;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setPageError(null);
+    setError(null);
 
     const user = auth.currentUser;
 
     if (!user) {
-      setPageError("User is not authenticated.");
+      setError("User is not authenticated.");
       return;
     }
 
@@ -63,7 +68,7 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
         };
         await addExhibition(newExhibition);
       } else {
-        setPageError("Please fill in all the required fields.");
+        setError("Please fill in all the required fields.");
         return;
       }
 
@@ -74,8 +79,12 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
       setSelectedExhibitionId(null);
       setSuccessMessage("Artwork added to the exhibition successfully!");
       setTimeout(() => setSuccessMessage(null), 5000);
-    } catch (err) {
-      setPageError("An unexpected error occurred. Please try again.");
+    } catch (err: any) {
+      const errorMessage = handleFirestoreError(
+        err,
+        "An unexpected error occurred. Please try again."
+      );
+      setError(errorMessage);
     }
   };
 
@@ -86,7 +95,8 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
   };
 
   return (
-    <li>
+    <div>
+      {error && <div className="alert alert-danger">{error}</div>}
       <Link
         to={`/artwork/${artwork.id}`}
         className="text-decoration-none text-reset d-block h-100"
@@ -145,14 +155,18 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
           handleDateChange={handleDateChange}
           handleSubmit={handleSubmit}
           loading={loading}
-          error={error}
-          pageError={pageError}
           setIsFormVisible={setIsFormVisible}
           successMessage={successMessage}
         />
       )}
 
-      {successMessage && (
+      {error && (
+        <div className="alert alert-danger mt-3" role="alert">
+          {error}
+        </div>
+      )}
+
+      {!error && successMessage && (
         <div
           className="alert alert-success mt-3"
           role="alert"
@@ -161,7 +175,7 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
           {successMessage}
         </div>
       )}
-    </li>
+    </div>
   );
 };
 

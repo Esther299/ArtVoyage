@@ -14,8 +14,6 @@ interface ExhibitionFormProps {
   handleDateChange: (dates: [Date | null, Date | null]) => void;
   handleSubmit: (e: React.FormEvent) => void;
   loading: boolean;
-  error: string | null;
-  pageError: string | null;
   setIsFormVisible: React.Dispatch<React.SetStateAction<boolean>>;
   successMessage: string | null;
 }
@@ -31,8 +29,6 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({
   handleDateChange,
   handleSubmit,
   loading,
-  error,
-  pageError,
   setIsFormVisible,
   successMessage,
 }) => {
@@ -72,12 +68,6 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({
       className="mt-4 p-4 rounded shadow-sm"
       style={{ background: "rgba(204, 173, 227, 0.84)" }}
     >
-      {error && <div className="alert alert-danger">{error}</div>}
-      {pageError && (
-        <div className="alert alert-danger" role="alert">
-          {pageError}
-        </div>
-      )}
 
       {successMessage && (
         <div className="alert alert-success" role="alert">
