@@ -82,32 +82,15 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
   };
 
   return (
-    <li
-      className={`list-group-item shadow-sm mb-3 p-3 ${
-        isHovered ? "bg-light border-primary" : ""
-      }`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      role="button"
-      aria-label={`View details of ${artwork.title}`}
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === "Enter") {
-          window.location.href = `/artwork/${artwork.id}`;
-        }
-      }}
-    >
+    <li>
       <Link
         to={`/artwork/${artwork.id}`}
-        className="text-decoration-none text-reset"
+        className="text-decoration-none text-reset d-block h-100"
+        style={{
+          textDecoration: "none",
+        }}
       >
-        <h3>{artwork.title}</h3>
-        <p>
-          <strong>Artist:</strong> {artwork.artist_title}
-        </p>
-        <p>
-          <strong>Medium:</strong> {artwork.medium_display}
-        </p>
+        <h3 className="mb-3 fs-1">{artwork.title}</h3>
         {artwork.imageUrl && (
           <img
             src={artwork.imageUrl}
@@ -115,21 +98,33 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
             width="400"
             height="300"
             className="img-fluid my-3"
+            style={{
+              display: "block",
+              margin: "0 auto",
+            }}
           />
         )}
-        <p>
-          <strong>Date:</strong> {artwork.date}
+        <p className="text-muted fst-italic mb-1 fs-5">
+          Created by <strong>{artwork.artist_title}</strong> in {artwork.date}
         </p>
-        <p>
-          <strong>Source:</strong> {artwork.source}
-        </p>
+        <p className="mb-2">{artwork.medium_display}</p>
       </Link>
 
       <button
         onClick={handleAddToExhibitionClick}
-        className="btn btn-primary mt-2"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className="btn"
+        style={{
+          backgroundColor: isHovered
+            ? "rgba(32, 43, 163, 0.9)"
+            : "rgba(32, 18, 74, 0.84)",
+          color: "white",
+          border: "none",
+          transition: "background-color 0.3s ease",
+        }}
       >
-        Add to Exhibition
+        Add to an Exhibition
       </button>
 
       {isFormVisible && (
