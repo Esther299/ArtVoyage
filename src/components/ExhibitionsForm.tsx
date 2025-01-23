@@ -17,6 +17,7 @@ interface ExhibitionFormProps {
   error: string | null;
   pageError: string | null;
   setIsFormVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  successMessage: string | null;
 }
 
 const ExhibitionForm: React.FC<ExhibitionFormProps> = ({
@@ -33,7 +34,10 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({
   error,
   pageError,
   setIsFormVisible,
+  successMessage,
 }) => {
+  const isExistingExhibitionSelected = Boolean(selectedExhibitionId);
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -47,16 +51,22 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({
         </div>
       )}
 
+      {successMessage && (
+        <div className="alert alert-success" role="alert">
+          {successMessage}
+        </div>
+      )}
+
       <div className="mb-4">
         <label htmlFor="existingExhibition" className="form-label fw-bold">
-          Select an one of your exhibitions:
+          Select one of your exhibitions:
         </label>
         <select
           id="existingExhibition"
           className="form-select"
           onChange={(e) => setSelectedExhibitionId(e.target.value)}
           value={selectedExhibitionId || ""}
-          aria-label="Select an one of your exhibitions"
+          aria-label="Select one of your exhibitions"
         >
           <option value="">Select an exhibition</option>
           {exhibitions.map((exhibition) => (
@@ -68,35 +78,38 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({
         </select>
       </div>
 
-      <div className="mb-4">
-        <label htmlFor="newExhibitionName" className="form-label fw-bold">
-          Create a new exhibition:
-        </label>
-        <input
-          type="text"
-          id="newExhibitionName"
-          className="form-control"
-          placeholder="Exhibition name"
-          value={newExhibitionName}
-          onChange={(e) => setNewExhibitionName(e.target.value)}
-          required
-          aria-required="true"
-        />
-      </div>
+      <fieldset disabled={isExistingExhibitionSelected}>
+        <div className="mb-4">
+          <label htmlFor="newExhibitionName" className="form-label fw-bold">
+            Create a new exhibition:
+          </label>
+          <input
+            type="text"
+            id="newExhibitionName"
+            className="form-control"
+            placeholder="Exhibition name"
+            value={newExhibitionName}
+            onChange={(e) => setNewExhibitionName(e.target.value)}
+            required={!isExistingExhibitionSelected}
+            aria-required={!isExistingExhibitionSelected}
+          />
+        </div>
 
-      <div className="mb-4">
-        <ReactDatePicker
-          selected={newExhibitionStartDate}
-          onChange={handleDateChange}
-          startDate={newExhibitionStartDate}
-          endDate={newExhibitionEndDate}
-          selectsRange
-          inline
-          placeholderText="Select start and end dates"
-          className="form-control"
-          aria-label="Select exhibition start and end dates"
-        />
-      </div>
+        <div className="mb-4">
+          <ReactDatePicker
+            selected={newExhibitionStartDate}
+            onChange={handleDateChange}
+            startDate={newExhibitionStartDate}
+            endDate={newExhibitionEndDate}
+            selectsRange
+            inline
+            placeholderText="Select start and end dates"
+            className="form-control"
+            aria-label="Select exhibition start and end dates"
+            required={!isExistingExhibitionSelected}
+          />
+        </div>
+      </fieldset>
 
       <div className="d-flex justify-content-between">
         <button type="submit" className="btn btn-success" disabled={loading}>

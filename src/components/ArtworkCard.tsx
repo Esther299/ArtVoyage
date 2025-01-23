@@ -23,10 +23,12 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
     null
   );
   const [pageError, setPageError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isHovered, setIsHovered] = useState(false);
 
   const handleAddToExhibitionClick = () => {
     setIsFormVisible(true);
+    setSuccessMessage(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -44,7 +46,8 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
       if (selectedExhibitionId) {
         await addArtworkToExhibition(selectedExhibitionId, artwork);
       } else if (
-        newExhibitionName && newExhibitionStartDate &&
+        newExhibitionName &&
+        newExhibitionStartDate &&
         newExhibitionEndDate
       ) {
         const startDateString = new Date(newExhibitionStartDate).toISOString();
@@ -69,6 +72,8 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
       setNewExhibitionStartDate(null);
       setNewExhibitionEndDate(null);
       setSelectedExhibitionId(null);
+      setSuccessMessage("Artwork added to the exhibition successfully!");
+      setTimeout(() => setSuccessMessage(null), 5000);
     } catch (err) {
       setPageError("An unexpected error occurred. Please try again.");
     }
@@ -76,9 +81,8 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
 
   const handleDateChange = (dates: [Date | null, Date | null]) => {
     const [start, end] = dates;
-
-      setNewExhibitionStartDate(start);
-      setNewExhibitionEndDate(end);
+    setNewExhibitionStartDate(start);
+    setNewExhibitionEndDate(end);
   };
 
   return (
@@ -144,7 +148,18 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
           error={error}
           pageError={pageError}
           setIsFormVisible={setIsFormVisible}
+          successMessage={successMessage}
         />
+      )}
+
+      {successMessage && (
+        <div
+          className="alert alert-success mt-3"
+          role="alert"
+          style={{ maxWidth: "400px", margin: "0 auto" }}
+        >
+          {successMessage}
+        </div>
       )}
     </li>
   );
