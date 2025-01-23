@@ -14,6 +14,13 @@ const MuseumPage: React.FC = () => {
   const { setSelectedMuseum } = useMuseum();
   const [museumDisplay, setMuseumDisplay] = useState("");
   const [sortOption, setSortOption] = useState<string>("artist");
+  const [sortDirection, setSortDirection] = useState<{
+    [key: string]: "asc" | "desc";
+  }>({
+    artist: "asc",
+    title: "asc",
+    date: "asc",
+  });
 
   useEffect(() => {
     const museumDisplayMap: Record<string, string> = {
@@ -42,11 +49,20 @@ const MuseumPage: React.FC = () => {
 
   return (
     <div className="container my-5">
-      <h1 className="text-center mb-4">{museumDisplay}</h1>
-      <SearchBar  sortOption={sortOption} setSortOption={setSortOption} />
+      <h1 className="text-center mb-5 fs-1 py-5">{museumDisplay}</h1>
+      <SearchBar
+        sortOption={sortOption}
+        setSortOption={setSortOption}
+        sortDirection={sortDirection}
+        setSortDirection={setSortDirection}
+      />
       {loading && <div className="text-center mt-3">Loading...</div>}
       {error && <div className="alert alert-danger mt-3">Error: {error}</div>}
-      <ArtworkList artworks={artworks} sortOption={sortOption} />
+      <ArtworkList
+        artworks={artworks}
+        sortOption={sortOption}
+        sortDirection={sortDirection}
+      />
     </div>
   );
 };
