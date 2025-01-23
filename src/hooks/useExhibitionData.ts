@@ -21,11 +21,10 @@ const useExhibitionData = () => {
   const { user, loading: authLoading } = useAuth();
   const [exhibitions, setExhibitions] = useState<Exhibition[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   const handleFirestoreError = (err: any, fallbackMessage: string) => {
     console.error("Firestore Error:", err);
-    setError(err.message || fallbackMessage);
+    throw new Error(err.message || fallbackMessage);
   };
 
   useEffect(() => {
@@ -89,8 +88,7 @@ const useExhibitionData = () => {
         );
 
         if (!existingExhibitionsSnapshot.empty) {
-          setError("An exhibition with this name already exists.");
-          return;
+          throw new Error("An exhibition with this name already exists.");
         }
 
         const randomImage = getRandomImage();
@@ -117,7 +115,7 @@ const useExhibitionData = () => {
         );
       }
     } else {
-      setError("User not authenticated.");
+      throw new Error("User not authenticated.");
     }
   };
 
@@ -132,11 +130,22 @@ const useExhibitionData = () => {
 
         if (docSnapshot.exists()) {
           const existingArtworks = docSnapshot.data()?.artworks || [];
+
+          const artworkExists = existingArtworks.some(
+            (existingArtwork: Artwork) => existingArtwork.id === artwork.id
+          );
+
+          if (artworkExists) {
+            throw new Error(
+              "This artwork has already been added to the exhibition."
+            );
+          }
+
           await updateDoc(exhibitionRef, {
             artworks: [...existingArtworks, artwork],
           });
         } else {
-          setError("Exhibition not found.");
+          throw new Error("Exhibition not found.");
         }
       } catch (err) {
         handleFirestoreError(
@@ -145,7 +154,7 @@ const useExhibitionData = () => {
         );
       }
     } else {
-      setError("User not authenticated.");
+      throw new Error("User not authenticated.");
     }
   };
 
@@ -168,7 +177,7 @@ const useExhibitionData = () => {
             )
           );
         } else {
-          setError("Exhibition not found.");
+          throw new Error("Exhibition not found.");
         }
       } catch (err) {
         handleFirestoreError(
@@ -177,7 +186,7 @@ const useExhibitionData = () => {
         );
       }
     } else {
-      setError("User not authenticated.");
+      throw new Error("User not authenticated.");
     }
   };
 
@@ -206,7 +215,7 @@ const useExhibitionData = () => {
             )
           );
         } else {
-          setError("Exhibition not found.");
+          throw new Error("Exhibition not found.");
         }
       } catch (err) {
         handleFirestoreError(
@@ -215,7 +224,7 @@ const useExhibitionData = () => {
         );
       }
     } else {
-      setError("User not authenticated.");
+      throw new Error("User not authenticated.");
     }
   };
 
@@ -233,7 +242,7 @@ const useExhibitionData = () => {
         );
       }
     } else {
-      setError("User not authenticated.");
+      throw new Error("User not authenticated.");
     }
   };
 
@@ -245,7 +254,6 @@ const useExhibitionData = () => {
     deleteArtworkFromExhibition,
     deleteExhibition,
     loading,
-    error,
   };
 };
 
