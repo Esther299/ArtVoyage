@@ -64,10 +64,10 @@ const ExhibitionDetail: React.FC = () => {
         setSuccessMessage("Exhibition deleted successfully.");
       } catch (err: any) {
         const errorMessage = handleFirestoreError(
-        err,
-        "Failed to delete the exhibition."
-      );
-      setError(errorMessage);
+          err,
+          "Failed to delete the exhibition."
+        );
+        setError(errorMessage);
       }
     },
     [deleteExhibition]
@@ -121,14 +121,29 @@ const ExhibitionDetail: React.FC = () => {
         handleDeleteExhibition={handleDeleteExhibition}
         handleDeleteArtwork={handleDeleteArtwork}
         handleEditExhibition={handleEditExhibition}
-        handleAddArtwork={handleAddArtwork}
       />
-      <button
-        className="btn btn-outline-primary btn-lg mx-2"
-        onClick={() => window.history.back()}
-      >
-        Go Back
-      </button>
+
+      <div className="col-12 mb-5">
+        <div className="text-center">
+          <button
+            onClick={handleAddArtwork}
+            className="btn btn-outline-primary btn-lg mx-2"
+            aria-label="Add new artwork to the exhibition"
+            style={{ maxWidth: "200px" }}
+          >
+            Add Artwork
+          </button>
+
+          <button
+            className="btn btn-outline-secondary btn-lg mx-2"
+            onClick={() => window.history.back()}
+            aria-label="Go back to the previous page"
+            style={{ maxWidth: "200px" }}
+          >
+            Go Back
+          </button>
+        </div>
+      </div>
     </>
   );
 };
