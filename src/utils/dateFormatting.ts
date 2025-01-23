@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore";
+
 const getDayWithSuffix = (day: number): string => {
   const suffixes = ["th", "st", "nd", "rd"];
   const remainder = day % 10;
@@ -74,4 +76,14 @@ export const formatDate = (
   } = parseDateToComponents(endDateString);
 
   return `(${startDay}/${startMonth}/${startYear} - ${endDay}/${endMonth}/${endYear})`;
+};
+
+export const formatTimestamp = (timestamp: Timestamp | Date): string => {
+  const date =
+    timestamp instanceof Timestamp
+      ? new Date(timestamp.seconds * 1000)
+      : new Date(timestamp);
+  return `${date.toLocaleTimeString(
+    "en-GB"
+  )} on the ${date.toLocaleDateString("en-GB")}`;
 };

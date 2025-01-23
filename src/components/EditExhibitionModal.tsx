@@ -68,7 +68,6 @@ const EditExhibitionModal: React.FC<EditExhibitionModalProps> = ({
         startDate: startDateString,
         endDate: endDateString,
       });
-      console.log(newStartDate, "<--handle edit start date");
       handleClose();
     }
   };

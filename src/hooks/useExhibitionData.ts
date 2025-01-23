@@ -15,16 +15,16 @@ import {
 } from "firebase/firestore";
 import { Artwork, Exhibition } from "../types/types";
 import { useAuth } from "../context/AuthContext";
+import { getRandomImage } from "../utils/randomImage";
 
 const useExhibitionData = () => {
   const { user, loading: authLoading } = useAuth();
   const [exhibitions, setExhibitions] = useState<Exhibition[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   const handleFirestoreError = (err: any, fallbackMessage: string) => {
     console.error("Firestore Error:", err);
-    setError(err.message || fallbackMessage);
+    throw new Error(err.message || fallbackMessage);
   };
 
   useEffect(() => {
@@ -73,7 +73,9 @@ const useExhibitionData = () => {
     }
   }, [user, authLoading]);
 
-  const addExhibition = async (exhibition: Omit<Exhibition, "id">) => {
+  const addExhibition = async (
+    exhibition: Omit<Exhibition, "id" | "image">
+  ) => {
     if (user) {
       try {
         const existingExhibitionsQuery = query(
@@ -86,18 +88,25 @@ const useExhibitionData = () => {
         );
 
         if (!existingExhibitionsSnapshot.empty) {
-          setError("An exhibition with this name already exists.");
-          return;
+          throw new Error("An exhibition with this name already exists. Please try another name");
         }
+
+        const randomImage = getRandomImage();
 
         const docRef = await addDoc(collection(db, "exhibitions"), {
           ...exhibition,
+          image: randomImage,
           userId: user.uid,
           createdAt: serverTimestamp(),
         });
         setExhibitions((prevExhibitions) => [
           ...prevExhibitions,
-          { id: docRef.id, ...exhibition, userId: user.uid },
+          {
+            id: docRef.id,
+            ...exhibition,
+            image: randomImage,
+            userId: user.uid,
+          },
         ]);
       } catch (err) {
         handleFirestoreError(
@@ -106,7 +115,7 @@ const useExhibitionData = () => {
         );
       }
     } else {
-      setError("User not authenticated.");
+      throw new Error("User not authenticated.");
     }
   };
 
@@ -121,11 +130,22 @@ const useExhibitionData = () => {
 
         if (docSnapshot.exists()) {
           const existingArtworks = docSnapshot.data()?.artworks || [];
+
+          const artworkExists = existingArtworks.some(
+            (existingArtwork: Artwork) => existingArtwork.id === artwork.id
+          );
+
+          if (artworkExists) {
+            throw new Error(
+              "This artwork has already been added to this exhibition. Please choose a different artwork or a different exhibition"
+            );
+          }
+
           await updateDoc(exhibitionRef, {
             artworks: [...existingArtworks, artwork],
           });
         } else {
-          setError("Exhibition not found.");
+          throw new Error("Exhibition not found.");
         }
       } catch (err) {
         handleFirestoreError(
@@ -134,7 +154,7 @@ const useExhibitionData = () => {
         );
       }
     } else {
-      setError("User not authenticated.");
+      throw new Error("User not authenticated.");
     }
   };
 
@@ -157,7 +177,7 @@ const useExhibitionData = () => {
             )
           );
         } else {
-          setError("Exhibition not found.");
+          throw new Error("Exhibition not found.");
         }
       } catch (err) {
         handleFirestoreError(
@@ -166,7 +186,7 @@ const useExhibitionData = () => {
         );
       }
     } else {
-      setError("User not authenticated.");
+      throw new Error("User not authenticated.");
     }
   };
 
@@ -195,7 +215,7 @@ const useExhibitionData = () => {
             )
           );
         } else {
-          setError("Exhibition not found.");
+          throw new Error("Exhibition not found.");
         }
       } catch (err) {
         handleFirestoreError(
@@ -204,7 +224,7 @@ const useExhibitionData = () => {
         );
       }
     } else {
-      setError("User not authenticated.");
+      throw new Error("User not authenticated.");
     }
   };
 
@@ -222,7 +242,7 @@ const useExhibitionData = () => {
         );
       }
     } else {
-      setError("User not authenticated.");
+      throw new Error("User not authenticated.");
     }
   };
 
@@ -234,7 +254,6 @@ const useExhibitionData = () => {
     deleteArtworkFromExhibition,
     deleteExhibition,
     loading,
-    error,
   };
 };
 

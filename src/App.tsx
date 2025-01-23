@@ -14,6 +14,7 @@ import Exhibitions from "./pages/Exhibitions";
 import Auth from "./pages/Auth";
 import { useAuth } from "./context/AuthContext";
 import ArtworkDetail from "./pages/ArtworkDetail";
+import ExhibitionDetail from "./pages/ExhibitionDetail";
 
 const AppContent: React.FC = () => {
   const { user } = useAuth();
@@ -28,10 +29,14 @@ const AppContent: React.FC = () => {
             {user ? (
               <>
                 <Route path="/home" element={<Home />} />
-                <Route path="/profile" element={<Profile user = {user} />} />
+                <Route path="/profile" element={<Profile user={user} />} />
                 <Route path="/artwork/:id" element={<ArtworkDetail />} />
                 <Route path="/museum/:museumName" element={<MuseumSearch />} />
                 <Route path="/exhibitions" element={<Exhibitions />} />
+                <Route
+                  path="/exhibition/:exhibitionId"
+                  element={<ExhibitionDetail />}
+                />
                 <Route path="*" element={<Navigate to="/home" />} />
               </>
             ) : (
