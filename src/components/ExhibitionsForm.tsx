@@ -37,10 +37,38 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({
   successMessage,
 }) => {
   const isExistingExhibitionSelected = Boolean(selectedExhibitionId);
+  const validateForm = () => {
+    if (!isExistingExhibitionSelected) {
+      if (!newExhibitionName.trim()) {
+        alert("Exhibition name is required.");
+        return false;
+      }
+
+      if (!newExhibitionStartDate || !newExhibitionEndDate) {
+        alert("Both start and end dates are required.");
+        return false;
+      }
+
+      if (newExhibitionStartDate > newExhibitionEndDate) {
+        alert("Start date must be before the end date.");
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (validateForm()) {
+      handleSubmit(e);
+    }
+  };
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={onSubmit}
       className="mt-4 p-4 rounded shadow-sm"
       style={{ background: "rgba(204, 173, 227, 0.84)" }}
     >
