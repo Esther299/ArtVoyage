@@ -6,22 +6,30 @@ import Pagination from "./Pagination";
 interface ArtworksListProps {
   artworks: Artwork[];
   sortOption: string;
+  sortDirection: { [key: string]: "asc" | "desc" };
 }
 
-const ArtworkList: React.FC<ArtworksListProps> = ({ artworks, sortOption }) => {
+const ArtworkList: React.FC<ArtworksListProps> = ({ artworks, sortOption, sortDirection }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const artworksPerPage = 10;
 
   const sortedArtworks = [...artworks].sort((a, b) => {
     if (sortOption === "artist") {
-      return a.artist_title.localeCompare(b.artist_title);
+      return sortDirection.artist === "asc"
+        ? a.artist_title.localeCompare(b.artist_title)
+        : b.artist_title.localeCompare(a.artist_title);
     } else if (sortOption === "title") {
-      return a.title.localeCompare(b.title);
+      return sortDirection.title === "asc"
+        ? a.title.localeCompare(b.title)
+        : b.title.localeCompare(a.title);
     } else if (sortOption === "date") {
-      return new Date(a.date).getTime() - new Date(b.date).getTime();
+      return sortDirection.date === "asc"
+        ? new Date(a.date).getTime() - new Date(b.date).getTime()
+        : new Date(b.date).getTime() - new Date(a.date).getTime();
     }
     return 0;
   });
+
 
   const indexOfLastArtwork = currentPage * artworksPerPage;
   const indexOfFirstArtwork = indexOfLastArtwork - artworksPerPage;
@@ -70,7 +78,7 @@ const ArtworkList: React.FC<ArtworksListProps> = ({ artworks, sortOption }) => {
           ))}
         </ul>
       ) : (
-        <p>No artworks </p>
+        <p>Start your search here </p>
       )}
 
       {totalPages > 1 && (
