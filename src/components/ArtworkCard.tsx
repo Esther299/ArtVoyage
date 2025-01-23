@@ -90,7 +90,9 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
           textDecoration: "none",
         }}
       >
-        <h3 className="mb-3 fs-1">{artwork.title}</h3>
+        <h3 className="mb-3 fs-1 text-truncate" style={{ maxWidth: "100%" }}>
+          {artwork.title}
+        </h3>
         {artwork.imageUrl && (
           <img
             src={artwork.imageUrl}
