@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Artwork } from "../types/types";
 import { useExhibitions } from "../context/ExhibitionContext";
 import { auth } from "../firebase/firebase";
+import ExhibitionForm from "./ExhibitionsForm";
 
 interface ArtworkCardProps {
   artwork: Artwork;
@@ -16,7 +17,11 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
     string | null
   >(null);
   const [newExhibitionName, setNewExhibitionName] = useState("");
-  const [newExhibitionDate, setNewExhibitionDate] = useState("");
+  const [newExhibitionStartDate, setNewExhibitionStartDate] =
+    useState<Date | null>(null);
+  const [newExhibitionEndDate, setNewExhibitionEndDate] = useState<Date | null>(
+    null
+  );
   const [pageError, setPageError] = useState<string | null>(null);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -38,10 +43,17 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
     try {
       if (selectedExhibitionId) {
         await addArtworkToExhibition(selectedExhibitionId, artwork);
-      } else if (newExhibitionName && newExhibitionDate) {
+      } else if (
+        newExhibitionName && newExhibitionStartDate &&
+        newExhibitionEndDate
+      ) {
+        const startDateString = new Date(newExhibitionStartDate).toISOString();
+        const endDateString = new Date(newExhibitionEndDate).toISOString();
+
         const newExhibition = {
           name: newExhibitionName,
-          date: newExhibitionDate,
+          startDate: startDateString,
+          endDate: endDateString,
           artworks: [artwork],
           userId: user.uid,
           createdAt: new Date(),
@@ -54,11 +66,19 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
 
       setIsFormVisible(false);
       setNewExhibitionName("");
-      setNewExhibitionDate("");
+      setNewExhibitionStartDate(null);
+      setNewExhibitionEndDate(null);
       setSelectedExhibitionId(null);
     } catch (err) {
       setPageError("An unexpected error occurred. Please try again.");
     }
+  };
+
+  const handleDateChange = (dates: [Date | null, Date | null]) => {
+    const [start, end] = dates;
+
+      setNewExhibitionStartDate(start);
+      setNewExhibitionEndDate(end);
   };
 
   return (
@@ -104,6 +124,7 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
           <strong>Source:</strong> {artwork.source}
         </p>
       </Link>
+
       <button
         onClick={handleAddToExhibitionClick}
         className="btn btn-primary mt-2"
@@ -112,78 +133,21 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
       </button>
 
       {isFormVisible && (
-        <form onSubmit={handleSubmit} className="mt-3">
-          <h4>Select or Create Exhibition</h4>
-
-          {error && <div className="alert alert-danger">{error}</div>}
-          {pageError && (
-            <div className="alert alert-danger" role="alert">
-              {pageError}
-            </div>
-          )}
-
-          <div className="mb-3">
-            <label htmlFor="existingExhibition" className="form-label">
-              Existing Exhibition:
-            </label>
-            <select
-              id="existingExhibition"
-              className="form-select"
-              onChange={(e) => setSelectedExhibitionId(e.target.value)}
-              value={selectedExhibitionId || ""}
-            >
-              <option value="">Select an exhibition</option>
-              {exhibitions.map((exhibition) => (
-                <option key={exhibition.id} value={exhibition.id}>
-                  {exhibition.name} ({exhibition.date})
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="mb-3">
-            <label htmlFor="newExhibitionName" className="form-label">
-              New Exhibition Name:
-            </label>
-            <input
-              type="text"
-              id="newExhibitionName"
-              className="form-control"
-              value={newExhibitionName}
-              onChange={(e) => setNewExhibitionName(e.target.value)}
-            />
-          </div>
-
-          <div className="mb-3">
-            <label htmlFor="newExhibitionDate" className="form-label">
-              New Exhibition Date:
-            </label>
-            <input
-              type="date"
-              id="newExhibitionDate"
-              className="form-control"
-              value={newExhibitionDate}
-              onChange={(e) => setNewExhibitionDate(e.target.value)}
-            />
-          </div>
-
-          <div className="d-flex justify-content-between">
-            <button
-              type="submit"
-              className="btn btn-success"
-              disabled={loading}
-            >
-              {loading ? "Submitting..." : "Add"}
-            </button>
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={() => setIsFormVisible(false)}
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
+        <ExhibitionForm
+          exhibitions={exhibitions}
+          selectedExhibitionId={selectedExhibitionId}
+          setSelectedExhibitionId={setSelectedExhibitionId}
+          newExhibitionName={newExhibitionName}
+          setNewExhibitionName={setNewExhibitionName}
+          newExhibitionStartDate={newExhibitionStartDate}
+          newExhibitionEndDate={newExhibitionEndDate}
+          handleDateChange={handleDateChange}
+          handleSubmit={handleSubmit}
+          loading={loading}
+          error={error}
+          pageError={pageError}
+          setIsFormVisible={setIsFormVisible}
+        />
       )}
     </li>
   );
