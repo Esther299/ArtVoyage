@@ -32,7 +32,7 @@ const Exhibitions: React.FC = () => {
 
   return (
     <div className="container my-5">
-      <h1 className="text-center mb-4">Exhibitions</h1>
+      <h1 className="text-center fs-1 mb-4">Exhibitions</h1>
 
       {exhibitions.length > 0 ? (
         <div className="row g-4">
@@ -40,12 +40,12 @@ const Exhibitions: React.FC = () => {
             <div key={exhibition.id} className="col-md-6 col-lg-4">
               <Link
                 to={`/exhibition/${exhibition.id}`}
-                className="btn btn-outline-secondary btn-sm mt-3 w-100"
+                className="btn btn-outline-secondary mt-3"
                 aria-label={`Manage exhibition ${exhibition.name}`}
               >
                 <div className="card h-100 shadow-sm">
                   <div className="card-body d-flex flex-column">
-                    <h2 className="card-title text-center py-3">
+                    <h2 className="card-title text-decoration-underline text-center py-3 fs-2">
                       {exhibition.name}
                     </h2>
                     <p className="card-text text-center text-muted">
@@ -54,15 +54,25 @@ const Exhibitions: React.FC = () => {
                         exhibition.endDate
                       )}
                     </p>
-
-                    <ul
-                      className="list-unstyled flex-grow-1 overflow-auto"
-                      style={{ maxHeight: "200px", padding: "10px" }}
-                    >
+                    <img
+                      src={exhibition.image}
+                      alt={`Exhibition titled "${exhibition.name}"`}
+                      width="400"
+                      height="300"
+                      className="img-fluid my-3"
+                      style={{
+                        display: "block",
+                        margin: "0 auto",
+                      }}
+                    />
+                    <ul className="list-group list-group-flush">
+                      <h5 className="text-decoration-underline">
+                        What you will be seeing:
+                      </h5>
                       {exhibition.artworks.map((artwork) => (
                         <li
                           key={artwork.id}
-                          className="d-flex justify-content-between align-items-center mb-3"
+                          className="list-group-item justify-content-between mb-3"
                         >
                           <div>
                             <span className="ms-2 d-block">
