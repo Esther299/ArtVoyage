@@ -1,28 +1,33 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
 
-interface DeleteArtworkModalProps {
+interface DeleteModalProps {
   show: boolean;
   handleClose: () => void;
-  handleDeleteArtwork: (exhibitionId: string, artworkId: number) => void;
-  selectedExhibitionId: string | null;
-  selectedArtworkId: number | null;
+  handleDelete: (id: string) => void;
+  entityType: "artwork" | "exhibition";
+  entityId: string | null;
 }
 
-const DeleteArtworkModal: React.FC<DeleteArtworkModalProps> = ({
+const DeleteModal: React.FC<DeleteModalProps> = ({
   show,
   handleClose,
-  handleDeleteArtwork,
-  selectedExhibitionId,
-  selectedArtworkId,
+  handleDelete,
+  entityType,
+  entityId,
 }) => {
+  const entityName = entityType === "artwork" ? "artwork" : "exhibition";
+
   return (
     <Modal show={show} onHide={handleClose} aria-labelledby="deleteModalLabel">
       <Modal.Header closeButton>
-        <Modal.Title id="deleteModalLabel">Confirm Deletion</Modal.Title>
+        <Modal.Title id="deleteModalLabel">
+          Confirm {entityName.charAt(0).toUpperCase() + entityName.slice(1)}{" "}
+          Deletion
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <p>Are you sure you want to delete this artwork?</p>
+        <p>Are you sure you want to delete this {entityName}?</p>
       </Modal.Body>
       <Modal.Footer>
         <button className="btn btn-secondary" onClick={handleClose}>
@@ -31,8 +36,8 @@ const DeleteArtworkModal: React.FC<DeleteArtworkModalProps> = ({
         <button
           className="btn btn-danger"
           onClick={() => {
-            if (selectedExhibitionId && selectedArtworkId !== null) {
-              handleDeleteArtwork(selectedExhibitionId, selectedArtworkId);
+            if (entityId) {
+              handleDelete(entityId);
             }
             handleClose();
           }}
@@ -44,4 +49,4 @@ const DeleteArtworkModal: React.FC<DeleteArtworkModalProps> = ({
   );
 };
 
-export default DeleteArtworkModal;
+export default DeleteModal;

@@ -3,23 +3,38 @@ import { Link } from "react-router-dom";
 import { Exhibition } from "../types/types";
 import { useMuseum } from "../context/MuseumContext";
 import { formatExhibitionDateRange } from "../utils/dateFormatting";
+import DeleteModal from "./DeleteModal";
+import EditExhibitionModal from "../components/EditExhibitionModal";
 
 interface ExhibitionCardProps {
   exhibition: Exhibition;
   handleDeleteExhibition: (exhibitionId: string) => void;
-  handleShowModal: (exhibitionId: string, artworkId: number) => void;
-  handleShowEditModal: (exhibition: Exhibition) => void;
+  handleDeleteArtwork: (exhibitionId: string, artworkId: number) => void;
+  handleEditExhibition: (
+    exhibitionId: string,
+    updatedFields: { name: string; startDate: string; endDate: string }
+  ) => void;
   handleAddArtwork: () => void;
 }
 
 const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
   exhibition,
   handleDeleteExhibition,
-  handleShowModal,
-  handleShowEditModal,
+  handleDeleteArtwork,
+  handleEditExhibition,
   handleAddArtwork,
 }) => {
   const { setSelectedMuseum } = useMuseum();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+
+  const [editingExhibition, setEditingExhibition] = useState<Exhibition | null>(
+    null
+  );
+  const [entityType, setEntityType] = useState<"artwork" | "exhibition" | null>(
+    null
+  );
+  const [entityId, setEntityId] = useState<string | number | null>(null);
 
   const date = formatExhibitionDateRange(
     exhibition.startDate,
@@ -31,6 +46,43 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
       setSelectedMuseum("met");
     } else {
       setSelectedMuseum("chicago");
+    }
+  };
+
+  const handleShowDeleteModal = (
+    entityType: "artwork" | "exhibition",
+    entityId: string | number
+  ) => {
+    setEntityType(entityType);
+    setEntityId(entityId);
+    setShowDeleteModal(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+    setEntityType(null);
+    setEntityId(null);
+  };
+
+  const handleShowEditModal = (exhibition: Exhibition) => {
+    setEditingExhibition(exhibition);
+    setShowEditModal(true);
+  };
+
+  const closeEditModal = () => {
+    setShowEditModal(false);
+    setEditingExhibition(null);
+  };
+
+  const handleDelete = () => {
+    if (
+      entityType === "artwork" &&
+      typeof entityId === "number" &&
+      entityId !== null
+    ) {
+      handleDeleteArtwork(exhibition.id, entityId);
+    } else if (entityType === "exhibition" && typeof entityId === "string") {
+      handleDeleteExhibition(entityId);
     }
   };
 
@@ -66,7 +118,9 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
                   </span>
                 </Link>
                 <button
-                  onClick={() => handleShowModal(exhibition.id, artwork.id)}
+                  onClick={() =>
+                    handleShowDeleteModal("artwork", artwork.id.toString())
+                  }
                   className="btn btn-outline-danger btn-sm"
                   aria-label={`Delete artwork titled ${artwork.title} from exhibition ${exhibition.name}`}
                 >
@@ -85,7 +139,7 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
               Edit Exhibition
             </button>
             <button
-              onClick={() => handleDeleteExhibition(exhibition.id)}
+              onClick={() => handleShowDeleteModal("exhibition", exhibition.id)}
               className="btn btn-outline-danger btn-sm"
               aria-label={`Delete exhibition ${exhibition.name}`}
             >
@@ -104,6 +158,21 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
           </div>
         </div>
       </div>
+
+      <EditExhibitionModal
+        show={showEditModal}
+        handleClose={closeEditModal}
+        handleEditExhibition={handleEditExhibition}
+        exhibition={editingExhibition}
+      />
+
+      <DeleteModal
+        show={showDeleteModal}
+        handleClose={handleCloseDeleteModal}
+        handleDelete={handleDelete}
+        entityType={entityType ?? "artwork"}
+        entityId={entityId?.toString() ?? ""}
+      />
     </div>
   );
 };
