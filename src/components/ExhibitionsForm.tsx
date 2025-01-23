@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { formatDate } from "../utils/dateFormatting";
 
 interface ExhibitionFormProps {
   exhibitions: any[];
@@ -58,7 +59,7 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({
           <option value="">Select an exhibition</option>
           {exhibitions.map((exhibition) => (
             <option key={exhibition.id} value={exhibition.id}>
-              {exhibition.name} ({exhibition.startDate.substring(0, 10).replace(/-/g, "/")} - {exhibition.endDate.substring(0, 10).replace(/-/g, "/")})
+              {exhibition.name} {formatDate(exhibition.startDate, exhibition.endDate)}
             </option>
           ))}
         </select>

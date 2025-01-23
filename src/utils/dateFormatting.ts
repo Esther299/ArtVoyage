@@ -8,15 +8,13 @@ const getDayWithSuffix = (day: number): string => {
   return `${day}${suffix}`;
 };
 
-const parseAndFormatDate = (dateString: string): string => {
+const parseAndFormatDate = (dateString: string) => {
   const [year, month, day] = dateString.split("T")[0].split("-");
-
   const formattedDay = getDayWithSuffix(Number(day));
   const monthName = new Date(`${year}-${month}`).toLocaleString("en-GB", {
     month: "long",
   });
-
-  return `${formattedDay} of ${monthName} of ${year}`;
+  return { formattedDay, monthName, year };
 };
 
 export const formatExhibitionDateRange = (
@@ -27,32 +25,53 @@ export const formatExhibitionDateRange = (
     return "Invalid Date Range";
   }
 
-  const startDateFormatted = parseAndFormatDate(startDateString);
-  const endDateFormatted = parseAndFormatDate(endDateString);
+  const {
+    formattedDay: startDay,
+    monthName: startMonth,
+    year: startYear,
+  } = parseAndFormatDate(startDateString);
+  const {
+    formattedDay: endDay,
+    monthName: endMonth,
+    year: endYear,
+  } = parseAndFormatDate(endDateString);
 
-  const startMonth = startDateString.split("-")[1];
-  const endMonth = endDateString.split("-")[1];
-
-  const startYear = startDateString.split("-")[0];
-  const endYear = endDateString.split("-")[0];
-
-  let formattedRange = `From the ${startDateFormatted}`;
-
-  if (startMonth !== endMonth || startYear !== endYear) {
-    formattedRange += ` to the ${endDateFormatted}`;
+  let formattedRange = `From the ${startDay}`;
+  if (startMonth === endMonth && startYear === endYear) {
+    formattedRange += ` to the ${endDay} of ${startMonth} of ${startYear}`;
+  } else if (startYear === endYear) {
+    formattedRange += ` of ${startMonth} to the ${endDay} of ${endMonth} of ${startYear}`;
   } else {
-    formattedRange += ` to the ${endDateFormatted}`;
+    formattedRange += ` of ${startMonth} of ${startYear} to the ${endDay} of ${endMonth} of ${endYear}`;
   }
 
   return formattedRange;
 };
 
-import { Timestamp } from "firebase/firestore";
-
-export const timestampToDate = (timestamp: Timestamp): Date => {
-  return timestamp.toDate();
+const parseDateToComponents = (dateString: string) => {
+  const [year, month, day] = dateString.split("T")[0].split("-");
+  return { day, month, year };
 };
 
-export const dateToTimestamp = (date: Date): Timestamp => {
-  return Timestamp.fromDate(date);
+export const formatDate = (
+  startDateString: string,
+  endDateString: string
+): string => {
+  if (!startDateString || !endDateString) {
+    return "Invalid Date Range";
+  }
+
+  const {
+    day: startDay,
+    month: startMonth,
+    year: startYear,
+  } = parseDateToComponents(startDateString);
+
+  const {
+    day: endDay,
+    month: endMonth,
+    year: endYear,
+  } = parseDateToComponents(endDateString);
+
+  return `(${startDay}/${startMonth}/${startYear} - ${endDay}/${endMonth}/${endYear})`;
 };
