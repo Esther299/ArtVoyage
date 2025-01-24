@@ -19,7 +19,6 @@ interface ExhibitionContextType {
   ) => Promise<void>;
   deleteExhibition: (exhibitionId: string) => Promise<void>;
   loading: boolean;
-  error: string | null;
 }
 
 const ExhibitionContext = createContext<ExhibitionContextType | undefined>(
@@ -37,7 +36,6 @@ export const ExhibitionProvider: React.FC<{ children: React.ReactNode }> = ({
     deleteArtworkFromExhibition,
     deleteExhibition,
     loading,
-    error,
   } = useExhibitionData();
 
   return (
@@ -50,7 +48,6 @@ export const ExhibitionProvider: React.FC<{ children: React.ReactNode }> = ({
         deleteArtworkFromExhibition,
         deleteExhibition,
         loading,
-        error,
       }}
     >
       {children}
