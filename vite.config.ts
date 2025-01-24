@@ -9,4 +9,7 @@ export default defineConfig({
       "/.netlify/functions": "http://localhost:8888",
     },
   },
+  build: {
+    outDir: 'dist',
+  },
 });
