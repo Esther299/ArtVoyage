@@ -18,8 +18,6 @@ hosting/.cache
 /.firebase/
 /emulator-ui/
 
-# Firebase configuration
-src/firebase/firebase.ts
 
 # Firestore files
 firestore.rules
@@ -29,7 +27,7 @@ firestore.indexes.json
 node_modules
 
 # Environment files (local configs)
-/.env.*
+.env
 
 # Logs
 logs
