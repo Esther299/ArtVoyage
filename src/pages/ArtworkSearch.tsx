@@ -4,10 +4,11 @@ import { useMuseum } from "../context/MuseumContext";
 import { useQuery } from "../context/QueryContext";
 import { useType } from "../context/TypeContext";
 import { useArtworks } from "../hooks/useArtworks";
+import { useCollectionData } from "../hooks/useCollectionData";
 import SearchBar from "../components/SearchBar";
 import ArtworkList from "../components/ArtworkList";
 
-const MuseumPage: React.FC = () => {
+const SearchPage: React.FC = () => {
   const { museumName } = useParams();
   const { query, setQuery } = useQuery();
   const { type, setType } = useType();
@@ -22,17 +23,20 @@ const MuseumPage: React.FC = () => {
     date: "asc",
   });
 
+  const { collectionState, loadingCollection, searchCollection } =
+    useCollectionData(query, type);
+
   useEffect(() => {
     const museumDisplayMap: Record<string, string> = {
       met: "The Metropolitan Museum of Art",
       chicago: "The Art Institute of Chicago",
     };
-    setMuseumDisplay(
-      museumDisplayMap[museumName || ""] || "No museum selected"
-    );
+    if (museumName) {
+      setMuseumDisplay(museumDisplayMap[museumName] || "");
+    }
   }, [museumName]);
 
-  const { artworks, loading, error, setArtworks } = useArtworks(
+  const { loading, error, setArtworks } = useArtworks(
     museumName || "",
     query,
     type
@@ -44,12 +48,20 @@ const MuseumPage: React.FC = () => {
       setType("artist");
       setArtworks([]);
       setSelectedMuseum(museumName);
+    } else {
+      setArtworks([]);
     }
   }, [setQuery, setType, setArtworks, setSelectedMuseum, museumName]);
 
+  useEffect(() => {
+    searchCollection();
+  }, [query, type]);
+
   return (
     <div className="container my-5">
-      <h1 className="text-center mb-5 fs-1 py-5">{museumDisplay}</h1>
+      <h1 className="text-center mb-5 fs-1 py-5">
+        {museumDisplay || "Collection"}
+      </h1>
       <SearchBar
         sortOption={sortOption}
         setSortOption={setSortOption}
@@ -58,13 +70,9 @@ const MuseumPage: React.FC = () => {
       />
       {loading && <div className="text-center mt-3">Loading...</div>}
       {error && <div className="alert alert-danger mt-3">Error: {error}</div>}
-      <ArtworkList
-        artworks={artworks}
-        sortOption={sortOption}
-        sortDirection={sortDirection}
-      />
+      <ArtworkList sortOption={sortOption} sortDirection={sortDirection} />
     </div>
   );
 };
 
-export default MuseumPage;
+export default SearchPage;

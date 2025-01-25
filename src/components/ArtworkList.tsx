@@ -2,33 +2,40 @@ import React, { useState } from "react";
 import { Artwork } from "../types/types";
 import ArtworkCard from "./ArtworkCard";
 import Pagination from "./Pagination";
+import { useArtworksData } from "../context/ArtworksContext";
 
 interface ArtworksListProps {
-  artworks: Artwork[];
   sortOption: string;
   sortDirection: { [key: string]: "asc" | "desc" };
 }
 
-const ArtworkList: React.FC<ArtworksListProps> = ({ artworks, sortOption, sortDirection }) => {
+const ArtworkList: React.FC<ArtworksListProps> = ({ sortOption, sortDirection }) => {
+  const {artworks} = useArtworksData()
   const [currentPage, setCurrentPage] = useState(1);
   const artworksPerPage = 10;
 
+
   const sortedArtworks = [...artworks].sort((a, b) => {
     if (sortOption === "artist") {
+      const artistA = a.artist_title || "";
+      const artistB = b.artist_title || "";
       return sortDirection.artist === "asc"
-        ? a.artist_title.localeCompare(b.artist_title)
-        : b.artist_title.localeCompare(a.artist_title);
+        ? artistA.localeCompare(artistB)
+        : artistB.localeCompare(artistA);
     } else if (sortOption === "title") {
+      const titleA = a.title || "";
+      const titleB = b.title || "";
       return sortDirection.title === "asc"
-        ? a.title.localeCompare(b.title)
-        : b.title.localeCompare(a.title);
+        ? titleA.localeCompare(titleB)
+        : titleB.localeCompare(titleA);
     } else if (sortOption === "date") {
-      return sortDirection.date === "asc"
-        ? new Date(a.date).getTime() - new Date(b.date).getTime()
-        : new Date(b.date).getTime() - new Date(a.date).getTime();
+      const dateA = new Date(a.date).getTime();
+      const dateB = new Date(b.date).getTime();
+      return sortDirection.date === "asc" ? dateA - dateB : dateB - dateA;
     }
     return 0;
   });
+
 
 
   const indexOfLastArtwork = currentPage * artworksPerPage;
