@@ -13,7 +13,7 @@ import { Artwork } from "../types/types";
 import { useArtworksData } from "../context/ArtworksContext";
 import { useAuth } from "../context/AuthContext";
 
-export const useCollectionData = (queryText: string, type: string) => {
+export const useCollectionData = () => {
   const [collectionState, setCollectionState] = useState<Artwork[]>([]);
   const [loadingCollection, setLoadingCollection] = useState<boolean>(false);
 
@@ -37,6 +37,7 @@ export const useCollectionData = (queryText: string, type: string) => {
         const snapshot = await getDocs(userArtworksRef);
         const artworks = snapshot.docs.map((doc) => doc.data() as Artwork);
         setCollectionState(artworks);
+        setArtworks(artworks)
       } catch (error) {
         console.error("Error loading user collection:", error);
       } finally {
@@ -85,38 +86,10 @@ export const useCollectionData = (queryText: string, type: string) => {
     }
   };
 
-  const searchCollection = async () => {
-    if (!user) return;
-    if (!queryText) {
-      setArtworks([]);
-      return;
-    }
-
-    try {
-      setLoadingCollection(true);
-      const userArtworksRef = collection(
-        db,
-        "user_artworks",
-        user.uid,
-        "artworks"
-      );
-      const q = query(userArtworksRef, where(type, "==", queryText));
-      const snapshot = await getDocs(q);
-      const results = snapshot.docs.map((doc) => doc.data() as Artwork);
-      setCollectionState(results);
-      setArtworks(results);
-    } catch (error) {
-      console.error("Error searching user collection:", error);
-    } finally {
-      setLoadingCollection(false);
-    }
-  };
-
   return {
     collectionState,
     addToCollection,
     removeFromCollection,
-    searchCollection,
     loadingCollection,
   };
 };

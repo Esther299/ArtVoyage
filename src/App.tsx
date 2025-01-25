@@ -33,9 +33,8 @@ const AppContent: React.FC = () => {
                 <Route path="/search" element={<Search />} />
                 <Route path="/profile" element={<Profile user={user} />} />
                 <Route path="/artwork/:id" element={<ArtworkDetail />} />
-                <Route path="/museum/:museumName" element={<SearchPage />} />
-                <Route path="/museum/:museumName" element={<SearchPage />} />
-                <Route path="/collection/search" element={<SearchPage />} />
+                <Route path="/search/museum/:museumName" element={<SearchPage />} />
+                <Route path="/search/collection" element={<SearchPage />} />
                 <Route path="/exhibitions" element={<Exhibitions />} />
                 <Route
                   path="/exhibition/:exhibitionId"

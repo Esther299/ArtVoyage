@@ -1,14 +1,11 @@
 import React, { createContext, useContext } from "react";
 import { useCollectionData } from "../hooks/useCollectionData";
 import { Artwork } from "../types/types";
-import { useQuery } from "./QueryContext";
-import { useType } from "./TypeContext";
 
 interface CollectionContextType {
   collection: Artwork[];
   addToCollection: (artwork: Artwork) => Promise<void>;
   removeFromCollection: (id: number) => Promise<void>;
-  searchCollection: () => Promise<void>;
   loadingCollection: boolean;
 }
 
@@ -19,16 +16,13 @@ const CollectionContext = createContext<CollectionContextType | undefined>(
 export const CollectionProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-const { query } = useQuery();
-const { type } = useType();
 
   const {
     collectionState,
     addToCollection,
     removeFromCollection,
-    searchCollection,
     loadingCollection,
-  } = useCollectionData(query, type);
+  } = useCollectionData();
 
   return (
     <CollectionContext.Provider
@@ -36,7 +30,6 @@ const { type } = useType();
         collection: collectionState,
         addToCollection,
         removeFromCollection,
-        searchCollection,
         loadingCollection,
       }}
     >

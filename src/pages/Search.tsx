@@ -25,7 +25,7 @@ const Search: React.FC = () => {
           }}
         >
           <Link
-            to="/museum/met"
+            to="/search/museum/met"
             onClick={() => handleSetSelectedMuseum("met")}
             className="text-decoration-none"
           >
@@ -53,7 +53,7 @@ const Search: React.FC = () => {
           }}
         >
           <Link
-            to="/museum/chicago"
+            to="/search/museum/chicago"
             onClick={() => handleSetSelectedMuseum("chicago")}
             className="text-decoration-none"
           >
@@ -71,36 +71,23 @@ const Search: React.FC = () => {
             />
           </Link>
         </div>
-        <div
-          className="homecard mx-3 bg-light shadow-sm hover:bg-dark"
-          style={{
-            width: "22rem",
-            cursor: "pointer",
-            transition: "background-color 0.3s ease",
-          }}
+
+        <Link
+          to="/search/collection"
+          onClick={() => handleSetSelectedMuseum("")}
+          className="text-decoration-none"
         >
-          <Link
-            to="/collection/search"
-            onClick={() => {
-              setQuery("");
-              setSelectedMuseum("");
+          <div
+            className="homecard mx-3 bg-light shadow-sm hover:bg-dark"
+            style={{
+              width: "22rem",
+              cursor: "pointer",
+              transition: "background-color 0.3s ease",
             }}
-            className="text-decoration-none"
           >
-            <img
-              src="https://example.com/collection-icon.png"
-              className="card-img-top"
-              alt="Collection Search"
-              style={{
-                height: "200px",
-                width: "100%",
-                objectFit: "contain",
-                marginTop: "20px",
-                marginBottom: "20px",
-              }}
-            />
-          </Link>
-        </div>
+            <p>Collection</p>
+          </div>
+        </Link>
       </div>
     </div>
   );

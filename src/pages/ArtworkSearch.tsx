@@ -4,7 +4,6 @@ import { useMuseum } from "../context/MuseumContext";
 import { useQuery } from "../context/QueryContext";
 import { useType } from "../context/TypeContext";
 import { useArtworks } from "../hooks/useArtworks";
-import { useCollectionData } from "../hooks/useCollectionData";
 import SearchBar from "../components/SearchBar";
 import ArtworkList from "../components/ArtworkList";
 
@@ -23,39 +22,52 @@ const SearchPage: React.FC = () => {
     date: "asc",
   });
 
-  const { collectionState, loadingCollection, searchCollection } =
-    useCollectionData(query, type);
+  const isCollectionSearch =
+    museumName === undefined || museumName === "collection";
 
-  useEffect(() => {
-    const museumDisplayMap: Record<string, string> = {
-      met: "The Metropolitan Museum of Art",
-      chicago: "The Art Institute of Chicago",
-    };
-    if (museumName) {
-      setMuseumDisplay(museumDisplayMap[museumName] || "");
-    }
-  }, [museumName]);
-
-  const { loading, error, setArtworks } = useArtworks(
+  const { artworks, loading, error, setArtworks } = useArtworks(
     museumName || "",
     query,
-    type
+    type,
+    isCollectionSearch
   );
 
   useEffect(() => {
-    if (museumName) {
-      setQuery("");
-      setType("artist");
-      setArtworks([]);
-      setSelectedMuseum(museumName);
-    } else {
-      setArtworks([]);
-    }
-  }, [setQuery, setType, setArtworks, setSelectedMuseum, museumName]);
+    const getMuseumDisplayName = (museumKey: string | undefined): string => {
+      const museumDisplayMap: Record<string, string> = {
+        met: "The Metropolitan Museum of Art",
+        chicago: "The Art Institute of Chicago",
+      };
+      return museumKey
+        ? museumDisplayMap[museumKey] || "Unknown Museum"
+        : "Collection";
+    };
+
+    setMuseumDisplay(getMuseumDisplayName(museumName));
+  }, [museumName]);
 
   useEffect(() => {
-    searchCollection();
-  }, [query, type]);
+    setQuery("");
+    setType("artist_title");
+    setSortOption("artist");
+    setSortDirection({
+      artist: "asc",
+      title: "asc",
+      date: "asc",
+    });
+    setArtworks([]);
+    if (museumName) {
+      setSelectedMuseum(museumName);
+    }
+  }, [
+    setQuery,
+    setType,
+    setSortOption,
+    setSortDirection,
+    setArtworks,
+    setSelectedMuseum,
+    museumName,
+  ]);
 
   return (
     <div className="container my-5">
@@ -69,8 +81,15 @@ const SearchPage: React.FC = () => {
         setSortDirection={setSortDirection}
       />
       {loading && <div className="text-center mt-3">Loading...</div>}
-      {error && <div className="alert alert-danger mt-3">Error: {error}</div>}
-      <ArtworkList sortOption={sortOption} sortDirection={sortDirection} />
+      {error && (
+        <div className="alert alert-danger mt-3">
+          <p>Error: {error}</p>
+          <button onClick={() => setQuery(query)}>Retry</button>
+        </div>
+      )}
+      {!loading && !error && (
+        <ArtworkList sortOption={sortOption} sortDirection={sortDirection} />
+      )}
     </div>
   );
 };
