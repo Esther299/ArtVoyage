@@ -5,6 +5,7 @@ import { TypeProvider } from "./TypeContext";
 import { ExhibitionProvider } from "./ExhibitionContext";
 import { AuthProvider } from "./AuthContext";
 import { ArtworksProvider } from "./ArtworksContext";
+import { CollectionProvider } from "./CollectionContext";
 
 const AllProviders: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
   return (
@@ -13,7 +14,9 @@ const AllProviders: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
         <ArtworksProvider>
           <QueryProvider>
             <TypeProvider>
-              <ExhibitionProvider>{children}</ExhibitionProvider>
+              <CollectionProvider>
+                <ExhibitionProvider>{children}</ExhibitionProvider>
+              </CollectionProvider>
             </TypeProvider>
           </QueryProvider>
         </ArtworksProvider>

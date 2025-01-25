@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Artwork } from "../types/types";
 import { useExhibitions } from "../context/ExhibitionContext";
+import { useCollection } from "../context/CollectionContext";
 import { auth } from "../firebase/firebase";
 import ExhibitionForm from "./ExhibitionsForm";
 
@@ -12,6 +13,7 @@ interface ArtworkCardProps {
 const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
   const { exhibitions, addExhibition, addArtworkToExhibition, loading } =
     useExhibitions();
+    const { addToCollection } = useCollection(); 
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [selectedExhibitionId, setSelectedExhibitionId] = useState<
     string | null
@@ -94,6 +96,17 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
     setNewExhibitionEndDate(end);
   };
 
+  const handleAddToCollectionClick = async () => {
+    try {
+      console.log("clicked button")
+      await addToCollection(artwork);
+      setSuccessMessage("Artwork added to the collection successfully!");
+      setTimeout(() => setSuccessMessage(null), 5000);
+    } catch (err) {
+      setError("Error adding artwork to collection.");
+    }
+  };
+
   return (
     <div>
       {error && <div className="alert alert-danger">{error}</div>}
@@ -141,6 +154,24 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
         }}
       >
         Add to an Exhibition
+      </button>
+
+      <button
+        onClick={handleAddToCollectionClick}
+        disabled={isFormVisible}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className="btn mt-3"
+        style={{
+          backgroundColor: isHovered
+            ? "rgba(0, 123, 255, 0.9)"
+            : "rgba(0, 99, 204, 0.84)",
+          color: "white",
+          border: "none",
+          transition: "background-color 0.3s ease",
+        }}
+      >
+        Add to Collection
       </button>
 
       {isFormVisible && (
