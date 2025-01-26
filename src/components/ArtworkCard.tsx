@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Artwork } from "../types/types";
-import { useExhibitions } from "../context/ExhibitionContext";
 import { useCollection } from "../context/CollectionContext";
+import { useExhibitions } from "../context/ExhibitionContext";
 import { auth } from "../firebase/firebase";
 import ExhibitionForm from "./ExhibitionsForm";
 
@@ -11,9 +11,7 @@ interface ArtworkCardProps {
 }
 
 const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
-  const { exhibitions, addExhibition, addArtworkToExhibition, loading } =
-    useExhibitions();
-  const { addToCollection } = useCollection();
+  
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [selectedExhibitionId, setSelectedExhibitionId] = useState<
     string | null
@@ -29,6 +27,10 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
   const [isExhibitionHovered, setIsExhibitionHovered] = useState(false);
   const [isCollectionHovered, setIsCollectionHovered] = useState(false);
 
+const { exhibitions, addExhibition, addArtworkToExhibition, loading } =
+    useExhibitions();
+  const { loadingCollection, addToCollection } = useCollection();
+
   const handleAddToExhibitionClick = () => {
     setIsFormVisible(true);
     setSuccessMessage(null);
@@ -36,6 +38,11 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
 
   const handleFirestoreError = (err: any, fallbackMessage: string) => {
     console.error("Firestore Error:", err);
+    if (err.message.includes("permission-denied")) {
+      return "You do not have permission to perform this action.";
+    } else if (err.message.includes("network-request-failed")) {
+      return "Network error. Please check your internet connection.";
+    }
     return err.message || fallbackMessage;
   };
 
@@ -99,22 +106,20 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
 
   const handleAddToCollectionClick = async () => {
     try {
-      console.log("clicked button");
       await addToCollection(artwork);
       setSuccessMessage("Artwork added to the collection successfully!");
       setTimeout(() => setSuccessMessage(null), 5000);
-    } catch (err) {
-      setError("Error adding artwork to collection.");
+    } catch (err: any) {
+      const errorMessage = handleFirestoreError(
+        err,
+        "Error adding to collection. Please try again."
+      );
+      setError(errorMessage);
     }
   };
 
   return (
     <div className="artwork-card">
-      {error && (
-        <div className="alert alert-danger" role="alert">
-          {error}
-        </div>
-      )}
 
       <Link
         to={`/artwork/${artwork.id}`}
@@ -164,7 +169,7 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
 
         <button
           onClick={handleAddToCollectionClick}
-          disabled={isFormVisible}
+          disabled={isFormVisible || loadingCollection}
           onMouseEnter={() => setIsCollectionHovered(true)}
           onMouseLeave={() => setIsCollectionHovered(false)}
           className="btn btn-primary"
@@ -175,7 +180,7 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
           }}
           aria-label="Add artwork to your collection"
         >
-          Add to Collection
+          {loadingCollection ? "Adding..." : "Add to Collection"}
         </button>
       </div>
 

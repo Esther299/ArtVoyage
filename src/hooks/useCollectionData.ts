@@ -6,6 +6,8 @@ import {
   deleteDoc,
   doc,
   getDocs,
+  query,
+  where,
 } from "firebase/firestore";
 import { Artwork } from "../types/types";
 import { useArtworksData } from "../context/ArtworksContext";
@@ -27,22 +29,26 @@ export const useCollectionData = () => {
     const loadCollection = async () => {
       if (!user) {
         setLoadingCollection(false);
-        return;
+        throw new Error("User not authenticated.");
       }
       setLoadingCollection(true);
       try {
-        const userArtworksRef = collection(
-          db,
-          "user_artworks",
-          user.uid,
+        const userCollectionRef = doc(db, "collections", user.uid);
+
+        const artworksSubcollectionRef = collection(
+          userCollectionRef,
           "artworks"
         );
-        const snapshot = await getDocs(userArtworksRef);
-        const artworks = snapshot.docs.map((doc) => doc.data() as Artwork);
+
+        const snapshot = await getDocs(artworksSubcollectionRef);
+        const artworks = snapshot.docs.map(
+          (doc) => ({ ...doc.data(), firestoreId: doc.id } as Artwork)
+        );
+
         setCollectionState(artworks);
-        setArtworks(artworks)
+        setArtworks(artworks);
       } catch (error) {
-        console.error("Error loading user collection:", error);
+        handleFirestoreError(error, "Error loading user collection.");
       } finally {
         setLoadingCollection(false);
       }
@@ -54,47 +60,68 @@ export const useCollectionData = () => {
   }, [user, authLoading]);
 
   const addToCollection = async (artwork: Artwork) => {
-    if (!user) return;
-    const isArtworkExists = collectionState.some(
-      (existingArtwork) => existingArtwork.id === artwork.id
-    );
-
-    if (isArtworkExists) {
-      console.log("This artwork is already in your collection.");
-      return;
-    }
+    if (!user) throw new Error("User not authenticated.");
+    setLoadingCollection(true);
 
     try {
-      const userArtworksRef = collection(
-        db,
-        "user_artworks",
-        user.uid,
+      const isArtworkExists = collectionState.some(
+        (existingArtwork) => existingArtwork.id === artwork.id
+      );
+
+      if (isArtworkExists) {
+        throw new Error("This artwork is already in your collection.");
+      }
+
+      const userCollectionRef = doc(db, "collections", user.uid);
+
+      const artworksSubcollectionRef = collection(
+        userCollectionRef,
         "artworks"
       );
-      await addDoc(userArtworksRef, artwork);
+
+      await addDoc(artworksSubcollectionRef, artwork);
+
       setCollectionState((prevState) => [...prevState, artwork]);
-      console.log("Artwork added to collection");
     } catch (error) {
-      console.error("Error adding artwork to user collection:", error);
+      handleFirestoreError(error, "Error adding artwork to collection.");
+    } finally {
+      setLoadingCollection(false);
     }
   };
 
   const removeFromCollection = async (id: number) => {
-    if (!user) return;
+    if (!user) throw new Error("User not authenticated.");
+    setLoadingCollection(true);
+
     try {
-      const artworkRef = doc(
-        db,
-        "user_artworks",
-        user.uid,
-        "artworks",
-        id.toString()
+      const userCollectionRef = doc(db, "collections", user.uid);
+
+      const artworksSubcollectionRef = collection(
+        userCollectionRef,
+        "artworks"
       );
+
+      const q = query(artworksSubcollectionRef, where("id", "==", id));
+
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        throw new Error("Artwork not found in your collection.");
+      }
+
+      const docId = querySnapshot.docs[0].id;
+
+      const artworkRef = doc(db, "collections", user.uid, "artworks", docId);
+
       await deleteDoc(artworkRef);
+
       setCollectionState((prevState) =>
         prevState.filter((artwork) => artwork.id !== id)
       );
     } catch (error) {
-      console.error("Error removing artwork from user collection:", error);
+      handleFirestoreError(error, "Error removing artwork from collection.");
+    } finally {
+      setLoadingCollection(false);
     }
   };
 

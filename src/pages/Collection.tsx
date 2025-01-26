@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import DeleteModal from "../components/DeleteModal";
 import { useCollectionData } from "../hooks/useCollectionData";
@@ -13,6 +13,12 @@ const Collection = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [entityType, setEntityType] = useState<"artwork" | null>(null);
   const [entityId, setEntityId] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleFirestoreError = (err: any, fallbackMessage: string) => {
+    console.error("Firestore Error:", err);
+    return err.message || fallbackMessage;
+  };
 
   const handleShowDeleteModal = (entityType: "artwork", id: number) => {
     setEntityType(entityType);
@@ -28,7 +34,15 @@ const Collection = () => {
 
   const handleDelete = async (id: number | string) => {
     if (typeof id === "number") {
-      await removeFromCollection(id);
+      try {
+        await removeFromCollection(id);
+      } catch (error) {
+        const errorMessage = handleFirestoreError(
+          error,
+          "Failed to remove from collection"
+        );
+        setError(errorMessage);
+      }
     }
   };
 
@@ -39,6 +53,7 @@ const Collection = () => {
   return (
     <div className="container my-4">
       <h1 className="text-center mb-4">My Collection</h1>
+      {error && <div className="alert alert-danger text-center">{error}</div>}
       {artworks.length === 0 ? (
         <p className="text-center">Your collection is empty.</p>
       ) : (
@@ -129,7 +144,7 @@ const Collection = () => {
         handleClose={handleCloseDeleteModal}
         handleDelete={handleDelete}
         entityType={"artwork"}
-        entityId={entityId?.toString() ?? ""}
+        entityId={entityId}
       />
     </div>
   );
