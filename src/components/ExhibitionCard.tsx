@@ -40,14 +40,6 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
     exhibition.endDate
   );
 
-  const handleMuseumSelection = (source: string) => {
-    if (source === "The Metropolitan Museum of Art") {
-      setSelectedMuseum("met");
-    } else {
-      setSelectedMuseum("chicago");
-    }
-  };
-
   const handleShowDeleteModal = (
     entityType: "artwork" | "exhibition",
     entityId: string | number
@@ -129,6 +121,7 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
                   to={`/artwork/${artwork.id}`}
                   className="text-decoration-none text-reset d-block h-100"
                   aria-label={`View details for artwork titled "${artwork.title}"`}
+                  onClick={() => setSelectedMuseum(artwork.source)}
                 >
                   <h3
                     className="mb-3 fs-1 text-truncate"

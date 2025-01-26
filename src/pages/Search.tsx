@@ -25,14 +25,14 @@ const Search: React.FC = () => {
           }}
         >
           <Link
-            to="/search/museum/met"
-            onClick={() => handleSetSelectedMuseum("met")}
+            to="/search/museum/cleveland"
+            onClick={() => handleSetSelectedMuseum("cleveland")}
             className="text-decoration-none"
           >
             <img
-              src="https://upload.wikimedia.org/wikipedia/commons/7/73/The_Metropolitan_Museum_of_Art_Logo.svg"
+              src="https://upload.wikimedia.org/wikipedia/commons/7/74/Logo_Cleveland_Museum_of_Art.svg"
               className="card-img-top"
-              alt="Metropolitan Museum of Art"
+              alt="Cleveland Museum of Art "
               style={{
                 height: "200px",
                 width: "100%",

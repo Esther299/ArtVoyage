@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import DeleteModal from "../components/DeleteModal";
 import { useCollectionData } from "../hooks/useCollectionData";
 import fallbackImage from "../assets/imageUrlNotAvailable.jpg";
+import { useMuseum } from "../context/MuseumContext";
 
 const Collection = () => {
   const {
@@ -15,6 +16,7 @@ const Collection = () => {
   const [entityType, setEntityType] = useState<"artwork" | null>(null);
   const [entityId, setEntityId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const {setSelectedMuseum} = useMuseum()
 
   const handleFirestoreError = (err: any, fallbackMessage: string) => {
     console.error("Firestore Error:", err);
@@ -93,6 +95,7 @@ const Collection = () => {
                   to={`/artwork/${artwork.id}`}
                   className="text-decoration-none text-reset d-block h-100"
                   aria-label={`View details for artwork titled "${artwork.title}"`}
+                  onClick={() => setSelectedMuseum(artwork.source)}
                 >
                   <h3
                     className="mb-3 fs-1 text-truncate"

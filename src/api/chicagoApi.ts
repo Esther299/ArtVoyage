@@ -51,7 +51,6 @@ export const fetchChicagoArtworks = async (
     const artworks: Artwork[] = artworkData.map((response) => {
       
       const itemData = response.data.data;
-      console.log(itemData)
       const imageUrl = itemData.image_id
         ? `${IIIF_BASE_URL}/${itemData.image_id}/full/843,/0/default.jpg`
         : "";

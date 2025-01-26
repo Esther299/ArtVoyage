@@ -35,7 +35,7 @@ const SearchPage: React.FC = () => {
   useEffect(() => {
     const getMuseumDisplayName = (museumKey: string | undefined): string => {
       const museumDisplayMap: Record<string, string> = {
-        met: "The Metropolitan Museum of Art",
+        cleveland: "The Cleveland Museum of Art",
         chicago: "The Art Institute of Chicago",
       };
       return museumKey
