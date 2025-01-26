@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { fetchSingleArtworkMetApi } from "../api/singleArtworkMetApi";
+import { fetchSingleArtworkClevelandApi } from "../api/singleArtworkClevelandApi";
 import { fetchSingleArtworkChicagoDetails } from "../api/singleArtworkChicagoApi";
 import { Artwork } from "../types/types";
 
@@ -21,7 +21,7 @@ export const useSingleArtwork = (museum: string, id: string) => {
       try {
         const artworkData =
           museum === "met"
-            ? await fetchSingleArtworkMetApi(id)
+            ? await fetchSingleArtworkClevelandApi(id)
             : await fetchSingleArtworkChicagoDetails(id);
 
         setArtwork(artworkData[0]);

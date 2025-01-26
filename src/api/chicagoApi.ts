@@ -41,7 +41,7 @@ export const fetchChicagoArtworks = async (
       axios.get(`https://api.artic.edu/api/v1/artworks/${item.id}`, {
         params: {
           fields:
-            "id,title,artist_display,artist_title,medium_display,image_id,date_display,description",
+            "id,title,artist_display,artist_title,medium_display,image_id,date_display,description,copyright_notice",
         },
       })
     );
@@ -49,7 +49,9 @@ export const fetchChicagoArtworks = async (
     const artworkData = await Promise.all(fetchArtworkData);
 
     const artworks: Artwork[] = artworkData.map((response) => {
+      
       const itemData = response.data.data;
+      console.log(itemData)
       const imageUrl = itemData.image_id
         ? `${IIIF_BASE_URL}/${itemData.image_id}/full/843,/0/default.jpg`
         : "";
@@ -65,11 +67,13 @@ export const fetchChicagoArtworks = async (
         date: itemData.date_display,
         medium_display: itemData.medium_display,
         imageUrl: imageUrl || "",
-        source: "The Chicago Art Institute",
+        source: "chicago",
         objectUrl: "https://www.artic.edu/collection",
         description: itemData.description,
+        copyright: itemData.copyright_notice || "The Chicago Art Institute",
       };
     });
+    
 
     return artworks;
   } catch (error: any) {

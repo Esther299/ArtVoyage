@@ -120,7 +120,6 @@ const { exhibitions, addExhibition, addArtworkToExhibition, loading } =
 
   return (
     <div className="artwork-card">
-
       <Link
         to={`/artwork/${artwork.id}`}
         className="text-decoration-none text-reset d-block h-100"
@@ -145,9 +144,8 @@ const { exhibitions, addExhibition, addArtworkToExhibition, loading } =
           Created by <strong>{artwork.artist_title}</strong> in {artwork.date}
         </p>
         <p className="mb-2">{artwork.medium_display}</p>
-
         <p className="text-secondary small text-center mt-2">
-          <span className="fw-bold">Source:</span> {artwork.source}
+          <span className="fw-bold">Source:</span> {artwork.copyright}
         </p>
       </Link>
 
