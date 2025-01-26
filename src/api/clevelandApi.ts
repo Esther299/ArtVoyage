@@ -43,12 +43,13 @@ const fetchArtworkDetails = async (
     if (response.data && response.data.data) {
       const artwork = response.data.data;
 
-      console.log(artwork)
       const artistBio =
         artwork.creators[0]?.description.match(/\(([^)]+)\)/)?.[1] || "";
       const artistName =
         artwork.creators[0]?.description.match(/^([^\(]+)/)?.[1] ||
         "Unknown Artist";
+        const cleanedDate =
+          artwork.creation_date?.replace(/\b(c\.|circa)\s?/gi, "") || "";
        let image = "";
        if (typeof artwork.images === "string") {
          image = artwork.images;
@@ -61,7 +62,7 @@ const fetchArtworkDetails = async (
         title: artwork.title,
         artist_title: artistName,
         artist_bio: artistBio,
-        date: artwork.creation_date,
+        date: cleanedDate,
         medium_display: artwork.type + " " + artwork.technique,
         imageUrl: image,
         source: "cleveland",
@@ -99,13 +100,11 @@ export const fetchClevelandArtworks = async (
       const response = await axios.get<SearchResponse>(
         `${API_URL}?title=${encodedQuery}`
       );
-      console.log(`${API_URL}?title=${encodedQuery}`);
       searchData = response.data.data;
     } else if (queryParam === "artist") {
       const response = await axios.get<CreatorResponse>(
         `${CREATOR_URL}?name=${encodedQuery}`
       );
-      console.log(`${CREATOR_URL}?name=${encodedQuery}`);
       searchData = response.data.data[0]?.artworks || [];
     }
     if (searchData) {

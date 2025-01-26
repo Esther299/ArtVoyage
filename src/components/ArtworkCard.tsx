@@ -117,7 +117,6 @@ const { exhibitions, addExhibition, addArtworkToExhibition, loading } =
       setError(errorMessage);
     }
   };
-  // console.log(artwork)
 
   return (
     <div className="artwork-card">

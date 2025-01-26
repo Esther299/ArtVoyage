@@ -49,7 +49,9 @@ export const fetchChicagoArtworks = async (
     const artworkData = await Promise.all(fetchArtworkData);
 
     const artworks: Artwork[] = artworkData.map((response) => {
+      
       const itemData = response.data.data;
+      console.log(itemData)
       const imageUrl = itemData.image_id
         ? `${IIIF_BASE_URL}/${itemData.image_id}/full/843,/0/default.jpg`
         : "";
@@ -71,6 +73,7 @@ export const fetchChicagoArtworks = async (
         copyright: itemData.copyright_notice || "The Chicago Art Institute",
       };
     });
+    
 
     return artworks;
   } catch (error: any) {

@@ -17,7 +17,8 @@ export const fetchSingleArtworkClevelandApi = async (
       const artistName =
         itemData.creators[0]?.description.match(/^([^\(]+)/)?.[1] ||
         "Unknown Artist";
-        console.log(itemData)
+      const cleanedDate =
+        itemData.creation_date?.replace(/\b(c\.|circa)\s?/gi, "") || "";
 
       return [
         {
@@ -25,7 +26,7 @@ export const fetchSingleArtworkClevelandApi = async (
           title: itemData.title,
           artist_title: artistName,
           artist_bio: artistBio,
-          date: itemData.creation_date,
+          date: cleanedDate,
           medium_display: itemData.type + " " + itemData.technique,
           imageUrl: itemData.images?.[0]?.web?.url || "",
           source: "cleveland",
