@@ -5,6 +5,7 @@ import { useMuseum } from "../context/MuseumContext";
 import { formatExhibitionDateRange } from "../utils/dateFormatting";
 import DeleteModal from "./DeleteModal";
 import EditExhibitionModal from "../components/EditExhibitionModal";
+import fallbackImage from "../assets/imageUrlNotAvailable.jpg";
 
 interface ExhibitionCardProps {
   exhibition: Exhibition;
@@ -136,9 +137,13 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
                     {artwork.title}
                   </h3>
 
-                  {artwork.imageUrl && (
+                  {(artwork.imageUrl || fallbackImage) && (
                     <img
-                      src={artwork.imageUrl}
+                      src={
+                        artwork.imageUrl && artwork.imageUrl.trim() !== ""
+                          ? artwork.imageUrl
+                          : fallbackImage
+                      }
                       alt={`Artwork titled "${artwork.title}"`}
                       width="400"
                       height="300"

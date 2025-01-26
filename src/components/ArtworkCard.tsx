@@ -5,6 +5,7 @@ import { useCollection } from "../context/CollectionContext";
 import { useExhibitions } from "../context/ExhibitionContext";
 import { auth } from "../firebase/firebase";
 import ExhibitionForm from "./ExhibitionsForm";
+import fallbackImage from "../assets/imageUrlNotAvailable.jpg"
 
 interface ArtworkCardProps {
   artwork: Artwork;
@@ -129,9 +130,13 @@ const { exhibitions, addExhibition, addArtworkToExhibition, loading } =
           {artwork.title}
         </h3>
 
-        {artwork.imageUrl && (
+        {(artwork.imageUrl || fallbackImage) && (
           <img
-            src={artwork.imageUrl}
+            src={
+              artwork.imageUrl && artwork.imageUrl.trim() !== ""
+                ? artwork.imageUrl
+                : fallbackImage
+            }
             alt={`Artwork titled "${artwork.title}"`}
             width="400"
             height="300"

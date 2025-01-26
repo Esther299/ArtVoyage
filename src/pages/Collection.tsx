@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import DeleteModal from "../components/DeleteModal";
 import { useCollectionData } from "../hooks/useCollectionData";
+import fallbackImage from "../assets/imageUrlNotAvailable.jpg";
 
 const Collection = () => {
   const {
@@ -100,9 +101,13 @@ const Collection = () => {
                     {artwork.title}
                   </h3>
 
-                  {artwork.imageUrl && (
+                  {(artwork.imageUrl || fallbackImage) && (
                     <img
-                      src={artwork.imageUrl}
+                      src={
+                        artwork.imageUrl && artwork.imageUrl.trim() !== ""
+                          ? artwork.imageUrl
+                          : fallbackImage
+                      }
                       alt={`Artwork titled "${artwork.title}"`}
                       width="400"
                       height="300"
