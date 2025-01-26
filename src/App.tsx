@@ -19,7 +19,15 @@ import Collection from "./pages/Collection";
 import { useAuth } from "./context/AuthContext";
 
 const AppContent: React.FC = () => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="vh-100 d-flex justify-content-center align-items-center">
+        <div>Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <>

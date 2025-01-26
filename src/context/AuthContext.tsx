@@ -30,29 +30,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        try {
-          const userRef = doc(db, "users", user.uid);
-          const docSnap = await getDoc(userRef);
-          if (!docSnap.exists()) {
-            await setDoc(userRef, {
-              uid: user.uid,
-              email: user.email,
-            });
-          }
-          setUser(user);
-        } catch (error) {
-          console.error("Error fetching user data:", error);
+    const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
+      try {
+        if (currentUser) {
+          await ensureUserInFirestore(currentUser);
+          setUser(currentUser);
+        } else {
+          setUser(null);
         }
-      } else {
-        setUser(null);
+      } catch (error) {
+        console.error("Error during auth state change:", error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     });
 
-    return unsubscribe;
+    return () => unsubscribe();
   }, []);
+
+  const ensureUserInFirestore = async (user: User) => {
+    const userRef = doc(db, "users", user.uid);
+    const userDoc = await getDoc(userRef);
+
+    if (!userDoc.exists()) {
+      await setDoc(userRef, {
+        uid: user.uid,
+        email: user.email,
+      });
+    }
+  };
 
   const register = async (
     email: string,
@@ -67,17 +73,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         email,
         password
       );
-      const user = userCredential.user;
+      const newUser = userCredential.user;
 
-      const userRef = doc(db, "users", user.uid);
+      const userRef = doc(db, "users", newUser.uid);
       await setDoc(userRef, {
-        uid: user.uid,
-        email: user.email,
+        uid: newUser.uid,
+        email: newUser.email,
         firstName,
         lastName,
       });
 
-      setUser(user);
+      setUser(newUser);
     } catch (error) {
       console.error("Error during registration:", error);
       throw error;
@@ -94,18 +100,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         email,
         password
       );
-      const user = userCredential.user;
+      const loggedInUser = userCredential.user;
 
-      const userRef = doc(db, "users", user.uid);
-      const docSnap = await getDoc(userRef);
-      if (!docSnap.exists()) {
-        await setDoc(userRef, {
-          uid: user.uid,
-          email: user.email,
-        });
-      }
-
-      setUser(user);
+      await ensureUserInFirestore(loggedInUser);
+      setUser(loggedInUser);
     } catch (error) {
       console.error("Error during login:", error);
       throw error;
@@ -121,6 +119,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setUser(null);
     } catch (error) {
       console.error("Error signing out:", error);
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -128,7 +127,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <AuthContext.Provider value={{ user, register, login, logout, loading }}>
-      {children}
+      {!loading && children}
     </AuthContext.Provider>
   );
 };

@@ -64,7 +64,7 @@ const NavBar: React.FC = () => {
               </NavLink>
             </li>
             {user ? (
-              <li className="nav-item">
+              <li className="nav-item ms-3">
                 <button
                   className="btn btn-outline-light"
                   onClick={handleSignOut}
@@ -74,7 +74,7 @@ const NavBar: React.FC = () => {
                 </button>
               </li>
             ) : (
-              <li className="nav-item">
+              <li className="nav-item ms-3">
                 <NavLink className="nav-link" to="/auth">
                   Login/Register
                 </NavLink>
