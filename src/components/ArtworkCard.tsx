@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Artwork } from "../types/types";
+import { useCollection } from "../context/CollectionContext";
 import { useExhibitions } from "../context/ExhibitionContext";
 import { auth } from "../firebase/firebase";
 import ExhibitionForm from "./ExhibitionsForm";
@@ -10,8 +11,7 @@ interface ArtworkCardProps {
 }
 
 const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
-  const { exhibitions, addExhibition, addArtworkToExhibition, loading } =
-    useExhibitions();
+  
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [selectedExhibitionId, setSelectedExhibitionId] = useState<
     string | null
@@ -24,7 +24,12 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
   );
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [isHovered, setIsHovered] = useState(false);
+  const [isExhibitionHovered, setIsExhibitionHovered] = useState(false);
+  const [isCollectionHovered, setIsCollectionHovered] = useState(false);
+
+const { exhibitions, addExhibition, addArtworkToExhibition, loading } =
+    useExhibitions();
+  const { loadingCollection, addToCollection } = useCollection();
 
   const handleAddToExhibitionClick = () => {
     setIsFormVisible(true);
@@ -33,6 +38,11 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
 
   const handleFirestoreError = (err: any, fallbackMessage: string) => {
     console.error("Firestore Error:", err);
+    if (err.message.includes("permission-denied")) {
+      return "You do not have permission to perform this action.";
+    } else if (err.message.includes("network-request-failed")) {
+      return "Network error. Please check your internet connection.";
+    }
     return err.message || fallbackMessage;
   };
 
@@ -94,19 +104,32 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
     setNewExhibitionEndDate(end);
   };
 
+  const handleAddToCollectionClick = async () => {
+    try {
+      await addToCollection(artwork);
+      setSuccessMessage("Artwork added to the collection successfully!");
+      setTimeout(() => setSuccessMessage(null), 5000);
+    } catch (err: any) {
+      const errorMessage = handleFirestoreError(
+        err,
+        "Error adding to collection. Please try again."
+      );
+      setError(errorMessage);
+    }
+  };
+
   return (
-    <div>
-      {error && <div className="alert alert-danger">{error}</div>}
+    <div className="artwork-card">
+
       <Link
         to={`/artwork/${artwork.id}`}
         className="text-decoration-none text-reset d-block h-100"
-        style={{
-          textDecoration: "none",
-        }}
+        aria-label={`View details for artwork titled "${artwork.title}"`}
       >
         <h3 className="mb-3 fs-1 text-truncate" style={{ maxWidth: "100%" }}>
           {artwork.title}
         </h3>
+
         {artwork.imageUrl && (
           <img
             src={artwork.imageUrl}
@@ -114,34 +137,52 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
             width="400"
             height="300"
             className="img-fluid my-3"
-            style={{
-              display: "block",
-              margin: "0 auto",
-            }}
+            style={{ display: "block", margin: "0 auto", borderRadius: "8px" }}
           />
         )}
+
         <p className="text-muted fst-italic mb-1 fs-5">
           Created by <strong>{artwork.artist_title}</strong> in {artwork.date}
         </p>
         <p className="mb-2">{artwork.medium_display}</p>
+
+        <p className="text-secondary small text-center mt-2">
+          <span className="fw-bold">Source:</span> {artwork.source}
+        </p>
       </Link>
 
-      <button
-        onClick={handleAddToExhibitionClick}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        className="btn"
-        style={{
-          backgroundColor: isHovered
-            ? "rgba(32, 43, 163, 0.9)"
-            : "rgba(32, 18, 74, 0.84)",
-          color: "white",
-          border: "none",
-          transition: "background-color 0.3s ease",
-        }}
-      >
-        Add to an Exhibition
-      </button>
+      <div className="d-flex justify-content-center gap-3 mt-4">
+        <button
+          onClick={handleAddToExhibitionClick}
+          onMouseEnter={() => setIsExhibitionHovered(true)}
+          onMouseLeave={() => setIsExhibitionHovered(false)}
+          className="btn btn-primary"
+          style={{
+            backgroundColor: isExhibitionHovered
+              ? "rgba(32, 43, 163, 0.9)"
+              : "rgba(32, 18, 74, 0.84)",
+          }}
+          aria-label="Add artwork to an exhibition"
+        >
+          Add to an Exhibition
+        </button>
+
+        <button
+          onClick={handleAddToCollectionClick}
+          disabled={isFormVisible || loadingCollection}
+          onMouseEnter={() => setIsCollectionHovered(true)}
+          onMouseLeave={() => setIsCollectionHovered(false)}
+          className="btn btn-primary"
+          style={{
+            backgroundColor: isCollectionHovered
+              ? "rgba(32, 43, 163, 0.9)"
+              : "rgba(32, 18, 74, 0.84)",
+          }}
+          aria-label="Add artwork to your collection"
+        >
+          {loadingCollection ? "Adding..." : "Add to Collection"}
+        </button>
+      </div>
 
       {isFormVisible && (
         <ExhibitionForm

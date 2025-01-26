@@ -29,7 +29,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
       return;
     }
     setQuery(artistQuery);
-    setType("artist");
+    setType("artist_title");
     setErrorMessage(null);
     setArtistQuery("");
   };

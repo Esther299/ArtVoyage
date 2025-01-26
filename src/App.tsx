@@ -6,15 +6,17 @@ import {
   Navigate,
 } from "react-router-dom";
 import AllProviders from "./context/AllProviders";
-import { NavBar } from "./components/NavBar";
+import NavBar from "./components/NavBar";
 import Home from "./pages/Home";
+import Search from "./pages/Search";
 import Profile from "./pages/Profile";
-import MuseumSearch from "./pages/MuseumSearch";
+import SearchPage from "./pages/ArtworkSearch";
 import Exhibitions from "./pages/Exhibitions";
 import Auth from "./pages/Auth";
-import { useAuth } from "./context/AuthContext";
 import ArtworkDetail from "./pages/ArtworkDetail";
 import ExhibitionDetail from "./pages/ExhibitionDetail";
+import Collection from "./pages/Collection";
+import { useAuth } from "./context/AuthContext";
 
 const AppContent: React.FC = () => {
   const { user } = useAuth();
@@ -29,10 +31,16 @@ const AppContent: React.FC = () => {
             {user ? (
               <>
                 <Route path="/home" element={<Home />} />
+                <Route path="/search" element={<Search />} />
                 <Route path="/profile" element={<Profile user={user} />} />
                 <Route path="/artwork/:id" element={<ArtworkDetail />} />
-                <Route path="/museum/:museumName" element={<MuseumSearch />} />
+                <Route
+                  path="/search/museum/:museumName"
+                  element={<SearchPage />}
+                />
+                <Route path="/search/collection" element={<SearchPage />} />
                 <Route path="/exhibitions" element={<Exhibitions />} />
+                <Route path="/collection" element={<Collection />} />
                 <Route
                   path="/exhibition/:exhibitionId"
                   element={<ExhibitionDetail />}

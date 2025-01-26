@@ -72,15 +72,11 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
     setEditingExhibition(null);
   };
 
-  const handleDelete = () => {
-    if (
-      entityType === "artwork" &&
-      typeof entityId === "number" &&
-      entityId !== null
-    ) {
-      handleDeleteArtwork(exhibition.id, entityId);
-    } else if (entityType === "exhibition" && typeof entityId === "string") {
-      handleDeleteExhibition(entityId);
+  const handleDelete = async (id: string | number) => {
+    if (entityType === "artwork" && typeof id === "number") {
+      handleDeleteArtwork(exhibition.id, id);
+    } else if (entityType === "exhibition" && typeof id === "string") {
+      handleDeleteExhibition(id);
     }
   };
 

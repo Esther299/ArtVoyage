@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
-export const NavBar: React.FC = () => {
+const NavBar: React.FC = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -44,18 +44,23 @@ export const NavBar: React.FC = () => {
               </NavLink>
             </li>
             <li className="nav-item">
-              <NavLink className="nav-link" to="/profile">
-                Profile
-              </NavLink>
-            </li>
-            <li className="nav-item">
               <NavLink className="nav-link" to="/search">
                 Search
               </NavLink>
             </li>
             <li className="nav-item">
+              <NavLink className="nav-link" to="/collection">
+                My Collection
+              </NavLink>
+            </li>
+            <li className="nav-item">
               <NavLink className="nav-link" to="/exhibitions">
                 My Exhibitions
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/profile">
+                Profile
               </NavLink>
             </li>
             {user ? (
@@ -80,5 +85,6 @@ export const NavBar: React.FC = () => {
       </div>
     </nav>
   );
-
 };
+
+export default NavBar;
