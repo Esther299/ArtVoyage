@@ -5,6 +5,7 @@ import { useMuseum } from "../context/MuseumContext";
 import { formatExhibitionDateRange } from "../utils/dateFormatting";
 import DeleteModal from "./DeleteModal";
 import EditExhibitionModal from "../components/EditExhibitionModal";
+import fallbackImage from "../assets/imageUrlNotAvailable.jpg";
 
 interface ExhibitionCardProps {
   exhibition: Exhibition;
@@ -38,14 +39,6 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
     exhibition.startDate,
     exhibition.endDate
   );
-
-  const handleMuseumSelection = (source: string) => {
-    if (source === "The Metropolitan Museum of Art") {
-      setSelectedMuseum("met");
-    } else {
-      setSelectedMuseum("chicago");
-    }
-  };
 
   const handleShowDeleteModal = (
     entityType: "artwork" | "exhibition",
@@ -128,6 +121,7 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
                   to={`/artwork/${artwork.id}`}
                   className="text-decoration-none text-reset d-block h-100"
                   aria-label={`View details for artwork titled "${artwork.title}"`}
+                  onClick={() => setSelectedMuseum(artwork.source)}
                 >
                   <h3
                     className="mb-3 fs-1 text-truncate"
@@ -136,9 +130,13 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
                     {artwork.title}
                   </h3>
 
-                  {artwork.imageUrl && (
+                  {(artwork.imageUrl || fallbackImage) && (
                     <img
-                      src={artwork.imageUrl}
+                      src={
+                        artwork.imageUrl && artwork.imageUrl.trim() !== ""
+                          ? artwork.imageUrl
+                          : fallbackImage
+                      }
                       alt={`Artwork titled "${artwork.title}"`}
                       width="400"
                       height="300"

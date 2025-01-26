@@ -3,15 +3,16 @@ import { Link } from "react-router-dom";
 import { Artwork } from "../types/types";
 import { useCollection } from "../context/CollectionContext";
 import { useExhibitions } from "../context/ExhibitionContext";
+import { useMuseum } from "../context/MuseumContext";
 import { auth } from "../firebase/firebase";
 import ExhibitionForm from "./ExhibitionsForm";
+import fallbackImage from "../assets/imageUrlNotAvailable.jpg";
 
 interface ArtworkCardProps {
   artwork: Artwork;
 }
 
 const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
-  
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [selectedExhibitionId, setSelectedExhibitionId] = useState<
     string | null
@@ -27,9 +28,10 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
   const [isExhibitionHovered, setIsExhibitionHovered] = useState(false);
   const [isCollectionHovered, setIsCollectionHovered] = useState(false);
 
-const { exhibitions, addExhibition, addArtworkToExhibition, loading } =
+  const { exhibitions, addExhibition, addArtworkToExhibition, loading } =
     useExhibitions();
   const { loadingCollection, addToCollection } = useCollection();
+  const { setSelectedMuseum } = useMuseum();
 
   const handleAddToExhibitionClick = () => {
     setIsFormVisible(true);
@@ -124,14 +126,19 @@ const { exhibitions, addExhibition, addArtworkToExhibition, loading } =
         to={`/artwork/${artwork.id}`}
         className="text-decoration-none text-reset d-block h-100"
         aria-label={`View details for artwork titled "${artwork.title}"`}
+        onClick={() => setSelectedMuseum(artwork.source)}
       >
         <h3 className="mb-3 fs-1 text-truncate" style={{ maxWidth: "100%" }}>
           {artwork.title}
         </h3>
 
-        {artwork.imageUrl && (
+        {(artwork.imageUrl || fallbackImage) && (
           <img
-            src={artwork.imageUrl}
+            src={
+              artwork.imageUrl && artwork.imageUrl.trim() !== ""
+                ? artwork.imageUrl
+                : fallbackImage
+            }
             alt={`Artwork titled "${artwork.title}"`}
             width="400"
             height="300"

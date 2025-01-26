@@ -10,7 +10,7 @@ const MuseumContext = createContext<MuseumContextType | undefined>(undefined);
 export const MuseumProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [selectedMuseum, setSelectedMuseum] = useState<string>("met");
+  const [selectedMuseum, setSelectedMuseum] = useState<string>("cleveland");
 
   return (
     <MuseumContext.Provider value={{ selectedMuseum, setSelectedMuseum }}>

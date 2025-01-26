@@ -20,7 +20,7 @@ export const useSingleArtwork = (museum: string, id: string) => {
 
       try {
         const artworkData =
-          museum === "met"
+          museum === "cleveland"
             ? await fetchSingleArtworkClevelandApi(id)
             : await fetchSingleArtworkChicagoDetails(id);
 
@@ -35,5 +35,5 @@ export const useSingleArtwork = (museum: string, id: string) => {
     fetchArtwork();
   }, [id, museum]);
 
-  return { artwork, loading, error };
+  return { artwork, setArtwork, loading, error };
 };

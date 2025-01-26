@@ -1,15 +1,19 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { useParams } from "react-router-dom";
 import { useSingleArtwork } from "../hooks/useSingleArtwork";
 import { useMuseum } from "../context/MuseumContext";
+import fallbackImage from "../assets/imageUrlNotAvailable.jpg";
 
 const ArtworkDetail: React.FC = () => {
-  const { selectedMuseum } = useMuseum();
+  const { selectedMuseum, setSelectedMuseum } = useMuseum();
   const { id } = useParams();
-  const { artwork, loading, error } = useSingleArtwork(
+  const { artwork, setArtwork, loading, error } = useSingleArtwork(
     selectedMuseum,
     id!
   );
+   useEffect(() => {
+     setArtwork(null);
+   }, [id]);  
 
   return (
     <div className="container my-5">
@@ -30,11 +34,17 @@ const ArtworkDetail: React.FC = () => {
             <div className="card shadow-lg rounded-3">
               <div className="card-body">
                 <div className="artwork-image-container mb-4">
-                  <img
-                    src={artwork.imageUrl}
-                    alt={`Artwork titled "${artwork.title}" by ${artwork.artist_title}`}
-                    className="img-fluid rounded-3 shadow-lg"
-                  />
+                  {(artwork.imageUrl || fallbackImage) && (
+                    <img
+                      src={
+                        artwork.imageUrl && artwork.imageUrl.trim() !== ""
+                          ? artwork.imageUrl
+                          : fallbackImage
+                      }
+                      alt={`Artwork titled "${artwork.title}" by ${artwork.artist_title}`}
+                      className="img-fluid rounded-3 shadow-lg"
+                    />
+                  )}
                 </div>
 
                 <h2 className="text-center mb-3">{artwork.title}</h2>
@@ -64,7 +74,10 @@ const ArtworkDetail: React.FC = () => {
                   </a>
                   <button
                     className="btn btn-outline-primary btn-lg mx-2"
-                    onClick={() => window.history.back()}
+                    onClick={() => {
+                      window.history.back();
+                      setSelectedMuseum("");
+                    }}
                   >
                     Go Back
                   </button>
