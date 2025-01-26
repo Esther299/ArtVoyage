@@ -12,7 +12,7 @@ export const fetchSingleArtworkChicagoDetails = async (
       {
         params: {
           fields:
-            "id,title,artist_display,artist_title,medium_display,image_id,date_display,description",
+            "id,title,artist_display,artist_title,medium_display,image_id,date_display,description,copyright_notice",
         },
       }
     );
@@ -35,9 +35,10 @@ export const fetchSingleArtworkChicagoDetails = async (
           date: itemData.date_display,
           medium_display: itemData.medium_display,
           imageUrl: imageUrl || "",
-          source: "The Chicago Art Institute",
+          source: "chicago",
           objectUrl: "https://www.artic.edu/collection",
           description: itemData.description,
+          copyright: itemData.copyright_notice || "The Chicago Art Institute",
         },
       ];
     } else {

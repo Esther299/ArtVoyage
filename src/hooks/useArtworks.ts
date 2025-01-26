@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchMetApi } from "../api/metApi";
+import { fetchClevelandArtworks } from "../api/clevelandApi";
 import { fetchChicagoArtworks } from "../api/chicagoApi";
 import { useArtworksData } from "../context/ArtworksContext";
 import { useAuth } from "../context/AuthContext";
@@ -54,14 +54,17 @@ export const useArtworks = (
         loadCollection();
       } else {
         const typeMap: Record<string, string> = {
-          artist: museum === "met" ? "artistOrCulture" : "artist_display",
+          artist: museum === "cleveland" ? "artist" : "artist_display",
           title: "title",
         };
 
         try {
           const artworkData =
-            museum === "met"
-              ? await fetchMetApi(typeMap[type] || "artistOrCulture", queryText)
+            museum === "cleveland"
+              ? await fetchClevelandArtworks(
+                  queryText,
+                  typeMap[type] || "artist"
+                )
               : await fetchChicagoArtworks(
                   queryText,
                   typeMap[type] || "artist_display"

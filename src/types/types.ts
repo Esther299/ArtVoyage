@@ -9,6 +9,7 @@ export interface Artwork {
   source: string;
   objectUrl: string;
   description:string;
+  copyright:string;
   firestoreId?: string;
 }
 

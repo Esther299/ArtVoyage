@@ -156,9 +156,8 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
                     {artwork.date}
                   </p>
                   <p className="mb-2">{artwork.medium_display}</p>
-
                   <p className="text-secondary small text-center mt-2">
-                    <span className="fw-bold">Source:</span> {artwork.source}
+                    <span className="fw-bold">Source:</span> {artwork.copyright}
                   </p>
                 </Link>
 
