@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Artwork } from "../types/types";
 import ArtworkCard from "./ArtworkCard";
 import Pagination from "./Pagination";
 import { useArtworksData } from "../context/ArtworksContext";
+import { sortArtworks } from "../utils/artworkSorting";
 
 interface ArtworksListProps {
   sortOption: string;
@@ -14,29 +14,7 @@ const ArtworkList: React.FC<ArtworksListProps> = ({ sortOption, sortDirection })
   const [currentPage, setCurrentPage] = useState(1);
   const artworksPerPage = 10;
 
-
-  const sortedArtworks = [...artworks].sort((a, b) => {
-    if (sortOption === "artist") {
-      const artistA = a.artist_title || "";
-      const artistB = b.artist_title || "";
-      return sortDirection.artist === "asc"
-        ? artistA.localeCompare(artistB)
-        : artistB.localeCompare(artistA);
-    } else if (sortOption === "title") {
-      const titleA = a.title || "";
-      const titleB = b.title || "";
-      return sortDirection.title === "asc"
-        ? titleA.localeCompare(titleB)
-        : titleB.localeCompare(titleA);
-    } else if (sortOption === "date") {
-      const dateA = new Date(a.date).getTime();
-      const dateB = new Date(b.date).getTime();
-      return sortDirection.date === "asc" ? dateA - dateB : dateB - dateA;
-    }
-    return 0;
-  });
-
-
+  const sortedArtworks = sortArtworks(artworks, sortOption, sortDirection);
 
   const indexOfLastArtwork = currentPage * artworksPerPage;
   const indexOfFirstArtwork = indexOfLastArtwork - artworksPerPage;

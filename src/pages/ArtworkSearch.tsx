@@ -6,6 +6,7 @@ import { useType } from "../context/TypeContext";
 import { useArtworks } from "../hooks/useArtworks";
 import SearchBar from "../components/SearchBar";
 import ArtworkList from "../components/ArtworkList";
+import { SortDirection } from "../utils/artworkSorting";
 
 const SearchPage: React.FC = () => {
   const { museumName } = useParams();
@@ -14,9 +15,7 @@ const SearchPage: React.FC = () => {
   const { setSelectedMuseum } = useMuseum();
   const [museumDisplay, setMuseumDisplay] = useState("");
   const [sortOption, setSortOption] = useState<string>("artist");
-  const [sortDirection, setSortDirection] = useState<{
-    [key: string]: "asc" | "desc";
-  }>({
+  const [sortDirection, setSortDirection] = useState<SortDirection>({
     artist: "asc",
     title: "asc",
     date: "asc",
