@@ -5,8 +5,6 @@ import {
   addDoc,
   deleteDoc,
   doc,
-  query,
-  where,
   getDocs,
 } from "firebase/firestore";
 import { Artwork } from "../types/types";
@@ -19,6 +17,11 @@ export const useCollectionData = () => {
 
   const { user, loading: authLoading } = useAuth();
   const { setArtworks } = useArtworksData();
+
+  const handleFirestoreError = (err: any, fallbackMessage: string) => {
+    console.error("Firestore Error:", err);
+    throw new Error(err.message || fallbackMessage);
+  };
 
   useEffect(() => {
     const loadCollection = async () => {
@@ -52,6 +55,15 @@ export const useCollectionData = () => {
 
   const addToCollection = async (artwork: Artwork) => {
     if (!user) return;
+    const isArtworkExists = collectionState.some(
+      (existingArtwork) => existingArtwork.id === artwork.id
+    );
+
+    if (isArtworkExists) {
+      console.log("This artwork is already in your collection.");
+      return;
+    }
+
     try {
       const userArtworksRef = collection(
         db,
@@ -61,7 +73,7 @@ export const useCollectionData = () => {
       );
       await addDoc(userArtworksRef, artwork);
       setCollectionState((prevState) => [...prevState, artwork]);
-      console.log("artwork collected")
+      console.log("Artwork added to collection");
     } catch (error) {
       console.error("Error adding artwork to user collection:", error);
     }

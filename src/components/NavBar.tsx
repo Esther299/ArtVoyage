@@ -44,18 +44,23 @@ const NavBar: React.FC = () => {
               </NavLink>
             </li>
             <li className="nav-item">
-              <NavLink className="nav-link" to="/profile">
-                Profile
-              </NavLink>
-            </li>
-            <li className="nav-item">
               <NavLink className="nav-link" to="/search">
                 Search
               </NavLink>
             </li>
             <li className="nav-item">
+              <NavLink className="nav-link" to="/collection">
+                My Collection
+              </NavLink>
+            </li>
+            <li className="nav-item">
               <NavLink className="nav-link" to="/exhibitions">
                 My Exhibitions
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/profile">
+                Profile
               </NavLink>
             </li>
             {user ? (

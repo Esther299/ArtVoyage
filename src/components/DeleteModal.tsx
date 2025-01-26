@@ -4,9 +4,9 @@ import { Modal } from "react-bootstrap";
 interface DeleteModalProps {
   show: boolean;
   handleClose: () => void;
-  handleDelete: (id: string) => void;
+  handleDelete: (id: string | number) => Promise<void>;
   entityType: "artwork" | "exhibition";
-  entityId: string | null;
+  entityId: string | number | null;
 }
 
 const DeleteModal: React.FC<DeleteModalProps> = ({
@@ -17,6 +17,13 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
   entityId,
 }) => {
   const entityName = entityType === "artwork" ? "artwork" : "exhibition";
+
+  const handleConfirmDelete = () => {
+    if (entityId !== null) {
+      handleDelete(entityId);
+    }
+    handleClose();
+  };
 
   return (
     <Modal show={show} onHide={handleClose} aria-labelledby="deleteModalLabel">
@@ -33,15 +40,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
         <button className="btn btn-secondary" onClick={handleClose}>
           Cancel
         </button>
-        <button
-          className="btn btn-danger"
-          onClick={() => {
-            if (entityId) {
-              handleDelete(entityId);
-            }
-            handleClose();
-          }}
-        >
+        <button className="btn btn-danger" onClick={handleConfirmDelete}>
           Confirm
         </button>
       </Modal.Footer>
