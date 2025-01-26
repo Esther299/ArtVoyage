@@ -93,52 +93,86 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
       </div>
 
       <div className="row">
-        {exhibition.artworks.map((artwork) => (
-          <div className="col-md-4 col-lg-3 mb-4" key={artwork.id}>
-            <Link
-              to={`/artwork/${artwork.id}`}
-              className="btn btn-outline-secondary w-100"
-              aria-label={`View details for artwork titled ${artwork.title}`}
-              onClick={() => handleMuseumSelection(artwork.source)}
+        <ul
+          className="d-flex flex-wrap list-unstyled"
+          style={{ gap: "1.5rem", justifyContent: "center" }}
+        >
+          {exhibition.artworks.map((artwork) => (
+            <li
+              key={artwork.id}
+              className="shadow-sm p-3 text-center"
+              style={{
+                background: "rgba(173, 146, 194, 0.84)",
+                flex: "1 1 calc(50% - 1.5rem)",
+                maxWidth: "calc(50% - 1.5rem)",
+                borderRadius: "10px",
+                transition: "transform 0.3s, box-shadow 0.3s",
+                cursor: "pointer",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "scale(1.03)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "scale(1)";
+              }}
+              aria-label={`View details of ${artwork.title}`}
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  window.location.href = `/artwork/${artwork.id}`;
+                }
+              }}
             >
-              <div className="card h-100 align-center">
-                {artwork.imageUrl && (
-                  <img
-                    src={artwork.imageUrl}
-                    alt={`Artwork titled "${artwork.title}"`}
-                    className="card-img-top"
-                    style={{ objectFit: "cover", height: "200px" }}
-                  />
-                )}
-                <div className="card-body d-flex flex-column">
-                  <h5 className="card-title text-center bg-light py-2 rounded">
+              <div className="artwork-card">
+                <Link
+                  to={`/artwork/${artwork.id}`}
+                  className="text-decoration-none text-reset d-block h-100"
+                  aria-label={`View details for artwork titled "${artwork.title}"`}
+                >
+                  <h3
+                    className="mb-3 fs-1 text-truncate"
+                    style={{ maxWidth: "100%" }}
+                  >
                     {artwork.title}
-                  </h5>
+                  </h3>
 
-                  <p className="card-text text-muted text-center">
-                    <strong>Artist:</strong> <i>{artwork.artist_title}</i>
+                  {artwork.imageUrl && (
+                    <img
+                      src={artwork.imageUrl}
+                      alt={`Artwork titled "${artwork.title}"`}
+                      width="400"
+                      height="300"
+                      className="img-fluid my-3"
+                      style={{
+                        display: "block",
+                        margin: "0 auto",
+                        borderRadius: "8px",
+                      }}
+                    />
+                  )}
+
+                  <p className="text-muted fst-italic mb-1 fs-5">
+                    Created by <strong>{artwork.artist_title}</strong> in{" "}
+                    {artwork.date}
                   </p>
+                  <p className="mb-2">{artwork.medium_display}</p>
 
-                  <p className="card-text text-center bg-light py-1 rounded">
-                    <strong>Medium:</strong> {artwork.medium_display}
+                  <p className="text-secondary small text-center mt-2">
+                    <span className="fw-bold">Source:</span> {artwork.source}
                   </p>
+                </Link>
 
-                  <div className="d-flex justify-content-center mt-auto">
-                    <button
-                      onClick={() =>
-                        handleShowDeleteModal("artwork", artwork.id.toString())
-                      }
-                      className="btn btn-outline-danger btn-sm"
-                      aria-label={`Delete artwork titled ${artwork.title} from exhibition ${exhibition.name}`}
-                    >
-                      Delete Artwork
-                    </button>
-                  </div>
-                </div>
+                <button
+                  className="btn btn-danger"
+                  onClick={() => handleShowDeleteModal("artwork", artwork.id)}
+                  aria-label={`Delete artwork titled "${artwork.title}"`}
+                >
+                  Delete artwork
+                </button>
               </div>
-            </Link>
-          </div>
-        ))}
+            </li>
+          ))}
+        </ul>
 
         <div className="col-12 mb-4">
           <div
@@ -179,7 +213,7 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
         handleClose={handleCloseDeleteModal}
         handleDelete={handleDelete}
         entityType={entityType ?? "artwork"}
-        entityId={entityId?.toString() ?? ""}
+        entityId={entityId}
       />
     </div>
   );
