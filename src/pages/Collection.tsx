@@ -41,6 +41,13 @@ const Collection = () => {
     }
   };
 
+  const toggleSortDirection = (option: string) => {
+    setSortDirection((prevDirection) => ({
+      ...prevDirection,
+      [option]: prevDirection[option] === "asc" ? "desc" : "asc",
+    }));
+  };
+
   const { paginatedItems: currentArtworks, totalPages } = paginate(
     artworks,
     currentPage,
@@ -55,6 +62,31 @@ const Collection = () => {
     <div className="container my-4">
       <h1 className="text-center mb-4">My Collection</h1>
       {error && <ErrorMessage message={error} />}
+
+      <div className="row justify-content-center">
+        <div className="col-md-4 mb-3">
+          <div className="input-group">
+            <select
+              className="form-select"
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value)}
+              aria-label="Sort by"
+            >
+              <option value="artist">Sort by Artist</option>
+              <option value="title">Sort by Title</option>
+              <option value="date">Sort by Date</option>
+            </select>
+
+            <button
+              className="btn btn-info"
+              onClick={() => toggleSortDirection(sortOption)}
+              aria-label="Toggle Sort Direction"
+            >
+              {sortDirection[sortOption] === "asc" ? "↑" : "↓"}
+            </button>
+          </div>
+        </div>
+      </div>
 
       <ArtworkList
         artworks={currentArtworks}
