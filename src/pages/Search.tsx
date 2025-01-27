@@ -71,23 +71,6 @@ const Search: React.FC = () => {
             />
           </Link>
         </div>
-
-        <Link
-          to="/search/collection"
-          onClick={() => handleSetSelectedMuseum("")}
-          className="text-decoration-none"
-        >
-          <div
-            className="homecard mx-3 bg-light shadow-sm hover:bg-dark"
-            style={{
-              width: "22rem",
-              cursor: "pointer",
-              transition: "background-color 0.3s ease",
-            }}
-          >
-            <p>Collection</p>
-          </div>
-        </Link>
       </div>
     </div>
   );

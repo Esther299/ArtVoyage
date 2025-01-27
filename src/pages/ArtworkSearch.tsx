@@ -21,14 +21,10 @@ const SearchPage: React.FC = () => {
     date: "asc",
   });
 
-  const isCollectionSearch =
-    museumName === undefined || museumName === "collection";
-
   const { artworks, loading, error, setArtworks } = useArtworks(
     museumName || "",
     query,
-    type,
-    isCollectionSearch
+    type
   );
 
   useEffect(() => {
