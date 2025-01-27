@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import DeleteModal from "../components/DeleteModal";
+import Pagination from "../components/Pagination";
 import { useCollectionData } from "../hooks/useCollectionData";
 import fallbackImage from "../assets/imageUrlNotAvailable.jpg";
 import { useMuseum } from "../context/MuseumContext";
+import { SortDirection, sortArtworks } from "../utils/artworkSorting";
+import { paginate } from "../utils/paginating";
 
 const Collection = () => {
   const {
@@ -16,6 +19,16 @@ const Collection = () => {
   const [entityType, setEntityType] = useState<"artwork" | null>(null);
   const [entityId, setEntityId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [sortOption, setSortOption] = useState<string>("artist");
+    const [sortDirection, setSortDirection] = useState<SortDirection>({
+      artist: "asc",
+      title: "asc",
+      date: "asc",
+    });
+    const [currentPage, setCurrentPage] = useState(1);
+    const artworksPerPage = 10;
+    
+
   const {setSelectedMuseum} = useMuseum()
 
   const handleFirestoreError = (err: any, fallbackMessage: string) => {
@@ -49,6 +62,14 @@ const Collection = () => {
     }
   };
 
+  const sortedArtworks = sortArtworks(artworks, sortOption, sortDirection);
+
+  const { paginatedItems: currentArtworks, totalPages } = paginate(
+    sortedArtworks,
+    currentPage,
+    artworksPerPage
+  );
+
   if (loadingCollection) {
     return <div className="text-center my-5">Loading...</div>;
   }
@@ -57,14 +78,14 @@ const Collection = () => {
     <div className="container my-4">
       <h1 className="text-center mb-4">My Collection</h1>
       {error && <div className="alert alert-danger text-center">{error}</div>}
-      {artworks.length === 0 ? (
+      {currentArtworks.length === 0 ? (
         <p className="text-center">Your collection is empty.</p>
       ) : (
         <ul
           className="d-flex flex-wrap list-unstyled"
           style={{ gap: "1.5rem", justifyContent: "center" }}
         >
-          {artworks.map((artwork) => (
+          {currentArtworks.map((artwork) => (
             <li
               key={artwork.id}
               className="shadow-sm p-3 text-center"
@@ -153,6 +174,20 @@ const Collection = () => {
         entityType={"artwork"}
         entityId={entityId}
       />
+      {totalPages > 1 && (
+        <>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+          <div className="text-center mt-2">
+            <small className="text-muted">
+              Page {currentPage} of {totalPages}
+            </small>
+          </div>
+        </>
+      )}
     </div>
   );
 };
