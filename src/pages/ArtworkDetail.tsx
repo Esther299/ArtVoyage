@@ -2,7 +2,7 @@ import React, {useEffect} from "react";
 import { useParams } from "react-router-dom";
 import { useSingleArtwork } from "../hooks/useSingleArtwork";
 import { useMuseum } from "../context/MuseumContext";
-import fallbackImage from "../assets/imageUrlNotAvailable.jpg";
+import fallbackImage from "../assets//imageNotAvailable.jpg";
 
 const ArtworkDetail: React.FC = () => {
   const { selectedMuseum, setSelectedMuseum } = useMuseum();

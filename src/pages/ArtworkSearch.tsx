@@ -82,8 +82,15 @@ const SearchPage: React.FC = () => {
           <button onClick={() => setQuery(query)}>Retry</button>
         </div>
       )}
+      {artworks.length === 0 && <p>Start your search here </p>}
       {!loading && !error && (
-        <ArtworkList sortOption={sortOption} sortDirection={sortDirection} />
+        <ArtworkList
+          artworks={artworks}
+          sortOption={sortOption}
+          sortDirection={sortDirection}
+          showSearchFunctions={true}
+          showDeleteButton={false}
+        />
       )}
     </div>
   );

@@ -5,7 +5,7 @@ interface DeleteModalProps {
   show: boolean;
   handleClose: () => void;
   handleDelete: (id: string | number) => Promise<void>;
-  entityType: "artwork" | "exhibition";
+  entityType: "artwork" | "exhibition" | null;
   entityId: string | number | null;
 }
 

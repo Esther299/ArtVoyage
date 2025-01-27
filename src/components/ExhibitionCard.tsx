@@ -5,7 +5,8 @@ import { useMuseum } from "../context/MuseumContext";
 import { formatExhibitionDateRange } from "../utils/dateFormatting";
 import DeleteModal from "./DeleteModal";
 import EditExhibitionModal from "../components/EditExhibitionModal";
-import fallbackImage from "../assets/imageUrlNotAvailable.jpg";
+import { useDeleteModal } from "../context/DeleteContext";
+import { ArtworkInfo } from "./ArtworkInfo";
 
 interface ExhibitionCardProps {
   exhibition: Exhibition;
@@ -24,16 +25,18 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
   handleEditExhibition,
 }) => {
   const { setSelectedMuseum } = useMuseum();
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
 
   const [editingExhibition, setEditingExhibition] = useState<Exhibition | null>(
     null
   );
-  const [entityType, setEntityType] = useState<"artwork" | "exhibition" | null>(
-    null
-  );
-  const [entityId, setEntityId] = useState<string | number | null>(null);
+  const {
+    setEntityToDelete,
+    showDeleteModal,
+    entityType,
+    entityId,
+    closeDeleteModal,
+  } = useDeleteModal(); 
 
   const date = formatExhibitionDateRange(
     exhibition.startDate,
@@ -41,18 +44,10 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
   );
 
   const handleShowDeleteModal = (
-    entityType: "artwork" | "exhibition",
-    entityId: string | number
+    type: "artwork" | "exhibition",
+    id: string | number
   ) => {
-    setEntityType(entityType);
-    setEntityId(entityId);
-    setShowDeleteModal(true);
-  };
-
-  const handleCloseDeleteModal = () => {
-    setShowDeleteModal(false);
-    setEntityType(null);
-    setEntityId(null);
+    setEntityToDelete(type, id);
   };
 
   const handleShowEditModal = (exhibition: Exhibition) => {
@@ -123,40 +118,7 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
                   aria-label={`View details for artwork titled "${artwork.title}"`}
                   onClick={() => setSelectedMuseum(artwork.source)}
                 >
-                  <h3
-                    className="mb-3 fs-1 text-truncate"
-                    style={{ maxWidth: "100%" }}
-                  >
-                    {artwork.title}
-                  </h3>
-
-                  {(artwork.imageUrl || fallbackImage) && (
-                    <img
-                      src={
-                        artwork.imageUrl && artwork.imageUrl.trim() !== ""
-                          ? artwork.imageUrl
-                          : fallbackImage
-                      }
-                      alt={`Artwork titled "${artwork.title}"`}
-                      width="400"
-                      height="300"
-                      className="img-fluid my-3"
-                      style={{
-                        display: "block",
-                        margin: "0 auto",
-                        borderRadius: "8px",
-                      }}
-                    />
-                  )}
-
-                  <p className="text-muted fst-italic mb-1 fs-5">
-                    Created by <strong>{artwork.artist_title}</strong> in{" "}
-                    {artwork.date}
-                  </p>
-                  <p className="mb-2">{artwork.medium_display}</p>
-                  <p className="text-secondary small text-center mt-2">
-                    <span className="fw-bold">Source:</span> {artwork.copyright}
-                  </p>
+                  <ArtworkInfo artwork={artwork} />
                 </Link>
 
                 <button
@@ -207,9 +169,9 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
 
       <DeleteModal
         show={showDeleteModal}
-        handleClose={handleCloseDeleteModal}
+        handleClose={closeDeleteModal}
         handleDelete={handleDelete}
-        entityType={entityType ?? "artwork"}
+        entityType={entityType}
         entityId={entityId}
       />
     </div>
