@@ -1,8 +1,9 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useSingleArtwork } from "../hooks/useSingleArtwork";
 import { useMuseum } from "../context/MuseumContext";
 import fallbackImage from "../assets//imageNotAvailable.jpg";
+import { ErrorMessage } from "../components/ErrorMessage";
 
 const ArtworkDetail: React.FC = () => {
   const { selectedMuseum, setSelectedMuseum } = useMuseum();
@@ -11,18 +12,14 @@ const ArtworkDetail: React.FC = () => {
     selectedMuseum,
     id!
   );
-   useEffect(() => {
-     setArtwork(null);
-   }, [id]);  
+  useEffect(() => {
+    setArtwork(null);
+  }, [id]);
 
   return (
     <div className="container my-5">
       {loading && <div>Loading...</div>}
-      {error && (
-        <div className="alert alert-warning text-center mt-5" role="alert">
-          Error fetching artwork: {error}
-        </div>
-      )}
+      {error && <ErrorMessage message={error} />}
       {!loading && !error && !artwork && (
         <div className="alert alert-warning text-center mt-5" role="alert">
           Artwork not found. Please check the ID or return to the home page.

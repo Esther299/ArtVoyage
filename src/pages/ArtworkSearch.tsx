@@ -6,6 +6,7 @@ import { useType } from "../context/TypeContext";
 import { useArtworks } from "../hooks/useArtworks";
 import SearchBar from "../components/SearchBar";
 import ArtworkList from "../components/Artworks/ArtworkList";
+import { ErrorMessage } from "../components/ErrorMessage";
 import { SortDirection } from "../utils/artworkSorting";
 
 const SearchPage: React.FC = () => {
@@ -77,9 +78,11 @@ const SearchPage: React.FC = () => {
       />
       {loading && <div className="text-center mt-3">Loading...</div>}
       {error && (
-        <div className="alert alert-danger mt-3">
-          <p>Error: {error}</p>
-          <button onClick={() => setQuery(query)}>Retry</button>
+        <div>
+          <ErrorMessage message={error} />
+          <button className="btn btn-secondary" onClick={() => setQuery(query)}>
+            Retry
+          </button>
         </div>
       )}
       {artworks.length === 0 && <p>Start your search here </p>}

@@ -4,6 +4,7 @@ import { paginate } from "../utils/paginating";
 import ArtworkList from "../components/Artworks/ArtworkList";
 import { SortDirection } from "../utils/artworkSorting";
 import { handleFirestoreError } from "../utils/handleErrors";
+import { ErrorMessage } from "../components/ErrorMessage";
 
 const Collection = () => {
   const {
@@ -53,7 +54,7 @@ const Collection = () => {
   return (
     <div className="container my-4">
       <h1 className="text-center mb-4">My Collection</h1>
-      {error && <div className="alert alert-danger text-center">{error}</div>}
+      {error && <ErrorMessage message={error} />}
 
       <ArtworkList
         artworks={currentArtworks}

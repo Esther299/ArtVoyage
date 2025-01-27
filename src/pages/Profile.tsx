@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import useUserData from "../hooks/useUserData";
-import { Modal, Button, Form, Alert } from "react-bootstrap"; // Import Bootstrap components
+import { Modal, Button, Form, Alert } from "react-bootstrap";
+import { ErrorMessage } from "../components/ErrorMessage";
 
 interface ProfileProps {
   user: { uid: string } | null;
@@ -23,7 +24,7 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
     firstName: "",
     lastName: "",
   });
-  const [successMessage, setSuccessMessage] = useState(""); // New state for success message
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     if (userId) {
@@ -36,8 +37,8 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
       await editUserData(editFormData);
       console.log("User updated successfully!");
       setShowEditModal(false);
-      setSuccessMessage("Your profile was updated successfully!"); // Set success message
-      setTimeout(() => setSuccessMessage(""), 5000); // Clear message after 5 seconds
+      setSuccessMessage("Your profile was updated successfully!");
+      setTimeout(() => setSuccessMessage(""), 5000);
     } catch (err) {
       console.error("Error updating user:", err);
     }
@@ -64,7 +65,7 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
   };
 
   if (loading) return <p className="text-center mt-4">Loading...</p>;
-  if (error) return <p className="text-danger text-center mt-4">{error}</p>;
+  if (error) return <ErrorMessage message={error} />;
 
   return (
     <div className="container mt-5">
@@ -115,7 +116,6 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
         <p className="text-center text-muted">No user data available.</p>
       )}
 
-      {/* Success Message */}
       {successMessage && (
         <Alert variant="success" className="mt-4 text-center">
           {successMessage}

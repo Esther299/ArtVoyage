@@ -3,6 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useExhibitions } from "../context/ExhibitionContext";
 import { Exhibition } from "../types/types";
 import ExhibitionCard from "../components/Exhibitions/ExhibitionCard";
+import { ErrorMessage } from "../components/ErrorMessage";
+import { handleFirestoreError } from "../utils/handleErrors";
 
 const ExhibitionDetail: React.FC = () => {
   const { exhibitionId } = useParams();
@@ -17,11 +19,6 @@ const ExhibitionDetail: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-
-  const handleFirestoreError = (err: any, fallbackMessage: string) => {
-    console.error("Firestore Error:", err);
-    return err.message || fallbackMessage;
-  };
 
   useEffect(() => {
     if (exhibitionId) {
@@ -103,11 +100,7 @@ const ExhibitionDetail: React.FC = () => {
   }
 
   if (error) {
-    return (
-      <div className="alert alert-danger my-5 text-center" role="alert">
-        {error}
-      </div>
-    );
+    return <ErrorMessage message={error} />;
   }
 
   if (!exhibition) {
