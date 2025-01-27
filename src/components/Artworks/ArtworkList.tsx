@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { Container, Row, Col, Form, Button, ListGroup } from "react-bootstrap";
 import ArtworkCard from "./Artwork/ArtworkCard";
 import Pagination from "./Pagination";
 import { sortArtworks } from "../../utils/artworkSorting";
 import { paginate } from "../../utils/paginating";
+import { SortDirection } from "../../utils/artworkSorting";
 import { Artwork } from "../../types/types";
 
 interface ArtworksListProps {
@@ -10,8 +12,6 @@ interface ArtworksListProps {
   handleDelete?: (id: string | number) => Promise<void>;
   showDeleteButton: boolean;
   showSearchFunctions: boolean;
-  sortOption: string;
-  sortDirection: { [key: string]: "asc" | "desc" };
 }
 
 const ArtworkList: React.FC<ArtworksListProps> = ({
@@ -19,9 +19,13 @@ const ArtworkList: React.FC<ArtworksListProps> = ({
   handleDelete,
   showDeleteButton,
   showSearchFunctions,
-  sortOption,
-  sortDirection,
 }) => {
+  const [sortOption, setSortOption] = useState<string>("artist");
+  const [sortDirection, setSortDirection] = useState<SortDirection>({
+    artist: "asc",
+    title: "asc",
+    date: "asc",
+  });
   const [currentPage, setCurrentPage] = useState(1);
   const artworksPerPage = 10;
 
@@ -33,8 +37,39 @@ const ArtworkList: React.FC<ArtworksListProps> = ({
     artworksPerPage
   );
 
+  const toggleSortDirection = (option: string) => {
+    setSortDirection((prevDirection) => ({
+      ...prevDirection,
+      [option]: prevDirection[option] === "asc" ? "desc" : "asc",
+    }));
+  };
+
   return (
-    <div className="container my-4">
+    <Container className="my-4">
+      <Row className="justify-content-center">
+        <Col md={4} className="mb-3">
+          <Form.Group className="d-flex">
+            <Form.Select
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value)}
+              aria-label="Sort by"
+              className="me-2"
+            >
+              <option value="artist">Sort by Artist</option>
+              <option value="title">Sort by Title</option>
+              <option value="date">Sort by Date</option>
+            </Form.Select>
+            <Button
+              variant="secondary"
+              onClick={() => toggleSortDirection(sortOption)}
+              aria-label="Toggle Sort Direction"
+            >
+              {sortDirection[sortOption] === "asc" ? "↑" : "↓"}
+            </Button>
+          </Form.Group>
+        </Col>
+      </Row>
+
       {currentArtworks.length > 0 && (
         <ul
           className="d-flex flex-wrap list-unstyled"
@@ -91,7 +126,7 @@ const ArtworkList: React.FC<ArtworksListProps> = ({
           </div>
         </>
       )}
-    </div>
+    </Container>
   );
 };
 

@@ -6,7 +6,7 @@ import {
   createUserWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
 
 interface AuthContextType {
   user: User | null;
@@ -56,6 +56,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       await setDoc(userRef, {
         uid: user.uid,
         email: user.email,
+        createdAt: serverTimestamp(),
       });
     }
   };
@@ -81,11 +82,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         email: newUser.email,
         firstName,
         lastName,
+        createdAt: serverTimestamp(),
       });
 
       setUser(newUser);
     } catch (error) {
-      console.error("Error during registration:", error);
       throw error;
     } finally {
       setLoading(false);
@@ -105,7 +106,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       await ensureUserInFirestore(loggedInUser);
       setUser(loggedInUser);
     } catch (error) {
-      console.error("Error during login:", error);
       throw error;
     } finally {
       setLoading(false);
@@ -118,7 +118,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       await signOut(auth);
       setUser(null);
     } catch (error) {
-      console.error("Error signing out:", error);
       throw error;
     } finally {
       setLoading(false);
@@ -127,7 +126,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <AuthContext.Provider value={{ user, register, login, logout, loading }}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 };

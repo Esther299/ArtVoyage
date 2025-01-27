@@ -1,4 +1,5 @@
 import React from "react";
+import { Row, Col } from "react-bootstrap";
 
 interface ErrorMessageProps {
   message: string;
@@ -6,8 +7,12 @@ interface ErrorMessageProps {
 
 export const ErrorMessage: React.FC<ErrorMessageProps> = ({ message }) => {
   return (
-    <div className="alert alert-danger mt-3" role="alert">
-      {message}
-    </div>
+    <Row className="justify-content-center mt-3">
+      <Col md={6}>
+        <div className="alert alert-danger text-center" role="alert">
+          {message}
+        </div>
+      </Col>
+    </Row>
   );
 };
