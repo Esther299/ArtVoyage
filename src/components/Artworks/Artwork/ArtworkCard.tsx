@@ -200,7 +200,7 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
             onClick={() => handleShowDeleteModal("artwork", artwork.id)}
             aria-label={`Delete artwork titled "${artwork.title}"`}
           >
-            Delete from my collection
+            Delete artwork
           </button>
           <DeleteModal
             show={showDeleteModal}

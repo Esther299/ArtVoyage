@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useCollectionData } from "../hooks/useCollectionData";
-import { paginate } from "../utils/paginating";
 import ArtworkList from "../components/Artworks/ArtworkList";
 import { SortDirection } from "../utils/artworkSorting";
 import { handleFirestoreError } from "../utils/handleErrors";
@@ -20,8 +19,6 @@ const Collection = () => {
     title: "asc",
     date: "asc",
   });
-  const [currentPage, setCurrentPage] = useState(1);
-  const artworksPerPage = 10;
 
   const handleDelete = async (id: number | string) => {
     if (typeof id === "number") {
@@ -47,12 +44,6 @@ const Collection = () => {
       [option]: prevDirection[option] === "asc" ? "desc" : "asc",
     }));
   };
-
-  const { paginatedItems: currentArtworks, totalPages } = paginate(
-    artworks,
-    currentPage,
-    artworksPerPage
-  );
 
   if (loadingCollection) {
     return <div className="text-center my-5">Loading...</div>;
@@ -89,7 +80,7 @@ const Collection = () => {
       </div>
 
       <ArtworkList
-        artworks={currentArtworks}
+        artworks={artworks}
         sortOption={sortOption}
         sortDirection={sortDirection}
         handleDelete={handleDelete}
