@@ -7,7 +7,7 @@ const HomePage: React.FC = () => {
     <Container fluid className="pb-2 vh-100 p-4">
       <Row
         className="align-items-center text-center py-5 text-white rounded shadow"
-        style={{ background: "purple" }}
+        style={{ background: "rgba(84, 37, 122, 0.84)" }}
       >
         <Col>
           <h1 className="display-4 fw-bold">
@@ -77,7 +77,7 @@ const HomePage: React.FC = () => {
             Create and share your unique exhibitions with the world.
           </p>
           <Button variant="success" size="lg" className="me-2">
-            <Link to="/search" className="text-decoration-none text-dark">
+            <Link to="/search" className="text-decoration-none text-light">
               Get Started
             </Link>
           </Button>

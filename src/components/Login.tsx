@@ -49,7 +49,6 @@ const Login: React.FC = () => {
           message: "An unexpected error occurred. Please try again.",
         });
       }
-      console.error("Failed to login:", error);
     }
   };
 

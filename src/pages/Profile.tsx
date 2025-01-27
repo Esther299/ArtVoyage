@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import useUserData from "../hooks/useUserData";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Card, Button, Modal, Form, Image, Row, Col } from "react-bootstrap";
 import { ErrorMessage } from "../components/ErrorMessage";
 import DeleteModal from "../components/DeleteModal";
 import { SuccessMessage } from "../components/SuccessMessage";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 interface ProfileProps {
   user: { uid: string } | null;
@@ -26,6 +26,7 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
   const [editFormData, setEditFormData] = useState({
     firstName: "",
     lastName: "",
+    profilePicture: "",
   });
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
@@ -34,7 +35,6 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
       fetchUserData();
     }
   }, [userId, fetchUserData]);
-    
 
   const handleEdit = async () => {
     try {
@@ -71,67 +71,93 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
       setEditFormData({
         firstName: userData.firstName,
         lastName: userData.lastName,
+        profilePicture: userData.profilePicture,
       });
       setShowEditModal(true);
     }
   };
 
-  if (loading) return <p className="text-center mt-4">Loading...</p>;
+  if (loading) return <LoadingSpinner />;
   if (error) return <ErrorMessage message={error} />;
 
   return (
     <div className="container mt-5">
       {userData ? (
-        <div
-          className="card mx-auto"
-          style={{ background: "rgba(200, 136, 206, 0.84)", maxWidth: "30%" }}
+        <Card
+          className="mx-auto shadow-lg rounded"
+          style={{ maxWidth: "500px", background: "rgba(255, 255, 255, 0.9)" }}
           aria-labelledby="userProfileCard"
         >
-          <div
-            className="card-header text-white text-center"
-            style={{ background: "rgba(84, 37, 122, 0.84)" }}
+          <Card.Header
+            className="text-center text-white"
+            style={{
+              background: "rgba(84, 37, 122, 0.9)",
+              fontSize: "1.25rem",
+              fontWeight: "bold",
+            }}
           >
-            <h2 className="card-title" id="userProfileCard">
-              Profile Information
-            </h2>
-          </div>
-          <div className="card-body">
-            <p>
-              <strong>Email:</strong> {userData.email}
-            </p>
-            <p>
-              <strong>First Name:</strong> {userData.firstName}
-            </p>
-            <p>
-              <strong>Last Name:</strong> {userData.lastName}
-            </p>
-            <div className="d-flex justify-content-between">
-              <button
-                className="btn btn-outline-warning"
+            Profile Information
+          </Card.Header>
+          <Card.Body>
+            <div className="text-center mb-4">
+              <Image
+                src={
+                  userData.profilePicture ||
+                  "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png"
+                }
+                roundedCircle
+                alt="User Avatar"
+                style={{
+                  width: "130px",
+                  height: "130px",
+                  border: "2px solid #54257A",
+                }}
+              />
+            </div>
+            <Row>
+              <Col>
+                <p>
+                  <strong>Email:</strong> {userData.email}
+                </p>
+                <p>
+                  <strong>First Name:</strong> {userData.firstName}
+                </p>
+                <p>
+                  <strong>Last Name:</strong> {userData.lastName}
+                </p>
+              </Col>
+            </Row>
+            <div className="d-flex justify-content-between mt-3">
+              <Button
+                variant="outline-warning"
                 onClick={openEditModal}
                 aria-label="Edit User Information"
               >
-                Edit User
-              </button>
-              <button
-                className="btn btn-outline-danger"
+                <i className="fas fa-edit me-2"></i>Edit User
+              </Button>
+              <Button
+                variant="outline-danger"
                 onClick={() => setShowDeleteModal(true)}
                 aria-label="Delete User Account"
               >
-                Delete User
-              </button>
+                <i className="fas fa-trash me-2"></i>Delete User
+              </Button>
             </div>
-          </div>
-        </div>
+          </Card.Body>
+        </Card>
       ) : (
         <p className="text-center text-muted">No user data available.</p>
       )}
 
       {successMessage && <SuccessMessage message={successMessage} />}
 
-      <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
+      <Modal
+        show={showEditModal}
+        onHide={() => setShowEditModal(false)}
+        centered
+      >
         <Modal.Header closeButton>
-          <Modal.Title>Edit User</Modal.Title>
+          <Modal.Title>Edit Profile</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
@@ -146,6 +172,7 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
                     firstName: e.target.value,
                   })
                 }
+                placeholder="Enter first name"
               />
             </Form.Group>
             <Form.Group controlId="formLastName" className="mt-3">
@@ -156,6 +183,21 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
                 onChange={(e) =>
                   setEditFormData({ ...editFormData, lastName: e.target.value })
                 }
+                placeholder="Enter last name"
+              />
+            </Form.Group>
+            <Form.Group controlId="formProfilePicture" className="mt-3">
+              <Form.Label>Profile Picture URL</Form.Label>
+              <Form.Control
+                type="url"
+                value={editFormData.profilePicture}
+                onChange={(e) =>
+                  setEditFormData({
+                    ...editFormData,
+                    profilePicture: e.target.value,
+                  })
+                }
+                placeholder="Enter new profile picture URL"
               />
             </Form.Group>
           </Form>

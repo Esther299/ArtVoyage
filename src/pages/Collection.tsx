@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { Container, Row, Col, Button } from "react-bootstrap";
 import { useCollectionData } from "../hooks/useCollectionData";
 import ArtworkList from "../components/Artworks/ArtworkList";
-import { SortDirection } from "../utils/artworkSorting";
 import { handleFirestoreError } from "../utils/handleErrors";
 import { ErrorMessage } from "../components/ErrorMessage";
 import { SuccessMessage } from "../components/SuccessMessage";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const Collection = () => {
   const {
@@ -15,12 +17,6 @@ const Collection = () => {
 
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [sortOption, setSortOption] = useState<string>("artist");
-  const [sortDirection, setSortDirection] = useState<SortDirection>({
-    artist: "asc",
-    title: "asc",
-    date: "asc",
-  });
 
   const handleDelete = async (id: number | string) => {
     if (typeof id === "number") {
@@ -41,13 +37,6 @@ const Collection = () => {
     }
   };
 
-  const toggleSortDirection = (option: string) => {
-    setSortDirection((prevDirection) => ({
-      ...prevDirection,
-      [option]: prevDirection[option] === "asc" ? "desc" : "asc",
-    }));
-  };
-
   useEffect(() => {
     if (successMessage) {
       const timer = setTimeout(() => {
@@ -57,49 +46,55 @@ const Collection = () => {
     }
   }, [successMessage]);
 
-  if (loadingCollection) {
-    return <div className="text-center my-5">Loading...</div>;
-  }
 
   return (
-    <div className="container my-4">
-      <h1 className="text-center mb-4">My Collection</h1>
-      {error && <ErrorMessage message={error} />}
-      {successMessage && <SuccessMessage message={successMessage} />}
-      <div className="row justify-content-center">
-        <div className="col-md-4 mb-3">
-          <div className="input-group">
-            <select
-              className="form-select"
-              value={sortOption}
-              onChange={(e) => setSortOption(e.target.value)}
-              aria-label="Sort by"
-            >
-              <option value="artist">Sort by Artist</option>
-              <option value="title">Sort by Title</option>
-              <option value="date">Sort by Date</option>
-            </select>
+    <Container fluid className="p-4 d-flex flex-column">
+      <Row
+        className="align-items-center text-center py-3 text-white rounded shadow mb-4"
+        style={{ backgroundColor: "rgba(84, 37, 122, 0.84)" }}
+      >
+        <Col>
+          <h1 className="display-4 fw-bold m-0">My Collection</h1>
+        </Col>
+      </Row>
+      {loadingCollection && <LoadingSpinner />}
 
-            <button
-              className="btn btn-info"
-              onClick={() => toggleSortDirection(sortOption)}
-              aria-label="Toggle Sort Direction"
-            >
-              {sortDirection[sortOption] === "asc" ? "↑" : "↓"}
-            </button>
-          </div>
-        </div>
-      </div>
+      <Row className="justify-content-center">
+        <Col xs={12} md={8}>
+          {error && <ErrorMessage message={error} />}
+          {successMessage && <SuccessMessage message={successMessage} />}
+        </Col>
+      </Row>
 
-      <ArtworkList
-        artworks={artworks}
-        sortOption={sortOption}
-        sortDirection={sortDirection}
-        handleDelete={handleDelete}
-        showDeleteButton={true}
-        showSearchFunctions={false}
-      />
-    </div>
+      <Row>
+        <Col>
+          <ArtworkList
+            artworks={artworks}
+            handleDelete={handleDelete}
+            showDeleteButton={true}
+            showSearchFunctions={false}
+          />
+        </Col>
+      </Row>
+
+      {artworks.length === 0 && (
+        <Row>
+          <Col>
+            <p className="text-center text-muted">Collection empty</p>
+          </Col>
+        </Row>
+      )}
+
+      <Row className="mt-4">
+        <Col className="text-center">
+          <Button variant="secondary" size="lg" className="me-2">
+            <Link to="/search" className="text-decoration-none text-light">
+              Add Artworks
+            </Link>
+          </Button>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 
