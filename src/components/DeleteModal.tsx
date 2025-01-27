@@ -16,7 +16,12 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
   entityType,
   entityId,
 }) => {
-  const entityName = entityType === "artwork" ? "artwork" : "exhibition";
+  const entityName =
+    entityType === "artwork"
+      ? "artwork"
+      : entityType === "exhibition"
+      ? "exhibition"
+      : "profile";
 
   const handleConfirmDelete = () => {
     if (entityId !== null) {

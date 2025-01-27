@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { auth } from "../firebase/firebase";
@@ -7,6 +8,7 @@ const useUserData = (userId: string | null) => {
   const [userData, setUserData] = useState<Record<string, any> | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const validateUser = () => {
     const currentUser = auth.currentUser;
@@ -75,7 +77,12 @@ const useUserData = (userId: string | null) => {
       validateUser();
       const userRef = doc(db, "users", userId);
       await deleteDoc(userRef);
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        await currentUser.delete();
+      }
       setUserData(null);
+      navigate("/login");
     } catch (err) {
       setError("Error deleting user data.");
       console.error(err);
