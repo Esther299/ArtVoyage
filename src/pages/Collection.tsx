@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useCollectionData } from "../hooks/useCollectionData";
 import ArtworkList from "../components/Artworks/ArtworkList";
 import { SortDirection } from "../utils/artworkSorting";
 import { handleFirestoreError } from "../utils/handleErrors";
 import { ErrorMessage } from "../components/ErrorMessage";
+import { SuccessMessage } from "../components/SuccessMessage";
 
 const Collection = () => {
   const {
@@ -13,6 +14,7 @@ const Collection = () => {
   } = useCollectionData();
 
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [sortOption, setSortOption] = useState<string>("artist");
   const [sortDirection, setSortDirection] = useState<SortDirection>({
     artist: "asc",
@@ -25,6 +27,7 @@ const Collection = () => {
       try {
         if (removeFromCollection) {
           await removeFromCollection(id);
+          setSuccessMessage("Artwork was deleted successfully!");
         } else {
           console.error("removeFromCollection is not defined.");
         }
@@ -45,6 +48,15 @@ const Collection = () => {
     }));
   };
 
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
+
   if (loadingCollection) {
     return <div className="text-center my-5">Loading...</div>;
   }
@@ -53,7 +65,7 @@ const Collection = () => {
     <div className="container my-4">
       <h1 className="text-center mb-4">My Collection</h1>
       {error && <ErrorMessage message={error} />}
-
+      {successMessage && <SuccessMessage message={successMessage} />}
       <div className="row justify-content-center">
         <div className="col-md-4 mb-3">
           <div className="input-group">

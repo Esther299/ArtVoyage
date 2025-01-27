@@ -4,6 +4,7 @@ import { useExhibitions } from "../context/ExhibitionContext";
 import { Exhibition } from "../types/types";
 import ExhibitionCard from "../components/Exhibitions/ExhibitionCard";
 import { ErrorMessage } from "../components/ErrorMessage";
+import { SuccessMessage } from "../components/SuccessMessage";
 import { handleFirestoreError } from "../utils/handleErrors";
 
 const ExhibitionDetail: React.FC = () => {
@@ -109,6 +110,7 @@ const ExhibitionDetail: React.FC = () => {
 
   return (
     <>
+      {successMessage && <SuccessMessage message={successMessage} />}
       <ExhibitionCard
         exhibition={exhibition}
         handleDeleteExhibition={handleDeleteExhibition}
