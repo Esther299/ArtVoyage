@@ -5,7 +5,7 @@ interface DeleteModalProps {
   show: boolean;
   handleClose: () => void;
   handleDelete: (id: string | number) => Promise<void>;
-  entityType: "artwork" | "exhibition";
+  entityType: "artwork" | "exhibition" | null;
   entityId: string | number | null;
 }
 
@@ -16,7 +16,12 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
   entityType,
   entityId,
 }) => {
-  const entityName = entityType === "artwork" ? "artwork" : "exhibition";
+  const entityName =
+    entityType === "artwork"
+      ? "artwork"
+      : entityType === "exhibition"
+      ? "exhibition"
+      : "profile";
 
   const handleConfirmDelete = () => {
     if (entityId !== null) {

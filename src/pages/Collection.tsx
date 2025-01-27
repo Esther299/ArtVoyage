@@ -1,9 +1,10 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import DeleteModal from "../components/DeleteModal";
+import React, { useState, useEffect } from "react";
 import { useCollectionData } from "../hooks/useCollectionData";
-import fallbackImage from "../assets/imageUrlNotAvailable.jpg";
-import { useMuseum } from "../context/MuseumContext";
+import ArtworkList from "../components/Artworks/ArtworkList";
+import { SortDirection } from "../utils/artworkSorting";
+import { handleFirestoreError } from "../utils/handleErrors";
+import { ErrorMessage } from "../components/ErrorMessage";
+import { SuccessMessage } from "../components/SuccessMessage";
 
 const Collection = () => {
   const {
@@ -12,33 +13,24 @@ const Collection = () => {
     loadingCollection,
   } = useCollectionData();
 
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [entityType, setEntityType] = useState<"artwork" | null>(null);
-  const [entityId, setEntityId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const {setSelectedMuseum} = useMuseum()
-
-  const handleFirestoreError = (err: any, fallbackMessage: string) => {
-    console.error("Firestore Error:", err);
-    return err.message || fallbackMessage;
-  };
-
-  const handleShowDeleteModal = (entityType: "artwork", id: number) => {
-    setEntityType(entityType);
-    setEntityId(id);
-    setShowDeleteModal(true);
-  };
-
-  const handleCloseDeleteModal = () => {
-    setShowDeleteModal(false);
-    setEntityType(null);
-    setEntityId(null);
-  };
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [sortOption, setSortOption] = useState<string>("artist");
+  const [sortDirection, setSortDirection] = useState<SortDirection>({
+    artist: "asc",
+    title: "asc",
+    date: "asc",
+  });
 
   const handleDelete = async (id: number | string) => {
     if (typeof id === "number") {
       try {
-        await removeFromCollection(id);
+        if (removeFromCollection) {
+          await removeFromCollection(id);
+          setSuccessMessage("Artwork was deleted successfully!");
+        } else {
+          console.error("removeFromCollection is not defined.");
+        }
       } catch (error) {
         const errorMessage = handleFirestoreError(
           error,
@@ -49,6 +41,22 @@ const Collection = () => {
     }
   };
 
+  const toggleSortDirection = (option: string) => {
+    setSortDirection((prevDirection) => ({
+      ...prevDirection,
+      [option]: prevDirection[option] === "asc" ? "desc" : "asc",
+    }));
+  };
+
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
+
   if (loadingCollection) {
     return <div className="text-center my-5">Loading...</div>;
   }
@@ -56,102 +64,40 @@ const Collection = () => {
   return (
     <div className="container my-4">
       <h1 className="text-center mb-4">My Collection</h1>
-      {error && <div className="alert alert-danger text-center">{error}</div>}
-      {artworks.length === 0 ? (
-        <p className="text-center">Your collection is empty.</p>
-      ) : (
-        <ul
-          className="d-flex flex-wrap list-unstyled"
-          style={{ gap: "1.5rem", justifyContent: "center" }}
-        >
-          {artworks.map((artwork) => (
-            <li
-              key={artwork.id}
-              className="shadow-sm p-3 text-center"
-              style={{
-                background: "rgba(173, 146, 194, 0.84)",
-                flex: "1 1 calc(50% - 1.5rem)",
-                maxWidth: "calc(50% - 1.5rem)",
-                borderRadius: "10px",
-                transition: "transform 0.3s, box-shadow 0.3s",
-                cursor: "pointer",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "scale(1.03)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "scale(1)";
-              }}
-              aria-label={`View details of ${artwork.title}`}
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  window.location.href = `/artwork/${artwork.id}`;
-                }
-              }}
+      {error && <ErrorMessage message={error} />}
+      {successMessage && <SuccessMessage message={successMessage} />}
+      <div className="row justify-content-center">
+        <div className="col-md-4 mb-3">
+          <div className="input-group">
+            <select
+              className="form-select"
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value)}
+              aria-label="Sort by"
             >
-              <div className="artwork-card">
-                <Link
-                  to={`/artwork/${artwork.id}`}
-                  className="text-decoration-none text-reset d-block h-100"
-                  aria-label={`View details for artwork titled "${artwork.title}"`}
-                  onClick={() => setSelectedMuseum(artwork.source)}
-                >
-                  <h3
-                    className="mb-3 fs-1 text-truncate"
-                    style={{ maxWidth: "100%" }}
-                  >
-                    {artwork.title}
-                  </h3>
+              <option value="artist">Sort by Artist</option>
+              <option value="title">Sort by Title</option>
+              <option value="date">Sort by Date</option>
+            </select>
 
-                  {(artwork.imageUrl || fallbackImage) && (
-                    <img
-                      src={
-                        artwork.imageUrl && artwork.imageUrl.trim() !== ""
-                          ? artwork.imageUrl
-                          : fallbackImage
-                      }
-                      alt={`Artwork titled "${artwork.title}"`}
-                      width="400"
-                      height="300"
-                      className="img-fluid my-3"
-                      style={{
-                        display: "block",
-                        margin: "0 auto",
-                        borderRadius: "8px",
-                      }}
-                    />
-                  )}
+            <button
+              className="btn btn-info"
+              onClick={() => toggleSortDirection(sortOption)}
+              aria-label="Toggle Sort Direction"
+            >
+              {sortDirection[sortOption] === "asc" ? "↑" : "↓"}
+            </button>
+          </div>
+        </div>
+      </div>
 
-                  <p className="text-muted fst-italic mb-1 fs-5">
-                    Created by <strong>{artwork.artist_title}</strong> in{" "}
-                    {artwork.date}
-                  </p>
-                  <p className="mb-2">{artwork.medium_display}</p>
-                  <p className="text-secondary small text-center mt-2">
-                    <span className="fw-bold">Source:</span> {artwork.copyright}
-                  </p>
-                </Link>
-
-                <button
-                  className="btn btn-danger"
-                  onClick={() => handleShowDeleteModal("artwork", artwork.id)}
-                  aria-label={`Delete artwork titled "${artwork.title}"`}
-                >
-                  Delete from my collection
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <DeleteModal
-        show={showDeleteModal}
-        handleClose={handleCloseDeleteModal}
+      <ArtworkList
+        artworks={artworks}
+        sortOption={sortOption}
+        sortDirection={sortDirection}
         handleDelete={handleDelete}
-        entityType={"artwork"}
-        entityId={entityId}
+        showDeleteButton={true}
+        showSearchFunctions={false}
       />
     </div>
   );

@@ -1,33 +1,41 @@
 import React, { useState } from "react";
-import ArtworkCard from "./ArtworkCard";
+import ArtworkCard from "./Artwork/ArtworkCard";
 import Pagination from "./Pagination";
-import { useArtworksData } from "../context/ArtworksContext";
-import { sortArtworks } from "../utils/artworkSorting";
+import { sortArtworks } from "../../utils/artworkSorting";
+import { paginate } from "../../utils/paginating";
+import { Artwork } from "../../types/types";
 
 interface ArtworksListProps {
+  artworks: Artwork[];
+  handleDelete?: (id: string | number) => Promise<void>;
+  showDeleteButton: boolean;
+  showSearchFunctions: boolean;
   sortOption: string;
   sortDirection: { [key: string]: "asc" | "desc" };
 }
 
-const ArtworkList: React.FC<ArtworksListProps> = ({ sortOption, sortDirection }) => {
-  const {artworks} = useArtworksData()
+const ArtworkList: React.FC<ArtworksListProps> = ({
+  artworks,
+  handleDelete,
+  showDeleteButton,
+  showSearchFunctions,
+  sortOption,
+  sortDirection,
+}) => {
   const [currentPage, setCurrentPage] = useState(1);
   const artworksPerPage = 10;
 
   const sortedArtworks = sortArtworks(artworks, sortOption, sortDirection);
 
-  const indexOfLastArtwork = currentPage * artworksPerPage;
-  const indexOfFirstArtwork = indexOfLastArtwork - artworksPerPage;
-  const currentArtworks = sortedArtworks.slice(
-    indexOfFirstArtwork,
-    indexOfLastArtwork
+  const { paginatedItems: currentArtworks, totalPages } = paginate(
+    sortedArtworks,
+    currentPage,
+    artworksPerPage
   );
-
-  const totalPages = Math.ceil(artworks.length / artworksPerPage);
 
   return (
     <div className="container my-4">
-      {currentArtworks.length > 0 ? (
+      {currentArtworks.length > 0 && (
         <ul
           className="d-flex flex-wrap list-unstyled"
           style={{ gap: "1.5rem", justifyContent: "center" }}
@@ -58,12 +66,15 @@ const ArtworkList: React.FC<ArtworksListProps> = ({ sortOption, sortDirection })
                 }
               }}
             >
-              <ArtworkCard artwork={artwork} />
+              <ArtworkCard
+                artwork={artwork}
+                handleDelete={handleDelete}
+                showDeleteButton={showDeleteButton}
+                showSearchFunctions={showSearchFunctions}
+              />
             </li>
           ))}
         </ul>
-      ) : (
-        <p>Start your search here </p>
       )}
 
       {totalPages > 1 && (

@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import useUserData from "../hooks/useUserData";
-import { Modal, Button, Form, Alert } from "react-bootstrap"; // Import Bootstrap components
+import { Modal, Button, Form } from "react-bootstrap";
+import { ErrorMessage } from "../components/ErrorMessage";
+import DeleteModal from "../components/DeleteModal";
+import { SuccessMessage } from "../components/SuccessMessage";
 
 interface ProfileProps {
   user: { uid: string } | null;
 }
 
 const Profile: React.FC<ProfileProps> = ({ user }) => {
-  const userId = user?.uid;
+  const userId = user?.uid || null;
   const {
     userData,
     fetchUserData,
@@ -15,7 +19,7 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
     deleteUserData,
     loading,
     error,
-  } = useUserData(userId || null);
+  } = useUserData(userId);
 
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -23,21 +27,21 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
     firstName: "",
     lastName: "",
   });
-  const [successMessage, setSuccessMessage] = useState(""); // New state for success message
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   useEffect(() => {
     if (userId) {
       fetchUserData();
     }
   }, [userId, fetchUserData]);
+    
 
   const handleEdit = async () => {
     try {
       await editUserData(editFormData);
-      console.log("User updated successfully!");
       setShowEditModal(false);
-      setSuccessMessage("Your profile was updated successfully!"); // Set success message
-      setTimeout(() => setSuccessMessage(""), 5000); // Clear message after 5 seconds
+      setSuccessMessage("Your profile was updated successfully!");
+      setTimeout(() => setSuccessMessage(""), 5000);
     } catch (err) {
       console.error("Error updating user:", err);
     }
@@ -46,12 +50,21 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
   const handleDelete = async () => {
     try {
       await deleteUserData();
-      console.log("User deleted successfully!");
-      setShowDeleteModal(false);
+      setSuccessMessage("Your profile was deleted successfully!");
+      setTimeout(() => setSuccessMessage(""), 5000);
     } catch (err) {
       console.error("Error deleting user:", err);
     }
   };
+
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
 
   const openEditModal = () => {
     if (userData) {
@@ -64,19 +77,18 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
   };
 
   if (loading) return <p className="text-center mt-4">Loading...</p>;
-  if (error) return <p className="text-danger text-center mt-4">{error}</p>;
+  if (error) return <ErrorMessage message={error} />;
 
   return (
     <div className="container mt-5">
-      <h1 className="text-center mb-4">User Profile</h1>
       {userData ? (
         <div
           className="card mx-auto"
-          style={{ maxWidth: "600px" }}
+          style={{ background: "rgba(200, 136, 206, 0.84)", maxWidth: "30%" }}
           aria-labelledby="userProfileCard"
         >
           <div
-            className="card-header text-white"
+            className="card-header text-white text-center"
             style={{ background: "rgba(84, 37, 122, 0.84)" }}
           >
             <h2 className="card-title" id="userProfileCard">
@@ -95,14 +107,14 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
             </p>
             <div className="d-flex justify-content-between">
               <button
-                className="btn btn-warning"
+                className="btn btn-outline-warning"
                 onClick={openEditModal}
                 aria-label="Edit User Information"
               >
                 Edit User
               </button>
               <button
-                className="btn btn-danger"
+                className="btn btn-outline-danger"
                 onClick={() => setShowDeleteModal(true)}
                 aria-label="Delete User Account"
               >
@@ -115,14 +127,8 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
         <p className="text-center text-muted">No user data available.</p>
       )}
 
-      {/* Success Message */}
-      {successMessage && (
-        <Alert variant="success" className="mt-4 text-center">
-          {successMessage}
-        </Alert>
-      )}
+      {successMessage && <SuccessMessage message={successMessage} />}
 
-      {/* Edit Modal */}
       <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Edit User</Modal.Title>
@@ -164,24 +170,13 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
         </Modal.Footer>
       </Modal>
 
-      {/* Delete Modal */}
-      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Confirm Delete</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Are you sure you want to delete your account? This action cannot be
-          undone.
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
-            Cancel
-          </Button>
-          <Button variant="danger" onClick={handleDelete}>
-            Delete Account
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <DeleteModal
+        show={showDeleteModal}
+        handleClose={() => setShowDeleteModal(false)}
+        handleDelete={handleDelete}
+        entityType={null}
+        entityId={userId}
+      />
     </div>
   );
 };

@@ -46,7 +46,6 @@ const AppContent: React.FC = () => {
                   path="/search/museum/:museumName"
                   element={<SearchPage />}
                 />
-                <Route path="/search/collection" element={<SearchPage />} />
                 <Route path="/exhibitions" element={<Exhibitions />} />
                 <Route path="/collection" element={<Collection />} />
                 <Route

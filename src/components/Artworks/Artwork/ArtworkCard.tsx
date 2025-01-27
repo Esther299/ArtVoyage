@@ -1,18 +1,32 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Artwork } from "../types/types";
-import { useCollection } from "../context/CollectionContext";
-import { useExhibitions } from "../context/ExhibitionContext";
-import { useMuseum } from "../context/MuseumContext";
-import { auth } from "../firebase/firebase";
-import ExhibitionForm from "./ExhibitionsForm";
-import fallbackImage from "../assets/imageUrlNotAvailable.jpg";
+import { Artwork } from "../../../types/types";
+import { useCollection } from "../../../context/CollectionContext";
+import { useExhibitions } from "../../../context/ExhibitionContext";
+import { useMuseum } from "../../../context/MuseumContext";
+import { auth } from "../../../firebase/firebase";
+import ExhibitionForm from "./Form/ExhibitionsForm";
+import { Button } from "./Button";
+import { ArtworkInfo } from "./ArtworkInfo";
+import { ErrorMessage } from "../../ErrorMessage";
+import { SuccessMessage } from "../../SuccessMessage";
+import DeleteModal from "../../DeleteModal";
+import { handleFirestoreError } from "../../../utils/handleErrors";
+import { useDeleteModal } from "../../../context/DeleteContext";
 
 interface ArtworkCardProps {
   artwork: Artwork;
+  handleDelete?: (id: string | number) => Promise<void>;
+  showDeleteButton: boolean;
+  showSearchFunctions: boolean;
 }
 
-const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
+const ArtworkCard: React.FC<ArtworkCardProps> = ({
+  artwork,
+  handleDelete,
+  showDeleteButton,
+  showSearchFunctions,
+}) => {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [selectedExhibitionId, setSelectedExhibitionId] = useState<
     string | null
@@ -32,20 +46,32 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
     useExhibitions();
   const { loadingCollection, addToCollection } = useCollection();
   const { setSelectedMuseum } = useMuseum();
+  const {
+    setEntityToDelete,
+    showDeleteModal,
+    entityType,
+    entityId,
+    closeDeleteModal,
+  } = useDeleteModal();
 
   const handleAddToExhibitionClick = () => {
     setIsFormVisible(true);
     setSuccessMessage(null);
   };
 
-  const handleFirestoreError = (err: any, fallbackMessage: string) => {
-    console.error("Firestore Error:", err);
-    if (err.message.includes("permission-denied")) {
-      return "You do not have permission to perform this action.";
-    } else if (err.message.includes("network-request-failed")) {
-      return "Network error. Please check your internet connection.";
+  const handleShowDeleteModal = (
+    type: "artwork" | "exhibition",
+    id: string | number
+  ) => {
+    setEntityToDelete(type, id);
+  };
+
+  const handleDeleteFunction = async (id: string | number) => {
+    if (handleDelete) {
+      return handleDelete(id);
+    } else {
+      return;
     }
-    return err.message || fallbackMessage;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -128,66 +154,26 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
         aria-label={`View details for artwork titled "${artwork.title}"`}
         onClick={() => setSelectedMuseum(artwork.source)}
       >
-        <h3 className="mb-3 fs-1 text-truncate" style={{ maxWidth: "100%" }}>
-          {artwork.title}
-        </h3>
-
-        {(artwork.imageUrl || fallbackImage) && (
-          <img
-            src={
-              artwork.imageUrl && artwork.imageUrl.trim() !== ""
-                ? artwork.imageUrl
-                : fallbackImage
-            }
-            alt={`Artwork titled "${artwork.title}"`}
-            width="400"
-            height="300"
-            className="img-fluid my-3"
-            style={{ display: "block", margin: "0 auto", borderRadius: "8px" }}
-          />
-        )}
-
-        <p className="text-muted fst-italic mb-1 fs-5">
-          Created by <strong>{artwork.artist_title}</strong> in {artwork.date}
-        </p>
-        <p className="mb-2">{artwork.medium_display}</p>
-        <p className="text-secondary small text-center mt-2">
-          <span className="fw-bold">Source:</span> {artwork.copyright}
-        </p>
+        <ArtworkInfo artwork={artwork} />
       </Link>
 
-      <div className="d-flex justify-content-center gap-3 mt-4">
-        <button
-          onClick={handleAddToExhibitionClick}
-          onMouseEnter={() => setIsExhibitionHovered(true)}
-          onMouseLeave={() => setIsExhibitionHovered(false)}
-          className="btn btn-primary"
-          style={{
-            backgroundColor: isExhibitionHovered
-              ? "rgba(32, 43, 163, 0.9)"
-              : "rgba(32, 18, 74, 0.84)",
-          }}
-          aria-label="Add artwork to an exhibition"
-        >
-          Add to an Exhibition
-        </button>
-
-        <button
-          onClick={handleAddToCollectionClick}
-          disabled={isFormVisible || loadingCollection}
-          onMouseEnter={() => setIsCollectionHovered(true)}
-          onMouseLeave={() => setIsCollectionHovered(false)}
-          className="btn btn-primary"
-          style={{
-            backgroundColor: isCollectionHovered
-              ? "rgba(32, 43, 163, 0.9)"
-              : "rgba(32, 18, 74, 0.84)",
-          }}
-          aria-label="Add artwork to your collection"
-        >
-          {loadingCollection ? "Adding..." : "Add to Collection"}
-        </button>
-      </div>
+      {showSearchFunctions && (
+        <div className="d-flex justify-content-center gap-3 mt-4">
+          <Button
+            onClick={handleAddToExhibitionClick}
+            label="Add to an Exhibition"
+            isHovered={isExhibitionHovered}
+            setIsHovered={setIsExhibitionHovered}
+          />
+          <Button
+            onClick={handleAddToCollectionClick}
+            label={loadingCollection ? "Adding..." : "Add to Collection"}
+            isHovered={isCollectionHovered}
+            setIsHovered={setIsCollectionHovered}
+            disabled={isFormVisible || loadingCollection}
+          />
+        </div>
+      )}
 
       {isFormVisible && (
         <ExhibitionForm
@@ -206,21 +192,28 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
         />
       )}
 
-      {error && (
-        <div className="alert alert-danger mt-3" role="alert">
-          {error}
-        </div>
+      {showDeleteButton && (
+        <>
+          {" "}
+          <button
+            className="btn btn-danger mt-2"
+            onClick={() => handleShowDeleteModal("artwork", artwork.id)}
+            aria-label={`Delete artwork titled "${artwork.title}"`}
+          >
+            Delete artwork
+          </button>
+          <DeleteModal
+            show={showDeleteModal}
+            handleClose={closeDeleteModal}
+            handleDelete={handleDeleteFunction}
+            entityType={entityType}
+            entityId={entityId}
+          />
+        </>
       )}
 
-      {!error && successMessage && (
-        <div
-          className="alert alert-success mt-3"
-          role="alert"
-          style={{ maxWidth: "400px", margin: "0 auto" }}
-        >
-          {successMessage}
-        </div>
-      )}
+      {error && <ErrorMessage message={error} />}
+      {!error && successMessage && <SuccessMessage message={successMessage} />}
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useQuery } from "../context/QueryContext";
 import { useType } from "../context/TypeContext";
+import { ErrorMessage } from "./ErrorMessage";
 
 interface SearchBarProps {
   sortOption: string;
@@ -125,7 +126,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
         </div>
       </div>
 
-      {errorMessage && <div className="text-danger mt-2">{errorMessage}</div>}
+      {errorMessage && <ErrorMessage message={errorMessage} />}
     </div>
   );
 };
