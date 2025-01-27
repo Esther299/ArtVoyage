@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import ArtworkCard from "./ArtworkCard";
+import ArtworkCard from "./Artwork/ArtworkCard";
 import Pagination from "./Pagination";
-import { sortArtworks } from "../utils/artworkSorting";
-import { paginate } from "../utils/paginating";
-import { Artwork } from "../types/types";
+import { sortArtworks } from "../../utils/artworkSorting";
+import { paginate } from "../../utils/paginating";
+import { Artwork } from "../../types/types";
 
 interface ArtworksListProps {
   artworks: Artwork[];

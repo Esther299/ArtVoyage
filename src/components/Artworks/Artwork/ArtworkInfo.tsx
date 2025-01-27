@@ -1,5 +1,5 @@
 import React from "react";
-import { Artwork } from "../types/types";
+import { Artwork } from "../../../types/types";
 import fallbackImage from "../assets/imageNotAvailable.jpg";
 
 interface ArtworkInfoProps {

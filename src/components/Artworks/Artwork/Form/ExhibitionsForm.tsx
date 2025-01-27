@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { formatDate } from "../utils/dateFormatting";
+import { formatDate } from "../../../../utils/dateFormatting";
 
 interface ExhibitionFormProps {
   exhibitions: any[];
@@ -68,7 +68,6 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({
       className="mt-4 p-4 rounded shadow-sm"
       style={{ background: "rgba(204, 173, 227, 0.84)" }}
     >
-
       {successMessage && (
         <div className="alert alert-success" role="alert">
           {successMessage}

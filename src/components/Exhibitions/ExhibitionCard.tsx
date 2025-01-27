@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Exhibition } from "../types/types";
-import { useMuseum } from "../context/MuseumContext";
-import { formatExhibitionDateRange } from "../utils/dateFormatting";
-import DeleteModal from "./DeleteModal";
-import EditExhibitionModal from "../components/EditExhibitionModal";
-import { useDeleteModal } from "../context/DeleteContext";
-import { ArtworkInfo } from "./ArtworkInfo";
+import { Exhibition } from "../../types/types";
+import { useMuseum } from "../../context/MuseumContext";
+import { formatExhibitionDateRange } from "../../utils/dateFormatting";
+import DeleteModal from "../DeleteModal";
+import EditExhibitionModal from "./EditExhibitionModal";
+import { useDeleteModal } from "../../context/DeleteContext";
+import { ArtworkInfo } from "../Artworks/Artwork/ArtworkInfo";
 
 interface ExhibitionCardProps {
   exhibition: Exhibition;
@@ -36,7 +36,7 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
     entityType,
     entityId,
     closeDeleteModal,
-  } = useDeleteModal(); 
+  } = useDeleteModal();
 
   const date = formatExhibitionDateRange(
     exhibition.startDate,

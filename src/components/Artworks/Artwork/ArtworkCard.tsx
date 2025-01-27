@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Artwork } from "../types/types";
-import { useCollection } from "../context/CollectionContext";
-import { useExhibitions } from "../context/ExhibitionContext";
-import { useMuseum } from "../context/MuseumContext";
-import { auth } from "../firebase/firebase";
-import ExhibitionForm from "./ExhibitionsForm";
+import { Artwork } from "../../../types/types";
+import { useCollection } from "../../../context/CollectionContext";
+import { useExhibitions } from "../../../context/ExhibitionContext";
+import { useMuseum } from "../../../context/MuseumContext";
+import { auth } from "../../../firebase/firebase";
+import ExhibitionForm from "./Form/ExhibitionsForm";
 import { Button } from "./Button";
 import { ArtworkInfo } from "./ArtworkInfo";
-import { ErrorMessage } from "./ErrorMessage";
-import { SuccessMessage } from "./SuccessMessage";
-import DeleteModal from "./DeleteModal";
-import { handleFirestoreError } from "../utils/handleErrors";
-import { useDeleteModal } from "../context/DeleteContext";
+import { ErrorMessage } from "../../ErrorMessage";
+import { SuccessMessage } from "../../SuccessMessage";
+import DeleteModal from "../../DeleteModal";
+import { handleFirestoreError } from "../../../utils/handleErrors";
+import { useDeleteModal } from "../../../context/DeleteContext";
 
 interface ArtworkCardProps {
   artwork: Artwork;
@@ -68,10 +68,9 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
 
   const handleDeleteFunction = async (id: string | number) => {
     if (handleDelete) {
-      return handleDelete(id)
-    }
-    else {
-      return
+      return handleDelete(id);
+    } else {
+      return;
     }
   };
 

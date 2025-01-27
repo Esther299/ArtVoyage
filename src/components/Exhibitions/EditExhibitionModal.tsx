@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Exhibition } from "../types/types";
+import { Exhibition } from "../../types/types";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 

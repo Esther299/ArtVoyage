@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useExhibitions } from "../context/ExhibitionContext";
 import { Exhibition } from "../types/types";
-import ExhibitionCard from "../components/ExhibitionCard";
+import ExhibitionCard from "../components/Exhibitions/ExhibitionCard";
 
 const ExhibitionDetail: React.FC = () => {
   const { exhibitionId } = useParams();

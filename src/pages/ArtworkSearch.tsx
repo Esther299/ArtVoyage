@@ -5,7 +5,7 @@ import { useQuery } from "../context/QueryContext";
 import { useType } from "../context/TypeContext";
 import { useArtworks } from "../hooks/useArtworks";
 import SearchBar from "../components/SearchBar";
-import ArtworkList from "../components/ArtworkList";
+import ArtworkList from "../components/Artworks/ArtworkList";
 import { SortDirection } from "../utils/artworkSorting";
 
 const SearchPage: React.FC = () => {

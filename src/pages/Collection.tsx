@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useCollectionData } from "../hooks/useCollectionData";
 import { paginate } from "../utils/paginating";
-import ArtworkList from "../components/ArtworkList";
+import ArtworkList from "../components/Artworks/ArtworkList";
 import { SortDirection } from "../utils/artworkSorting";
 import { handleFirestoreError } from "../utils/handleErrors";
 
