@@ -97,6 +97,7 @@ const SearchPage: React.FC = () => {
               artworks={artworks}
               showSearch={true}
               showCollection={false}
+              showExhibition={false}
             />
           )}
         </Col>

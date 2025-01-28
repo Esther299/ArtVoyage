@@ -12,6 +12,7 @@ interface ArtworksListProps {
   handleDelete?: (id: string | number) => Promise<void>;
   showCollection: boolean;
   showSearch: boolean;
+  showExhibition: boolean;
 }
 
 const ArtworkList: React.FC<ArtworksListProps> = ({
@@ -19,6 +20,7 @@ const ArtworkList: React.FC<ArtworksListProps> = ({
   handleDelete,
   showCollection,
   showSearch,
+  showExhibition,
 }) => {
   const [sortOption, setSortOption] = useState<string>("artist");
   const [sortDirection, setSortDirection] = useState<SortDirection>({
@@ -101,6 +103,7 @@ const ArtworkList: React.FC<ArtworksListProps> = ({
                   handleDelete={handleDelete}
                   showCollection={showCollection}
                   showSearch={showSearch}
+                  showExhibition={showExhibition}
                 />
               </Card>
             </Col>

@@ -73,6 +73,7 @@ const Collection = () => {
             handleDelete={handleDelete}
             showCollection={true}
             showSearch={false}
+            showExhibition={false}
           />
         </Col>
       </Row>

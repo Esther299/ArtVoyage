@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { Container, Row, Col, Button } from "react-bootstrap";
 import { Exhibition } from "../../types/types";
 import { useMuseum } from "../../context/MuseumContext";
 import { formatExhibitionDateRange } from "../../utils/dateFormatting";
 import DeleteModal from "../DeleteModal";
 import EditExhibitionModal from "./EditExhibitionModal";
 import { useDeleteModal } from "../../context/DeleteContext";
-import { ArtworkInfo } from "../Artworks/Artwork/ArtworkInfo";
+import ArtworkList from "../Artworks/ArtworkList";
 
 interface ExhibitionCardProps {
   exhibition: Exhibition;
@@ -26,10 +27,10 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
 }) => {
   const { setSelectedMuseum } = useMuseum();
   const [showEditModal, setShowEditModal] = useState(false);
-
   const [editingExhibition, setEditingExhibition] = useState<Exhibition | null>(
     null
   );
+
   const {
     setEntityToDelete,
     showDeleteModal,
@@ -69,74 +70,33 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
   };
 
   return (
-    <div className="container py-5">
-      <div className="row mb-4">
-        <div
-          className="col-12 text-center text-white py-3"
-          style={{ background: "rgba(47, 21, 68, 0.84)" }}
-        >
-          <h1>{exhibition.name}</h1>
+    <Container fluid className="p-4 d-flex flex-column">
+      <Row
+        className="align-items-center text-center py-3 text-white rounded shadow mb-4"
+        style={{ backgroundColor: "rgba(84, 37, 122, 0.84)" }}
+      >
+        <Col>
+          <h1 className="display-4 fw-bold m-0">{exhibition.name}</h1>
           <p>{date}</p>
-        </div>
-      </div>
+          </Col>
+      </Row>
 
-      <div className="row">
-        <ul
-          className="d-flex flex-wrap list-unstyled"
-          style={{ gap: "1.5rem", justifyContent: "center" }}
-        >
-          {exhibition.artworks.map((artwork) => (
-            <li
-              key={artwork.id}
-              className="shadow-sm p-3 text-center"
-              style={{
-                background: "rgba(173, 146, 194, 0.84)",
-                flex: "1 1 calc(50% - 1.5rem)",
-                maxWidth: "calc(50% - 1.5rem)",
-                borderRadius: "10px",
-                transition: "transform 0.3s, box-shadow 0.3s",
-                cursor: "pointer",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "scale(1.03)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "scale(1)";
-              }}
-              aria-label={`View details of ${artwork.title}`}
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  window.location.href = `/artwork/${artwork.id}`;
-                }
-              }}
-            >
-              <div className="artwork-card">
-                <Link
-                  to={`/artwork/${artwork.id}`}
-                  className="text-decoration-none text-reset d-block h-100"
-                  aria-label={`View details for artwork titled "${artwork.title}"`}
-                  onClick={() => setSelectedMuseum(artwork.source)}
-                >
-                  <ArtworkInfo artwork={artwork} />
-                </Link>
-
-                <button
-                  className="btn btn-danger"
-                  onClick={() => handleShowDeleteModal("artwork", artwork.id)}
-                  aria-label={`Delete artwork titled "${artwork.title}"`}
-                >
-                  Delete artwork
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
-
+      <Row>
+        <Col>
+          <ArtworkList
+            artworks={exhibition.artworks}
+            handleDelete={handleDelete}
+            showCollection={false}
+            showSearch={false}
+            showExhibition={true}
+          />
+        </Col>
+      </Row>
+      <Row>
+      <Col>
         <div className="col-12 mb-4">
           <div
             className="card p-4"
-            style={{ background: "rgba(117, 92, 176, 0.84)" }}
           >
             <div className="d-flex justify-content-between">
               <button
@@ -158,7 +118,8 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
             </div>
           </div>
         </div>
-      </div>
+      </Col>
+      </Row>
 
       <EditExhibitionModal
         show={showEditModal}
@@ -174,7 +135,7 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
         entityType={entityType}
         entityId={entityId}
       />
-    </div>
+    </Container>
   );
 };
 

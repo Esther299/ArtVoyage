@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Container, Row, Col, Form, Card } from "react-bootstrap";
 import { Artwork } from "../../../types/types";
 import { useCollection } from "../../../context/CollectionContext";
 import { useExhibitions } from "../../../context/ExhibitionContext";
@@ -20,6 +19,7 @@ interface ArtworkCardProps {
   handleDelete?: (id: string | number) => Promise<void>;
   showCollection: boolean;
   showSearch: boolean;
+  showExhibition: boolean;
 }
 
 const ArtworkCard: React.FC<ArtworkCardProps> = ({
@@ -27,6 +27,7 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
   handleDelete,
   showCollection,
   showSearch,
+  showExhibition,
 }) => {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [selectedExhibitionId, setSelectedExhibitionId] = useState<
@@ -149,12 +150,13 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
   };
 
   return (
-    <div className="card-body text-center m3"  
-    style={{
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100%',
-    }}>
+    <div className="card-body text-center mb-3"  
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+      }}
+    >
       <Link
         to={`/artwork/${artwork.id}`}
         className="text-decoration-none text-reset d-block"
@@ -166,45 +168,45 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
       >
         <ArtworkInfo artwork={artwork} />
       </Link>
-
-      
-        <div className="d-flex justify-content-center gap-3 mt-3" style={{ flex: '0 0 auto' }}>
+  
+      <div className="d-flex justify-content-center gap-3 mt-3" style={{ flex: '0 0 auto' }}>
+        {(showSearch || showCollection) && (
           <Button
             onClick={handleAddToExhibitionClick}
             label="Add to an Exhibition"
             isHovered={isExhibitionHovered}
             setIsHovered={setIsExhibitionHovered}
           />
-          {showSearch && (
+        )}
+        {showSearch && (
           <Button
             onClick={handleAddToCollectionClick}
             label={loadingCollection ? "Adding..." : "Add to Collection"}
             isHovered={isCollectionHovered}
             setIsHovered={setIsCollectionHovered}
             disabled={isFormVisible || loadingCollection}
-          /> )}
-          {showCollection && (
-        <>
-          {" "}
-          <button
-            className="btn btn-danger"
-            onClick={() => handleShowDeleteModal("artwork", artwork.id)}
-            aria-label={`Delete artwork titled "${artwork.title}"`}
-          >
-            Delete artwork
-          </button>
-          <DeleteModal
-            show={showDeleteModal}
-            handleClose={closeDeleteModal}
-            handleDelete={handleDeleteFunction}
-            entityType={entityType}
-            entityId={entityId}
           />
-        </>
-      )}
-        </div>
-     
-
+        )}
+        {(showExhibition || showCollection) && (
+          <>
+            <button
+              className="btn btn-danger"
+              onClick={() => handleShowDeleteModal("artwork", artwork.id)}
+              aria-label={`Delete artwork titled "${artwork.title}"`}
+            >
+              Delete artwork
+            </button>
+            <DeleteModal
+              show={showDeleteModal}
+              handleClose={closeDeleteModal}
+              handleDelete={handleDeleteFunction}
+              entityType={entityType}
+              entityId={entityId}
+            />
+          </>
+        )}
+      </div>
+  
       {isFormVisible && (
         <ExhibitionForm
           exhibitions={exhibitions}
@@ -221,13 +223,11 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
           successMessage={successMessage}
         />
       )}
-
-      
-
-<div style={{ flex: '0 0 auto' }}>
-    {error && <ErrorMessage message={error} />}
-    {!error && successMessage && <SuccessMessage message={successMessage} />}
-  </div>
+  
+      <div style={{ flex: '0 0 auto' }}>
+        {error && <ErrorMessage message={error} />}
+        {!error && successMessage && <SuccessMessage message={successMessage} />}
+      </div>
     </div>
   );
 };
