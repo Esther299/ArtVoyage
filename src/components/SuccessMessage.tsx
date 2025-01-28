@@ -1,4 +1,5 @@
 import React from "react";
+import { Row, Col } from "react-bootstrap";
 
 interface SuccessMessageProps {
   message: string;
@@ -6,12 +7,12 @@ interface SuccessMessageProps {
 
 export const SuccessMessage: React.FC<SuccessMessageProps> = ({ message }) => {
   return (
-    <div
-      className="alert alert-success mt-3"
-      role="alert"
-      style={{ maxWidth: "400px", margin: "0 auto" }}
-    >
-      {message}
-    </div>
+    <Row className="justify-content-center mt-3">
+    <Col md={6}>
+      <div className="alert alert-success text-center" role="alert">
+        {message}
+      </div>
+    </Col>
+  </Row>
   );
 };

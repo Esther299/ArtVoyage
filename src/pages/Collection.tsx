@@ -71,8 +71,8 @@ const Collection = () => {
           <ArtworkList
             artworks={artworks}
             handleDelete={handleDelete}
-            showDeleteButton={true}
-            showSearchFunctions={false}
+            showCollection={true}
+            showSearch={false}
           />
         </Col>
       </Row>

@@ -95,8 +95,8 @@ const SearchPage: React.FC = () => {
           {!loading && !error && artworks.length > 0 && (
             <ArtworkList
               artworks={artworks}
-              showSearchFunctions={true}
-              showDeleteButton={false}
+              showSearch={true}
+              showCollection={false}
             />
           )}
         </Col>

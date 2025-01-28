@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Container, Row, Col, Form, Button, ListGroup } from "react-bootstrap";
+import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
 import ArtworkCard from "./Artwork/ArtworkCard";
 import Pagination from "./Pagination";
 import { sortArtworks } from "../../utils/artworkSorting";
@@ -10,15 +10,15 @@ import { Artwork } from "../../types/types";
 interface ArtworksListProps {
   artworks: Artwork[];
   handleDelete?: (id: string | number) => Promise<void>;
-  showDeleteButton: boolean;
-  showSearchFunctions: boolean;
+  showCollection: boolean;
+  showSearch: boolean;
 }
 
 const ArtworkList: React.FC<ArtworksListProps> = ({
   artworks,
   handleDelete,
-  showDeleteButton,
-  showSearchFunctions,
+  showCollection,
+  showSearch,
 }) => {
   const [sortOption, setSortOption] = useState<string>("artist");
   const [sortDirection, setSortDirection] = useState<SortDirection>({
@@ -45,7 +45,7 @@ const ArtworkList: React.FC<ArtworksListProps> = ({
   };
 
   return (
-    <Container className="my-4">
+    <Container className="my-2">
       <Row className="justify-content-center">
         <Col md={4} className="mb-3">
           <Form.Group className="d-flex">
@@ -71,60 +71,57 @@ const ArtworkList: React.FC<ArtworksListProps> = ({
       </Row>
 
       {currentArtworks.length > 0 && (
-        <ul
-          className="d-flex flex-wrap list-unstyled"
-          style={{ gap: "1.5rem", justifyContent: "center" }}
-        >
+        <Row className="g-5">
           {currentArtworks.map((artwork) => (
-            <li
-              key={artwork.id}
-              className="shadow-sm p-3 text-center"
-              style={{
-                background: "rgba(173, 146, 194, 0.84)",
-                flex: "1 1 calc(50% - 1.5rem)",
-                maxWidth: "calc(50% - 1.5rem)",
-                borderRadius: "10px",
-                transition: "transform 0.3s, box-shadow 0.3s",
-                cursor: "pointer",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "scale(1.03)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "scale(1)";
-              }}
-              aria-label={`View details of ${artwork.title}`}
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  window.location.href = `/artwork/${artwork.id}`;
-                }
-              }}
-            >
-              <ArtworkCard
-                artwork={artwork}
-                handleDelete={handleDelete}
-                showDeleteButton={showDeleteButton}
-                showSearchFunctions={showSearchFunctions}
-              />
-            </li>
+            <Col xs={12} sm={6} md={6} lg={6} key={artwork.id}>
+              <Card
+                className="shadow-lg p-5 w-100 h-100"
+                style={{
+                  borderRadius: "10px",
+                  transition: "transform 0.3s, box-shadow 0.3s",
+                  cursor: "pointer",
+                  overflow: "auto",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "scale(1.03)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "scale(1)";
+                }}
+                aria-label={`View details of ${artwork.title}`}
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    window.location.href = `/artwork/${artwork.id}`;
+                  }
+                }}
+              >
+                <ArtworkCard
+                  artwork={artwork}
+                  handleDelete={handleDelete}
+                  showCollection={showCollection}
+                  showSearch={showSearch}
+                />
+              </Card>
+            </Col>
           ))}
-        </ul>
+        </Row>
       )}
 
       {totalPages > 1 && (
-        <>
+        
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={setCurrentPage}
-          />
-          <div className="text-center mt-2">
+          />)}
+          {totalPages > 0 && (
+          <div className="text-center mt-3">
             <small className="text-muted">
               Page {currentPage} of {totalPages}
             </small>
           </div>
-        </>
+        
       )}
     </Container>
   );
