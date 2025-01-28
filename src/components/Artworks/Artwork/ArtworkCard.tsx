@@ -150,7 +150,7 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
   };
 
   return (
-    <div className="card-body text-center mb-3"  
+    <div className="card-body text-center"  
       style={{
         display: 'flex',
         flexDirection: 'column',

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { Exhibition } from "../../types/types";
 import { useMuseum } from "../../context/MuseumContext";
@@ -71,18 +70,13 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
 
   return (
     <Container fluid className="p-4 d-flex flex-column">
-      <Row
-        className="align-items-center text-center py-3 text-white rounded shadow mb-4"
-        style={{ backgroundColor: "rgba(84, 37, 122, 0.84)" }}
-      >
+      <Row className="align-items-center text-center py-3 text-white rounded shadow mb-4" style={{ backgroundColor: "rgba(84, 37, 122, 0.84)" }}>
         <Col>
           <h1 className="display-4 fw-bold m-0">{exhibition.name}</h1>
           <p>{date}</p>
-          </Col>
+        </Col>
       </Row>
-
-      <Row>
-        <Col>
+  
           <ArtworkList
             artworks={exhibition.artworks}
             handleDelete={handleDelete}
@@ -90,44 +84,57 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
             showSearch={false}
             showExhibition={true}
           />
+  
+      <Row className="mb-4 w-50 mx-auto"
+      style={{
+              backgroundColor: 'transparent',  
+              border: '2px solid rgba(84, 37, 122, 0.84)',
+              borderRadius: '10px',
+              padding: '20px',
+            }}>
+        <Col className="d-flex justify-content-between">
+          <button
+            onClick={() => handleShowEditModal(exhibition)}
+            className="btn btn-warning btn-lg" style={{ transition: "transform 0.3s, box-shadow 0.3s",
+              cursor: "pointer",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "scale(1.03)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1)";
+            }}
+            aria-label={`Edit exhibition ${exhibition.name}`}
+          >
+            Edit Exhibition
+          </button>
+  
+          <button
+            onClick={() => handleShowDeleteModal("exhibition", exhibition.id)}
+            className="btn text-light btn-lg"
+            aria-label={`Delete exhibition ${exhibition.name}`}
+            style={{background: "rgba(133, 50, 38, 0.84)", transition: "transform 0.3s, box-shadow 0.3s",
+              cursor: "pointer",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "scale(1.03)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1)";
+            }}
+          >
+            Delete Exhibition
+          </button>
         </Col>
       </Row>
-      <Row>
-      <Col>
-        <div className="col-12 mb-4">
-          <div
-            className="card p-4"
-          >
-            <div className="d-flex justify-content-between">
-              <button
-                onClick={() => handleShowEditModal(exhibition)}
-                className="btn btn-warning btn-lg"
-                aria-label={`Edit exhibition ${exhibition.name}`}
-              >
-                Edit Exhibition
-              </button>
-              <button
-                onClick={() =>
-                  handleShowDeleteModal("exhibition", exhibition.id)
-                }
-                className="btn btn-danger btn-lg"
-                aria-label={`Delete exhibition ${exhibition.name}`}
-              >
-                Delete Exhibition
-              </button>
-            </div>
-          </div>
-        </div>
-      </Col>
-      </Row>
-
+  
       <EditExhibitionModal
         show={showEditModal}
         handleClose={closeEditModal}
         handleEditExhibition={handleEditExhibition}
         exhibition={editingExhibition}
       />
-
+  
       <DeleteModal
         show={showDeleteModal}
         handleClose={closeDeleteModal}
@@ -137,6 +144,7 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
       />
     </Container>
   );
+  
 };
 
 export default ExhibitionCard;

@@ -73,7 +73,7 @@ const ArtworkList: React.FC<ArtworksListProps> = ({
       </Row>
 
       {currentArtworks.length > 0 && (
-        <Row className="g-5">
+        <Row className="g-4 justify-content-center">
           {currentArtworks.map((artwork) => (
             <Col xs={12} sm={6} md={6} lg={6} key={artwork.id}>
               <Card
