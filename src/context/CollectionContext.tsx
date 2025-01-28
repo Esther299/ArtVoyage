@@ -16,7 +16,6 @@ const CollectionContext = createContext<CollectionContextType | undefined>(
 export const CollectionProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-
   const {
     collectionState,
     addToCollection,

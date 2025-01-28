@@ -32,7 +32,7 @@ const Exhibitions: React.FC = () => {
       </Row>
 
       {loading && <LoadingSpinner />}
-  
+
       {exhibitions.length > 0 && (
         <>
           <Row className="justify-content-center">
@@ -57,18 +57,17 @@ const Exhibitions: React.FC = () => {
                     aria-label={`Manage exhibition ${exhibition.name}`}
                   >
                     <Card.Body className="d-flex flex-column">
-
                       <Card.Title className="text-decoration-underline text-center text-dark py-3 fs-2">
                         {exhibition.name}
                       </Card.Title>
-  
+
                       <Card.Text className="text-center text-muted">
                         {formatExhibitionDateRange(
                           exhibition.startDate,
                           exhibition.endDate
                         )}
                       </Card.Text>
- 
+
                       <Card.Img
                         src={exhibition.image}
                         alt={`Exhibition titled "${exhibition.name}"`}
@@ -80,24 +79,29 @@ const Exhibitions: React.FC = () => {
                           paddingTop: "30px",
                         }}
                       />
-
-                      <ListGroup className="list-group-flush">
-                        <h5 className="text-decoration-underline">
-                          What you will be seeing:
-                        </h5>
+                      <h5 className="text-decoration-underline mt-3 mx-2">
+                        What you will be seeing:
+                      </h5>
+                      <ListGroup
+                        className="list-group-flush"
+                        style={{
+                          maxHeight: "200px",
+                          overflowY: "auto",
+                        }}
+                      >
                         {exhibition.artworks.map((artwork) => (
                           <ListGroup.Item key={artwork.id} className="mb-3">
                             <div>
                               <span className="ms-2 d-block">
-                                "{artwork.title}" by <i>{artwork.artist_title}</i>
+                                "{artwork.title}" by{" "}
+                                <i>{artwork.artist_title}</i>
                               </span>
                             </div>
                           </ListGroup.Item>
                         ))}
                       </ListGroup>
-  
-                      {/* Created Date */}
-                      <Card.Text className="text-center text-muted">
+
+                      <Card.Text className="text-center text-muted mt-auto">
                         Created at {formatTimestamp(exhibition.createdAt)}
                       </Card.Text>
                     </Card.Body>

@@ -27,11 +27,10 @@ export const ArtworkInfo: React.FC<ArtworkInfoProps> = ({ artwork }) => {
       <p className="text-muted fst-italic mb-1 fs-5">
         Created by <strong>{artwork.artist_title}</strong> in {artwork.date}
       </p>
-      <p >{artwork.medium_display}</p>
+      <p>{artwork.medium_display}</p>
       <p className="text-secondary small text-center mt-2">
         <span className="fw-bold">Source:</span> {artwork.copyright}
       </p>
     </>
   );
 };
-

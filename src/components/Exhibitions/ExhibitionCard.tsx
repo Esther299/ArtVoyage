@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { Container, Row, Col, Button } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import { Exhibition } from "../../types/types";
-import { useMuseum } from "../../context/MuseumContext";
 import { formatExhibitionDateRange } from "../../utils/dateFormatting";
 import DeleteModal from "../DeleteModal";
 import EditExhibitionModal from "./EditExhibitionModal";
@@ -24,7 +23,6 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
   handleDeleteArtwork,
   handleEditExhibition,
 }) => {
-  const { setSelectedMuseum } = useMuseum();
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingExhibition, setEditingExhibition] = useState<Exhibition | null>(
     null
@@ -70,32 +68,39 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
 
   return (
     <Container fluid className="p-4 d-flex flex-column">
-      <Row className="align-items-center text-center py-3 text-white rounded shadow mb-4" style={{ backgroundColor: "rgba(84, 37, 122, 0.84)" }}>
+      <Row
+        className="align-items-center text-center py-3 text-white rounded shadow mb-4"
+        style={{ backgroundColor: "rgba(84, 37, 122, 0.84)" }}
+      >
         <Col>
           <h1 className="display-4 fw-bold m-0">{exhibition.name}</h1>
           <p>{date}</p>
         </Col>
       </Row>
-  
-          <ArtworkList
-            artworks={exhibition.artworks}
-            handleDelete={handleDelete}
-            showCollection={false}
-            showSearch={false}
-            showExhibition={true}
-          />
-  
-      <Row className="mb-4 w-50 mx-auto"
-      style={{
-              backgroundColor: 'transparent',  
-              border: '2px solid rgba(84, 37, 122, 0.84)',
-              borderRadius: '10px',
-              padding: '20px',
-            }}>
+
+      <ArtworkList
+        artworks={exhibition.artworks}
+        handleDelete={handleDelete}
+        showCollection={false}
+        showSearch={false}
+        showExhibition={true}
+      />
+
+      <Row
+        className="mb-4 w-50 mx-auto"
+        style={{
+          backgroundColor: "transparent",
+          border: "2px solid rgba(84, 37, 122, 0.84)",
+          borderRadius: "10px",
+          padding: "20px",
+        }}
+      >
         <Col className="d-flex justify-content-between">
           <button
             onClick={() => handleShowEditModal(exhibition)}
-            className="btn btn-warning btn-lg" style={{ transition: "transform 0.3s, box-shadow 0.3s",
+            className="btn btn-warning btn-lg"
+            style={{
+              transition: "transform 0.3s, box-shadow 0.3s",
               cursor: "pointer",
             }}
             onMouseEnter={(e) => {
@@ -108,12 +113,14 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
           >
             Edit Exhibition
           </button>
-  
+
           <button
             onClick={() => handleShowDeleteModal("exhibition", exhibition.id)}
             className="btn text-light btn-lg"
             aria-label={`Delete exhibition ${exhibition.name}`}
-            style={{background: "rgba(133, 50, 38, 0.84)", transition: "transform 0.3s, box-shadow 0.3s",
+            style={{
+              background: "rgba(133, 50, 38, 0.84)",
+              transition: "transform 0.3s, box-shadow 0.3s",
               cursor: "pointer",
             }}
             onMouseEnter={(e) => {
@@ -127,14 +134,14 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
           </button>
         </Col>
       </Row>
-  
+
       <EditExhibitionModal
         show={showEditModal}
         handleClose={closeEditModal}
         handleEditExhibition={handleEditExhibition}
         exhibition={editingExhibition}
       />
-  
+
       <DeleteModal
         show={showDeleteModal}
         handleClose={closeDeleteModal}
@@ -144,7 +151,6 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
       />
     </Container>
   );
-  
 };
 
 export default ExhibitionCard;

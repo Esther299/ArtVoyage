@@ -112,19 +112,18 @@ const ArtworkList: React.FC<ArtworksListProps> = ({
       )}
 
       {totalPages > 1 && (
-        
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />)}
-          {totalPages > 0 && (
-          <div className="text-center mt-3">
-            <small className="text-muted">
-              Page {currentPage} of {totalPages}
-            </small>
-          </div>
-        
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
+      )}
+      {totalPages > 0 && (
+        <div className="text-center mt-3">
+          <small className="text-muted">
+            Page {currentPage} of {totalPages}
+          </small>
+        </div>
       )}
     </Container>
   );

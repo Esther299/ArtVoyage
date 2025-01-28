@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Container, Row, Col, Button } from "react-bootstrap";
+import { Row, Col, Button } from "react-bootstrap";
 import { useExhibitions } from "../context/ExhibitionContext";
 import { Exhibition } from "../types/types";
 import ExhibitionCard from "../components/Exhibitions/ExhibitionCard";
@@ -119,32 +119,32 @@ const ExhibitionDetail: React.FC = () => {
         handleEditExhibition={handleEditExhibition}
       />
 
-<Row className="mb-5 justify-content-center">
-      <Col className="text-center">
-        <Button
-          onClick={handleAddArtwork}
-          variant="primary"
-          size="lg"
-          className="mx-2"
-          aria-label="Add new artwork to the exhibition"
-          style={{ maxWidth: "200px" }}
-        >
-          Add Artwork
-        </Button>
+      <Row className="mb-5 justify-content-center">
+        <Col className="text-center">
+          <Button
+            onClick={handleAddArtwork}
+            variant="primary"
+            size="lg"
+            className="mx-2"
+            aria-label="Add new artwork to the exhibition"
+            style={{ maxWidth: "200px" }}
+          >
+            Add Artwork
+          </Button>
 
-        <Button
-          variant="secondary"
-          size="lg"
-          className="mx-2"
-          onClick={() => window.history.back()}
-          aria-label="Go back to the previous page"
-          style={{ maxWidth: "200px" }}
-        >
-          Go Back
-        </Button>
-      </Col>
-    </Row>
-  </>
+          <Button
+            variant="secondary"
+            size="lg"
+            className="mx-2"
+            onClick={() => window.history.back()}
+            aria-label="Go back to the previous page"
+            style={{ maxWidth: "200px" }}
+          >
+            Go Back
+          </Button>
+        </Col>
+      </Row>
+    </>
   );
 };
 

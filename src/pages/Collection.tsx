@@ -46,7 +46,6 @@ const Collection = () => {
     }
   }, [successMessage]);
 
-
   return (
     <Container fluid className="p-4 d-flex flex-column">
       <Row

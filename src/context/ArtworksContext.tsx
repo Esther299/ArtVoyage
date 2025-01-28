@@ -20,7 +20,7 @@ export const ArtworksProvider: React.FC<ArtworksProviderProps> = ({
   const [artworks, setArtworks] = useState<Artwork[]>([]);
 
   return (
-    <ArtworksContext.Provider value={{ artworks, setArtworks}}>
+    <ArtworksContext.Provider value={{ artworks, setArtworks }}>
       {children}
     </ArtworksContext.Provider>
   );

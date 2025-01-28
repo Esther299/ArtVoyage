@@ -4,7 +4,9 @@ import { Artwork, Exhibition } from "../types/types";
 
 interface ExhibitionContextType {
   exhibitions: Exhibition[];
-  addExhibition: (exhibition: Omit<Exhibition, "id" | "image">) => Promise<void>;
+  addExhibition: (
+    exhibition: Omit<Exhibition, "id" | "image">
+  ) => Promise<void>;
   addArtworkToExhibition: (
     exhibitionId: string,
     artwork: Artwork

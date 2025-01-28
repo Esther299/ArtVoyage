@@ -150,11 +150,12 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
   };
 
   return (
-    <div className="card-body text-center"  
+    <div
+      className="card-body text-center"
       style={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100%',
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
       }}
     >
       <Link
@@ -163,13 +164,16 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
         aria-label={`View details for artwork titled "${artwork.title}"`}
         onClick={() => setSelectedMuseum(artwork.source)}
         style={{
-          flex: '1 0 auto',
+          flex: "1 0 auto",
         }}
       >
         <ArtworkInfo artwork={artwork} />
       </Link>
-  
-      <div className="d-flex justify-content-center gap-3 mt-3" style={{ flex: '0 0 auto' }}>
+
+      <div
+        className="d-flex justify-content-center gap-3 mt-3"
+        style={{ flex: "0 0 auto" }}
+      >
         {(showSearch || showCollection) && (
           <Button
             onClick={handleAddToExhibitionClick}
@@ -206,7 +210,7 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
           </>
         )}
       </div>
-  
+
       {isFormVisible && (
         <ExhibitionForm
           exhibitions={exhibitions}
@@ -223,10 +227,12 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
           successMessage={successMessage}
         />
       )}
-  
-      <div style={{ flex: '0 0 auto' }}>
+
+      <div style={{ flex: "0 0 auto" }}>
         {error && <ErrorMessage message={error} />}
-        {!error && successMessage && <SuccessMessage message={successMessage} />}
+        {!error && successMessage && (
+          <SuccessMessage message={successMessage} />
+        )}
       </div>
     </div>
   );

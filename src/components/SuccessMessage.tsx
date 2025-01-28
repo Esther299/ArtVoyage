@@ -8,11 +8,11 @@ interface SuccessMessageProps {
 export const SuccessMessage: React.FC<SuccessMessageProps> = ({ message }) => {
   return (
     <Row className="justify-content-center mt-3">
-    <Col md={6}>
-      <div className="alert alert-success text-center" role="alert">
-        {message}
-      </div>
-    </Col>
-  </Row>
+      <Col md={6}>
+        <div className="alert alert-success text-center" role="alert">
+          {message}
+        </div>
+      </Col>
+    </Row>
   );
 };
