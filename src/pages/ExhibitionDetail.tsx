@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { Row, Col, Button } from "react-bootstrap";
 import { useExhibitions } from "../context/ExhibitionContext";
 import { Exhibition } from "../types/types";
 import ExhibitionCard from "../components/Exhibitions/ExhibitionCard";
@@ -118,27 +119,31 @@ const ExhibitionDetail: React.FC = () => {
         handleEditExhibition={handleEditExhibition}
       />
 
-      <div className="col-12 mb-5">
-        <div className="text-center">
-          <button
+      <Row className="mb-5 justify-content-center">
+        <Col className="text-center">
+          <Button
             onClick={handleAddArtwork}
-            className="btn btn-outline-primary btn-lg mx-2"
+            variant="primary"
+            size="lg"
+            className="mx-2"
             aria-label="Add new artwork to the exhibition"
             style={{ maxWidth: "200px" }}
           >
             Add Artwork
-          </button>
+          </Button>
 
-          <button
-            className="btn btn-outline-secondary btn-lg mx-2"
+          <Button
+            variant="secondary"
+            size="lg"
+            className="mx-2"
             onClick={() => window.history.back()}
             aria-label="Go back to the previous page"
             style={{ maxWidth: "200px" }}
           >
             Go Back
-          </button>
-        </div>
-      </div>
+          </Button>
+        </Col>
+      </Row>
     </>
   );
 };

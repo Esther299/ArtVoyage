@@ -46,7 +46,6 @@ const Collection = () => {
     }
   }, [successMessage]);
 
-
   return (
     <Container fluid className="p-4 d-flex flex-column">
       <Row
@@ -71,8 +70,9 @@ const Collection = () => {
           <ArtworkList
             artworks={artworks}
             handleDelete={handleDelete}
-            showDeleteButton={true}
-            showSearchFunctions={false}
+            showCollection={true}
+            showSearch={false}
+            showExhibition={false}
           />
         </Col>
       </Row>

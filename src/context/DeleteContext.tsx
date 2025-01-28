@@ -25,7 +25,6 @@ export const useDeleteModal = (): DeleteModalContextType => {
   return context;
 };
 
-
 export const DeleteModalProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {

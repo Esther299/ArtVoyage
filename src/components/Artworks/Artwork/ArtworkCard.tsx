@@ -17,15 +17,17 @@ import { useDeleteModal } from "../../../context/DeleteContext";
 interface ArtworkCardProps {
   artwork: Artwork;
   handleDelete?: (id: string | number) => Promise<void>;
-  showDeleteButton: boolean;
-  showSearchFunctions: boolean;
+  showCollection: boolean;
+  showSearch: boolean;
+  showExhibition: boolean;
 }
 
 const ArtworkCard: React.FC<ArtworkCardProps> = ({
   artwork,
   handleDelete,
-  showDeleteButton,
-  showSearchFunctions,
+  showCollection,
+  showSearch,
+  showExhibition,
 }) => {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [selectedExhibitionId, setSelectedExhibitionId] = useState<
@@ -143,28 +145,44 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
         "Error adding to collection. Please try again."
       );
       setError(errorMessage);
+      setTimeout(() => setError(null), 5000);
     }
   };
 
   return (
-    <div className="artwork-card">
+    <div
+      className="card-body text-center"
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+      }}
+    >
       <Link
         to={`/artwork/${artwork.id}`}
-        className="text-decoration-none text-reset d-block h-100"
+        className="text-decoration-none text-reset d-block"
         aria-label={`View details for artwork titled "${artwork.title}"`}
         onClick={() => setSelectedMuseum(artwork.source)}
+        style={{
+          flex: "1 0 auto",
+        }}
       >
         <ArtworkInfo artwork={artwork} />
       </Link>
 
-      {showSearchFunctions && (
-        <div className="d-flex justify-content-center gap-3 mt-4">
+      <div
+        className="d-flex justify-content-center gap-3 mt-3"
+        style={{ flex: "0 0 auto" }}
+      >
+        {(showSearch || showCollection) && (
           <Button
             onClick={handleAddToExhibitionClick}
             label="Add to an Exhibition"
             isHovered={isExhibitionHovered}
             setIsHovered={setIsExhibitionHovered}
           />
+        )}
+        {showSearch && (
           <Button
             onClick={handleAddToCollectionClick}
             label={loadingCollection ? "Adding..." : "Add to Collection"}
@@ -172,8 +190,26 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
             setIsHovered={setIsCollectionHovered}
             disabled={isFormVisible || loadingCollection}
           />
-        </div>
-      )}
+        )}
+        {(showExhibition || showCollection) && (
+          <>
+            <button
+              className="btn btn-danger"
+              onClick={() => handleShowDeleteModal("artwork", artwork.id)}
+              aria-label={`Delete artwork titled "${artwork.title}"`}
+            >
+              Delete artwork
+            </button>
+            <DeleteModal
+              show={showDeleteModal}
+              handleClose={closeDeleteModal}
+              handleDelete={handleDeleteFunction}
+              entityType={entityType}
+              entityId={entityId}
+            />
+          </>
+        )}
+      </div>
 
       {isFormVisible && (
         <ExhibitionForm
@@ -192,28 +228,12 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({
         />
       )}
 
-      {showDeleteButton && (
-        <>
-          {" "}
-          <button
-            className="btn btn-danger mt-2"
-            onClick={() => handleShowDeleteModal("artwork", artwork.id)}
-            aria-label={`Delete artwork titled "${artwork.title}"`}
-          >
-            Delete artwork
-          </button>
-          <DeleteModal
-            show={showDeleteModal}
-            handleClose={closeDeleteModal}
-            handleDelete={handleDeleteFunction}
-            entityType={entityType}
-            entityId={entityId}
-          />
-        </>
-      )}
-
-      {error && <ErrorMessage message={error} />}
-      {!error && successMessage && <SuccessMessage message={successMessage} />}
+      <div style={{ flex: "0 0 auto" }}>
+        {error && <ErrorMessage message={error} />}
+        {!error && successMessage && (
+          <SuccessMessage message={successMessage} />
+        )}
+      </div>
     </div>
   );
 };

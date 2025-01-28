@@ -9,7 +9,7 @@ interface ArtworkInfoProps {
 export const ArtworkInfo: React.FC<ArtworkInfoProps> = ({ artwork }) => {
   return (
     <>
-      <h3 className="mb-3 fs-1 text-truncate" style={{ maxWidth: "100%" }}>
+      <h3 className="fs-1 text-truncate" style={{ maxWidth: "100%" }}>
         {artwork.title}
       </h3>
       <img
@@ -27,11 +27,10 @@ export const ArtworkInfo: React.FC<ArtworkInfoProps> = ({ artwork }) => {
       <p className="text-muted fst-italic mb-1 fs-5">
         Created by <strong>{artwork.artist_title}</strong> in {artwork.date}
       </p>
-      <p className="mb-2">{artwork.medium_display}</p>
+      <p>{artwork.medium_display}</p>
       <p className="text-secondary small text-center mt-2">
         <span className="fw-bold">Source:</span> {artwork.copyright}
       </p>
     </>
   );
 };
-

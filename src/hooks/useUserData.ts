@@ -52,7 +52,7 @@ const useUserData = (userId: string | null) => {
     setError(null);
 
     try {
-      validateUser(); 
+      validateUser();
       const userRef = doc(db, "users", userId);
       await updateDoc(userRef, updatedData);
       setUserData((prevData) => ({ ...prevData, ...updatedData }));

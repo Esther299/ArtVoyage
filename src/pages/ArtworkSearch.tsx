@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Button, Container, Card, Row, Col } from "react-bootstrap";
+import { Button, Container, Row, Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { useMuseum } from "../context/MuseumContext";
 import { useQuery } from "../context/QueryContext";
@@ -17,7 +17,6 @@ const SearchPage: React.FC = () => {
   const { type, setType } = useType();
   const { setSelectedMuseum } = useMuseum();
   const [museumDisplay, setMuseumDisplay] = useState("");
- 
 
   const { artworks, loading, error, setArtworks } = useArtworks(
     museumName || "",
@@ -46,13 +45,7 @@ const SearchPage: React.FC = () => {
     if (museumName) {
       setSelectedMuseum(museumName);
     }
-  }, [
-    setQuery,
-    setType,
-    setArtworks,
-    setSelectedMuseum,
-    museumName,
-  ]);
+  }, [setQuery, setType, setArtworks, setSelectedMuseum, museumName]);
 
   return (
     <Container fluid className="pb-2 vh-100 p-4 d-flex flex-column">
@@ -95,8 +88,9 @@ const SearchPage: React.FC = () => {
           {!loading && !error && artworks.length > 0 && (
             <ArtworkList
               artworks={artworks}
-              showSearchFunctions={true}
-              showDeleteButton={false}
+              showSearch={true}
+              showCollection={false}
+              showExhibition={false}
             />
           )}
         </Col>
@@ -112,7 +106,6 @@ const SearchPage: React.FC = () => {
       </Row>
     </Container>
   );
-
 };
 
 export default SearchPage;

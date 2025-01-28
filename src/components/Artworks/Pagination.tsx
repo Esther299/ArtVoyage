@@ -1,4 +1,5 @@
 import React from "react";
+import { Pagination as BootstrapPagination } from "react-bootstrap";
 
 interface PaginationProps {
   currentPage: number;
@@ -34,75 +35,40 @@ const Pagination: React.FC<PaginationProps> = ({
       i++
     ) {
       pageNumbers.push(
-        <li
+        <BootstrapPagination.Item
           key={i}
-          className={`page-item ${i === currentPage ? "active" : ""}`}
+          active={i === currentPage}
+          onClick={() => onPageChange(i)}
         >
-          <button
-            className="page-link"
-            onClick={() => onPageChange(i)}
-            disabled={i === currentPage}
-          >
-            {i}
-          </button>
-        </li>
+          {i}
+        </BootstrapPagination.Item>
       );
     }
     return pageNumbers;
   };
 
   return (
-    <nav aria-label="Pagination" className="my-4">
-      <ul className="pagination justify-content-center">
-        <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-          <button
-            className="page-link"
-            onClick={handleFirstPage}
-            disabled={currentPage === 1}
-          >
-            First
-          </button>
-        </li>
-        <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-          <button
-            className="page-link"
-            onClick={handlePrevPage}
-            disabled={currentPage === 1}
-          >
-            &laquo; Previous
-          </button>
-        </li>
+    <BootstrapPagination className="mt-4 justify-content-center">
+      <BootstrapPagination.First
+        onClick={handleFirstPage}
+        disabled={currentPage === 1}
+      />
+      <BootstrapPagination.Prev
+        onClick={handlePrevPage}
+        disabled={currentPage === 1}
+      />
 
-        {renderPageNumbers()}
+      {renderPageNumbers()}
 
-        <li
-          className={`page-item ${
-            currentPage === totalPages ? "disabled" : ""
-          }`}
-        >
-          <button
-            className="page-link"
-            onClick={handleNextPage}
-            disabled={currentPage === totalPages}
-          >
-            Next &raquo;
-          </button>
-        </li>
-        <li
-          className={`page-item ${
-            currentPage === totalPages ? "disabled" : ""
-          }`}
-        >
-          <button
-            className="page-link"
-            onClick={handleLastPage}
-            disabled={currentPage === totalPages}
-          >
-            Last
-          </button>
-        </li>
-      </ul>
-    </nav>
+      <BootstrapPagination.Next
+        onClick={handleNextPage}
+        disabled={currentPage === totalPages}
+      />
+      <BootstrapPagination.Last
+        onClick={handleLastPage}
+        disabled={currentPage === totalPages}
+      />
+    </BootstrapPagination>
   );
 };
 

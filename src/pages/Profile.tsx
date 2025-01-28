@@ -85,7 +85,7 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
       {userData ? (
         <Card
           className="mx-auto shadow-lg rounded"
-          style={{ maxWidth: "500px", background: "rgba(255, 255, 255, 0.9)" }}
+          style={{ maxWidth: "500px" }}
           aria-labelledby="userProfileCard"
         >
           <Card.Header
@@ -129,14 +129,14 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
             </Row>
             <div className="d-flex justify-content-between mt-3">
               <Button
-                variant="outline-warning"
+                variant="warning"
                 onClick={openEditModal}
                 aria-label="Edit User Information"
               >
                 <i className="fas fa-edit me-2"></i>Edit User
               </Button>
               <Button
-                variant="outline-danger"
+                variant="danger"
                 onClick={() => setShowDeleteModal(true)}
                 aria-label="Delete User Account"
               >

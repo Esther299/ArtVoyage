@@ -10,32 +10,10 @@ const Auth: React.FC = () => {
       <div className="row justify-content-center">
         <div className="col-sm-10 col-md-6 col-lg-5">
           <h1 className="text-center mb-4">Welcome to ArtVoyage</h1>
-
           <div
-            className="d-flex justify-content-center mb-4"
-            role="group"
-            aria-label="Login and Register options"
+            className="card shadow"
+            
           >
-            <button
-              className={`btn custom-btn ${
-                isLogin ? "active-btn" : "inactive-btn"
-              } me-2`}
-              onClick={() => setIsLogin(true)}
-              aria-pressed={isLogin}
-            >
-              Login
-            </button>
-            <button
-              className={`btn custom-btn ${
-                !isLogin ? "active-btn" : "inactive-btn"
-              }`}
-              onClick={() => setIsLogin(false)}
-              aria-pressed={!isLogin}
-            >
-              Register
-            </button>
-          </div>
-          <div className="card authcard shadow">
             <div className="card-body">
               {isLogin ? (
                 <div>

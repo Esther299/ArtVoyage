@@ -35,20 +35,17 @@ const Search: React.FC = () => {
       <Row className="justify-content-center mt-5">
         <Col md={4} sm={6} className="mb-4">
           <Card
-            className="shadow-lg h-100"
+            className="bg-light h-100"
             style={{
+              transition: "transform 0.3s, box-shadow 0.3s",
               cursor: "pointer",
-              transition: "transform 0.3s ease, background-color 0.3s ease",
-              background: "rgba(198, 169, 255, 0.9)",
             }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.backgroundColor =
-                "rgba(233, 196, 255, 0.9)")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.backgroundColor =
-                "rgba(198, 169, 255, 0.9)")
-            }
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "scale(1.03)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1)";
+            }}
           >
             <Link
               to="/search/museum/cleveland"
@@ -89,18 +86,15 @@ const Search: React.FC = () => {
           <Card
             className="shadow-lg h-100"
             style={{
+              transition: "transform 0.3s, box-shadow 0.3s",
               cursor: "pointer",
-              transition: "transform 0.3s ease, background-color 0.3s ease",
-              background: "rgba(198, 169, 255, 0.9)",
             }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.backgroundColor =
-                "rgba(233, 196, 255, 0.9)")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.backgroundColor =
-                "rgba(198, 169, 255, 0.9)")
-            }
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "scale(1.03)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1)";
+            }}
           >
             <Link
               to="/search/museum/chicago"
