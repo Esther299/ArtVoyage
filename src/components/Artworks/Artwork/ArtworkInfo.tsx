@@ -6,7 +6,7 @@ interface ArtworkInfoProps {
   artwork: Artwork;
 }
 
-export const ArtworkInfo: React.FC<ArtworkInfoProps> = ({ artwork }) => {
+const ArtworkInfo: React.FC<ArtworkInfoProps> = ({ artwork }) => {
   return (
     <>
       <h3 className="fs-1 text-truncate" style={{ maxWidth: "100%" }}>
@@ -34,3 +34,5 @@ export const ArtworkInfo: React.FC<ArtworkInfoProps> = ({ artwork }) => {
     </>
   );
 };
+
+export default ArtworkInfo;

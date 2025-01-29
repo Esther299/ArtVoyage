@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import useUserData from "../hooks/useUserData";
 import { Card, Button, Modal, Form, Image, Row, Col } from "react-bootstrap";
-import { ErrorMessage } from "../components/ErrorMessage";
+import ErrorMessage from "../components/ErrorMessage";
 import DeleteModal from "../components/DeleteModal";
-import { SuccessMessage } from "../components/SuccessMessage";
+import SuccessMessage from "../components/SuccessMessage";
 import LoadingSpinner from "../components/LoadingSpinner";
+import useUserData from "../hooks/useUserData";
 
 interface ProfileProps {
   user: { uid: string } | null;

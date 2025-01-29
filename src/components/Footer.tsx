@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Link } from "react-router-dom";
+import { Container, Row, Col } from "react-bootstrap";
 
 const Footer = () => {
   return (
@@ -9,15 +9,25 @@ const Footer = () => {
           <Col md={4}>
             <h5 className="fw-bold">About Us</h5>
             <p>
-              Welcome to <strong>ArtVoyage</strong> — a platform designed for art lovers, curators, and creatives. Discover, search, and explore thousands of artworks from different periods and styles, or curate your own personalized exhibitions to share with the world. Whether you're a museum professional, an art enthusiast, or simply someone who loves art, we provide the tools to help you create and showcase stunning exhibitions with ease.
+              Welcome to <strong>ArtVoyage</strong> — a platform designed for
+              art lovers, curators, and creatives. Discover, search, and explore
+              thousands of artworks from different periods and styles, or curate
+              your own personalized exhibitions to share with the world. Whether
+              you're a museum professional, an art enthusiast, or simply someone
+              who loves art, we provide the tools to help you create and
+              showcase stunning exhibitions with ease.
             </p>
           </Col>
 
-          <Col md={4} className="px-5">
+          <Col md={4}>
             <h5 className="fw-bold">Quick Links</h5>
             <ul className="list-unstyled">
               <li>
-                <Link to="/home" className="text-white text-decoration-none" aria-label="Go to homepage">
+                <Link
+                  to="/home"
+                  className="text-white text-decoration-none"
+                  aria-label="Go to homepage"
+                >
                   Home
                 </Link>
               </li>
@@ -99,7 +109,9 @@ const Footer = () => {
 
         <Row className="mt-4">
           <Col className="text-center">
-            <p className="mb-0">&copy; 2025 Northcoders. All Rights Reserved.</p>
+            <p className="mb-0">
+              &copy; 2025 Northcoders. All Rights Reserved.
+            </p>
           </Col>
         </Row>
       </Container>

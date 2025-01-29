@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Container, Row, Col, Button } from "react-bootstrap";
-import { useCollectionData } from "../hooks/useCollectionData";
 import ArtworkList from "../components/Artworks/ArtworkList";
-import { handleFirestoreError } from "../utils/handleErrors";
-import { ErrorMessage } from "../components/ErrorMessage";
-import { SuccessMessage } from "../components/SuccessMessage";
+import ErrorMessage from "../components/ErrorMessage";
+import SuccessMessage from "../components/SuccessMessage";
 import LoadingSpinner from "../components/LoadingSpinner";
+import { useCollectionData } from "../hooks/useCollectionData";
+import { handleFirestoreError } from "../utils/handleErrors";
 
 const Collection = () => {
   const {

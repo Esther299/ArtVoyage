@@ -10,10 +10,7 @@ const Auth: React.FC = () => {
       <div className="row justify-content-center">
         <div className="col-sm-10 col-md-6 col-lg-5">
           <h1 className="text-center mb-4">Welcome to ArtVoyage</h1>
-          <div
-            className="card shadow"
-            
-          >
+          <div className="card shadow">
             <div className="card-body">
               {isLogin ? (
                 <div>

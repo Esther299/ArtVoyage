@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button, Container, Form, Row, Col } from "react-bootstrap";
 import { useQuery } from "../context/QueryContext";
 import { useType } from "../context/TypeContext";
-import { ErrorMessage } from "./ErrorMessage";
+import ErrorMessage from "./ErrorMessage";
 
 const SearchBar: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);

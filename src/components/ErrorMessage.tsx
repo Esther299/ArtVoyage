@@ -5,7 +5,7 @@ interface ErrorMessageProps {
   message: string;
 }
 
-export const ErrorMessage: React.FC<ErrorMessageProps> = ({ message }) => {
+const ErrorMessage: React.FC<ErrorMessageProps> = ({ message }) => {
   return (
     <Row className="justify-content-center mt-3">
       <Col md={6}>
@@ -16,3 +16,5 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({ message }) => {
     </Row>
   );
 };
+
+export default ErrorMessage;

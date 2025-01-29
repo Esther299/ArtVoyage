@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { Button, Container, Row, Col, Card, ListGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../firebase/firebase";
 import { Link } from "react-router-dom";
 import { useExhibitions } from "../context/ExhibitionContext";
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -9,6 +8,7 @@ import {
   formatExhibitionDateRange,
   formatTimestamp,
 } from "../utils/dateFormatting";
+import { auth } from "../firebase/firebase";
 
 const Exhibitions: React.FC = () => {
   const { exhibitions, loading } = useExhibitions();

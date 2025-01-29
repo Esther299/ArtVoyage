@@ -2,11 +2,11 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Row, Col, Button } from "react-bootstrap";
 import { useExhibitions } from "../context/ExhibitionContext";
-import { Exhibition } from "../types/types";
 import ExhibitionCard from "../components/Exhibitions/ExhibitionCard";
-import { ErrorMessage } from "../components/ErrorMessage";
-import { SuccessMessage } from "../components/SuccessMessage";
+import ErrorMessage from "../components/ErrorMessage";
+import SuccessMessage from "../components/SuccessMessage";
 import { handleFirestoreError } from "../utils/handleErrors";
+import { Exhibition } from "../types/types";
 
 const ExhibitionDetail: React.FC = () => {
   const { exhibitionId } = useParams();

@@ -5,7 +5,7 @@ interface SuccessMessageProps {
   message: string;
 }
 
-export const SuccessMessage: React.FC<SuccessMessageProps> = ({ message }) => {
+const SuccessMessage: React.FC<SuccessMessageProps> = ({ message }) => {
   return (
     <Row className="justify-content-center mt-3">
       <Col md={6}>
@@ -16,3 +16,5 @@ export const SuccessMessage: React.FC<SuccessMessageProps> = ({ message }) => {
     </Row>
   );
 };
+
+export default SuccessMessage;

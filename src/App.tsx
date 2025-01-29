@@ -7,19 +7,18 @@ import {
 } from "react-router-dom";
 import AllProviders from "./context/AllProviders";
 import NavBar from "./components/NavBar";
+import Footer from "./components/Footer";
 import LoadingSpinner from "./components/LoadingSpinner";
+import Auth from "./pages/Auth";
 import Home from "./pages/Home";
 import Search from "./pages/Search";
 import Profile from "./pages/Profile";
 import SearchPage from "./pages/ArtworkSearch";
 import Exhibitions from "./pages/Exhibitions";
-import Auth from "./pages/Auth";
 import ArtworkDetail from "./pages/ArtworkDetail";
 import ExhibitionDetail from "./pages/ExhibitionDetail";
 import Collection from "./pages/Collection";
-import Footer from "./components/Footer";
 import { useAuth } from "./context/AuthContext";
-
 
 const AppContent: React.FC = () => {
   const { user, loading } = useAuth();
@@ -61,7 +60,7 @@ const AppContent: React.FC = () => {
             </Routes>
           )}
         </div>
-        {user && <Footer/>} 
+        {user && <Footer />}
       </div>
     </>
   );

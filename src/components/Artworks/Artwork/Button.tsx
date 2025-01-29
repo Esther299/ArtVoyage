@@ -8,7 +8,7 @@ interface ButtonProps {
   disabled?: boolean;
 }
 
-export const Button: React.FC<ButtonProps> = ({
+const Button: React.FC<ButtonProps> = ({
   onClick,
   label,
   isHovered,
@@ -33,3 +33,5 @@ export const Button: React.FC<ButtonProps> = ({
     </button>
   );
 };
+
+export default Button;

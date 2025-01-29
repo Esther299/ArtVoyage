@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import { Exhibition } from "../../types/types";
-import { formatExhibitionDateRange } from "../../utils/dateFormatting";
+import { useDeleteModal } from "../../context/DeleteContext";
 import DeleteModal from "../DeleteModal";
 import EditExhibitionModal from "./EditExhibitionModal";
-import { useDeleteModal } from "../../context/DeleteContext";
 import ArtworkList from "../Artworks/ArtworkList";
+import { formatExhibitionDateRange } from "../../utils/dateFormatting";
+import { Exhibition } from "../../types/types";
 
 interface ExhibitionCardProps {
   exhibition: Exhibition;

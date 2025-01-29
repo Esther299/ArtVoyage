@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from "react";
-import useExhibitionData from "../hooks/useExhibitionData";
+import { useExhibitionData } from "../hooks/useExhibitionData";
 import { Artwork, Exhibition } from "../types/types";
 
 interface ExhibitionContextType {

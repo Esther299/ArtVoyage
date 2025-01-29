@@ -5,11 +5,11 @@ import { useParams } from "react-router-dom";
 import { useMuseum } from "../context/MuseumContext";
 import { useQuery } from "../context/QueryContext";
 import { useType } from "../context/TypeContext";
-import { useArtworks } from "../hooks/useArtworks";
 import SearchBar from "../components/SearchBar";
 import ArtworkList from "../components/Artworks/ArtworkList";
-import { ErrorMessage } from "../components/ErrorMessage";
+import ErrorMessage from "../components/ErrorMessage";
 import LoadingSpinner from "../components/LoadingSpinner";
+import { useArtworks } from "../hooks/useArtworks";
 
 const SearchPage: React.FC = () => {
   const { museumName } = useParams();

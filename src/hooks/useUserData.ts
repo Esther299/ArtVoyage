@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { auth } from "../firebase/firebase";
+import { useExhibitionData } from "./useExhibitionData";
+import { useCollectionData } from "./useCollectionData";
 
-const useUserData = (userId: string | null) => {
+export const useUserData = (userId: string | null) => {
   const [userData, setUserData] = useState<Record<string, any> | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
