@@ -9,9 +9,9 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { Artwork } from "../types/types";
-import { useArtworksData } from "../context/ArtworksContext";
 import { useAuth } from "../context/AuthContext";
+import { useArtworksData } from "../context/ArtworksContext";
+import { Artwork } from "../types/types";
 
 export const useCollectionData = () => {
   const [collectionState, setCollectionState] = useState<Artwork[]>([]);
@@ -125,10 +125,37 @@ export const useCollectionData = () => {
     }
   };
 
+  const deleteUserCollection = async () => {
+    if (!user) throw new Error("User not authenticated.");
+    setLoadingCollection(true);
+
+    try {
+      const userCollectionRef = doc(db, "collections", user.uid);
+      const artworksSubcollectionRef = collection(
+        userCollectionRef,
+        "artworks"
+      );
+
+      const snapshot = await getDocs(artworksSubcollectionRef);
+
+      const deletePromises = snapshot.docs.map((doc) => deleteDoc(doc.ref));
+      await Promise.all(deletePromises);
+
+      await deleteDoc(userCollectionRef);
+
+      setCollectionState([]);
+    } catch (error) {
+      handleFirestoreError(error, "Error deleting user collection.");
+    } finally {
+      setLoadingCollection(false);
+    }
+  };
+
   return {
     collectionState,
     addToCollection,
     removeFromCollection,
+    deleteUserCollection,
     loadingCollection,
   };
 };

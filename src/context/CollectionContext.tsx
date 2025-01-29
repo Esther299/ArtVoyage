@@ -6,6 +6,7 @@ interface CollectionContextType {
   collection: Artwork[];
   addToCollection: (artwork: Artwork) => Promise<void>;
   removeFromCollection: (id: number) => Promise<void>;
+  deleteUserCollection: () => Promise<void>;
   loadingCollection: boolean;
 }
 
@@ -20,6 +21,7 @@ export const CollectionProvider: React.FC<{ children: React.ReactNode }> = ({
     collectionState,
     addToCollection,
     removeFromCollection,
+    deleteUserCollection,
     loadingCollection,
   } = useCollectionData();
 
@@ -29,6 +31,7 @@ export const CollectionProvider: React.FC<{ children: React.ReactNode }> = ({
         collection: collectionState,
         addToCollection,
         removeFromCollection,
+        deleteUserCollection,
         loadingCollection,
       }}
     >

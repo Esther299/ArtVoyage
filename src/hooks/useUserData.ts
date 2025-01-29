@@ -10,6 +10,8 @@ export const useUserData = (userId: string | null) => {
   const [userData, setUserData] = useState<Record<string, any> | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { deleteUserExhibitions } = useExhibitionData();
+  const { deleteUserCollection } = useCollectionData();
   const navigate = useNavigate();
 
   const validateUser = () => {
@@ -77,14 +79,20 @@ export const useUserData = (userId: string | null) => {
 
     try {
       validateUser();
+
+      await deleteUserExhibitions();
+      await deleteUserCollection();
+
       const userRef = doc(db, "users", userId);
       await deleteDoc(userRef);
+
       const currentUser = auth.currentUser;
       if (currentUser) {
         await currentUser.delete();
       }
+
       setUserData(null);
-      navigate("/login");
+      navigate("/auth");
     } catch (err) {
       setError("Error deleting user data.");
       console.error(err);

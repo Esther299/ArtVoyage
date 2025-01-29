@@ -13,11 +13,11 @@ import {
   deleteDoc,
   serverTimestamp,
 } from "firebase/firestore";
-import { Artwork, Exhibition } from "../types/types";
 import { useAuth } from "../context/AuthContext";
 import { getRandomImage } from "../utils/randomImage";
+import { Artwork, Exhibition } from "../types/types";
 
-const useExhibitionData = () => {
+export const useExhibitionData = () => {
   const { user, loading: authLoading } = useAuth();
   const [exhibitions, setExhibitions] = useState<Exhibition[]>([]);
   const [loading, setLoading] = useState(true);
@@ -248,6 +248,35 @@ const useExhibitionData = () => {
     }
   };
 
+  const deleteUserExhibitions = async () => {
+    if (!user) throw new Error("User not authenticated.");
+    setLoading(true);
+
+    try {
+      const q = query(
+        collection(db, "exhibitions"),
+        where("userId", "==", user.uid)
+      );
+      const snapshot = await getDocs(q);
+
+      if (snapshot.empty) {
+        throw new Error("No exhibitions found to delete.");
+      }
+
+      const deletePromises = snapshot.docs.map((doc) => deleteDoc(doc.ref));
+      await Promise.all(deletePromises);
+
+      setExhibitions([]);
+    } catch (err) {
+      handleFirestoreError(
+        err,
+        "An error occurred while deleting all exhibitions."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     exhibitions,
     addExhibition,
@@ -256,7 +285,6 @@ const useExhibitionData = () => {
     deleteArtworkFromExhibition,
     deleteExhibition,
     loading,
+    deleteUserExhibitions,
   };
 };
-
-export default useExhibitionData;

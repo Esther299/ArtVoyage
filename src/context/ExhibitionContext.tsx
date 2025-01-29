@@ -20,6 +20,7 @@ interface ExhibitionContextType {
     artworkId: number
   ) => Promise<void>;
   deleteExhibition: (exhibitionId: string) => Promise<void>;
+  deleteUserExhibitions: () => Promise<void>;
   loading: boolean;
 }
 
@@ -37,6 +38,7 @@ export const ExhibitionProvider: React.FC<{ children: React.ReactNode }> = ({
     editExhibition,
     deleteArtworkFromExhibition,
     deleteExhibition,
+    deleteUserExhibitions,
     loading,
   } = useExhibitionData();
 
@@ -49,6 +51,7 @@ export const ExhibitionProvider: React.FC<{ children: React.ReactNode }> = ({
         editExhibition,
         deleteArtworkFromExhibition,
         deleteExhibition,
+        deleteUserExhibitions,
         loading,
       }}
     >
