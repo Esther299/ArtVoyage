@@ -9,8 +9,7 @@ const NavBar: React.FC = () => {
   const handleSignOut = async () => {
     try {
       await logout();
-      navigate("/auth");
-      window.location.reload();
+      navigate("/auth", { replace: true });
     } catch (error) {
       console.error("Sign out error:", error);
     }
