@@ -28,3 +28,29 @@
   box-shadow: 0 0 5px 2px #d500f9;
 }
 
+footer li:hover, footer li:focus {
+  color: #f8f9fa;
+  text-decoration: underline;
+  transition: all 0.3s ease-in-out;
+}
+
+footer h5 {
+  font-size: 1.25rem;
+}
+
+footer p {
+  font-size: 0.875rem;
+}
+
+@media (max-width: 767px) {
+  footer h5 {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  footer {
+    padding-top: 2rem;
+      padding-bottom: 2rem;
+  }
+}

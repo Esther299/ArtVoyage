@@ -48,7 +48,7 @@ const SearchPage: React.FC = () => {
   }, [setQuery, setType, setArtworks, setSelectedMuseum, museumName]);
 
   return (
-    <Container fluid className="pb-2 vh-100 p-4 d-flex flex-column">
+    <Container fluid className="pb-2 p-4 d-flex flex-column">
       <Row
         className="align-items-center text-center py-3 text-white rounded shadow mb-4"
         style={{ backgroundColor: "rgba(84, 37, 122, 0.84)" }}

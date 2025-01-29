@@ -81,7 +81,7 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
   if (error) return <ErrorMessage message={error} />;
 
   return (
-    <div className="container mt-5">
+    <div className="container m-5">
       {userData ? (
         <Card
           className="mx-auto shadow-lg rounded"
