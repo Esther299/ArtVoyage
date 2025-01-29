@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const HomePage: React.FC = () => {
   return (
-    <Container fluid className="pb-2 vh-100 p-4">
+    <Container fluid className="pb-2 p-4">
       <Row
         className="align-items-center text-center py-5 text-white rounded shadow"
         style={{ background: "rgba(84, 37, 122, 0.84)" }}

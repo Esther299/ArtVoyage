@@ -17,7 +17,9 @@ import Auth from "./pages/Auth";
 import ArtworkDetail from "./pages/ArtworkDetail";
 import ExhibitionDetail from "./pages/ExhibitionDetail";
 import Collection from "./pages/Collection";
+import Footer from "./components/Footer";
 import { useAuth } from "./context/AuthContext";
+
 
 const AppContent: React.FC = () => {
   const { user, loading } = useAuth();
@@ -25,7 +27,7 @@ const AppContent: React.FC = () => {
   return (
     <>
       <div className="app-background vh-100 position-fixed top-0 left-0 w-100" />
-      <div className="container-fluid d-flex flex-column vh-100">
+      <div className="container-fluid d-flex flex-column min-vh-100">
         {user && <NavBar />}
         <div className="flex-grow-1">
           {loading ? (
@@ -59,6 +61,7 @@ const AppContent: React.FC = () => {
             </Routes>
           )}
         </div>
+        {user && <Footer/>} 
       </div>
     </>
   );
