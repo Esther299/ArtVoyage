@@ -85,7 +85,6 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
       {userData ? (
         <Card
           className="mx-auto shadow-lg rounded w-100"
-          style={{ maxWidth: "60%" }}
           aria-labelledby="userProfileCard"
         >
           <Card.Header

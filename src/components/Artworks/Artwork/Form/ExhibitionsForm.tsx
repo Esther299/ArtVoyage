@@ -113,7 +113,7 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({
           />
         </div>
 
-        <div className="mb-4">
+        <div className="mb-4 w-100">
           <ReactDatePicker
             selected={newExhibitionStartDate}
             onChange={handleDateChange}
