@@ -6,11 +6,14 @@ const Register: React.FC = () => {
   const { register, loading } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [error, setError] = useState<{ field: string; message: string } | null>(
     null
   );
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const validateEmail = (email: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -72,6 +75,13 @@ const Register: React.FC = () => {
       });
       return;
     }
+    if (password !== confirmPassword) {
+      setError({
+        field: "password",
+        message: "Passwords do not match. Please try again.",
+      });
+      return;
+    }
 
     try {
       await register(email, password, firstName, lastName);
@@ -91,7 +101,7 @@ const Register: React.FC = () => {
   return (
     <div className="container my-5">
       <div className="row justify-content-center">
-        <div className="col-12 col-md-8 col-lg-6">
+        <div className="col-12 col-md-8 col-lg-8">
           <h2 className="text-center mb-4 fs-1">Register</h2>
           {error && error.field === "form" && (
             <div className="alert alert-danger">{error.message}</div>
@@ -158,8 +168,9 @@ const Register: React.FC = () => {
               <label htmlFor="password" className="form-label">
                 Password
               </label>
+              <div className="input-group position-relative">
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 id="password"
                 className={`form-control ${
                   error?.field === "password" ? "is-invalid" : ""
@@ -174,8 +185,50 @@ const Register: React.FC = () => {
                   className="invalid-feedback"
                   dangerouslySetInnerHTML={{ __html: error.message }}
                 ></div>
+              )}<button
+              type="button"
+              className="input-group-text border-0 bg-transparent position-absolute end-0 top-50 translate-middle-y"
+              style={{ right: "10px" }}
+              onClick={() => setShowPassword((prev) => !prev)}
+            >
+              {showPassword ? (
+                <i className="bi bi-eye-slash"></i>
+              ) : (
+                <i className="bi bi-eye"></i>
               )}
+              </button>
+            </div></div>
+            <div className="mb-3">
+              <label htmlFor="confirmPassword" className="form-label">
+                Confirm Password
+              </label>
+              <div className="input-group position-relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  id="confirmPassword"
+                  className={`form-control ${
+                    error?.field === "password" ? "is-invalid" : ""
+                  }`}
+                  placeholder="Confirm your password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  className="input-group-text border-0 bg-transparent position-absolute end-0 top-50 translate-middle-y"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => setShowConfirmPassword((prev) => !prev)}
+                >
+                  {showConfirmPassword ? (
+                    <i className="bi bi-eye-slash"></i>
+                  ) : (
+                    <i className="bi bi-eye"></i>
+                  )}
+                </button>
+              </div>
             </div>
+
             <button
               type="submit"
               className="btn btn-primary w-100"

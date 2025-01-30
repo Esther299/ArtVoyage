@@ -9,6 +9,7 @@ const Login: React.FC = () => {
   const [error, setError] = useState<{ field: string; message: string } | null>(
     null
   );
+  const [showPassword, setShowPassword] = useState(false);
 
   const getErrorMessage = (error: FirebaseError) => {
     switch (error.code) {
@@ -55,7 +56,7 @@ const Login: React.FC = () => {
   return (
     <div className="container my-5">
       <div className="row justify-content-center">
-        <div className="col-12 col-md-8 col-lg-6">
+        <div className="col-12 col-md-8 col-lg-8">
           <h2 className="text-center mb-4 fs-1">Login</h2>
           {error && error.field === "form" && (
             <div className="alert alert-danger">{error.message}</div>
@@ -84,8 +85,9 @@ const Login: React.FC = () => {
               <label htmlFor="password" className="form-label">
                 Password
               </label>
+              <div className="input-group position-relative">
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 id="password"
                 className={`form-control ${
                   error?.field === "password" ? "is-invalid" : ""
@@ -98,6 +100,19 @@ const Login: React.FC = () => {
               {error?.field === "password" && (
                 <div className="invalid-feedback">{error.message}</div>
               )}
+              <button
+                type="button"
+                className="input-group-text border-0 bg-transparent position-absolute end-0 top-50 translate-middle-y"
+                style={{ right: "10px" }}
+                onClick={() => setShowPassword((prev) => !prev)}
+              >
+                {showPassword ? (
+                  <i className="bi bi-eye-slash"></i>
+                ) : (
+                  <i className="bi bi-eye"></i>
+                )}
+                </button>
+                </div>
             </div>
             <button
               type="submit"
