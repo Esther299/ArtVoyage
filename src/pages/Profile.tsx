@@ -110,6 +110,7 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
                 style={{
                   width: "130px",
                   height: "130px",
+                  objectFit: "cover",
                   border: "2px solid #54257A",
                 }}
               />
