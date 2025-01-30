@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { Modal, Button, Form } from "react-bootstrap";
 import { formatDate } from "../../../../utils/dateFormatting";
 
 interface ExhibitionFormProps {
@@ -65,7 +66,7 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({
   return (
     <form
       onSubmit={onSubmit}
-      className="mt-4 p-4 rounded shadow-sm"
+      className="mt-4 p-3 rounded shadow-sm w-100"
       style={{ background: "rgba(204, 173, 227, 0.84)" }}
     >
       {successMessage && (
@@ -121,7 +122,7 @@ const ExhibitionForm: React.FC<ExhibitionFormProps> = ({
             selectsRange
             inline
             placeholderText="Select start and end dates"
-            className="form-control"
+            className="form-control w-100"
             aria-label="Select exhibition start and end dates"
             required={!isExistingExhibitionSelected}
           />

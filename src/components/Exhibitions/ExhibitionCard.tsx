@@ -95,10 +95,10 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
           padding: "20px",
         }}
       >
-        <Col className="d-flex justify-content-between">
+        <Col className="d-flex flex-column flex-sm-row justify-content-between">
           <button
             onClick={() => handleShowEditModal(exhibition)}
-            className="btn btn-warning btn-lg"
+            className="btn btn-warning  mb-3 mb-sm-0"
             style={{
               transition: "transform 0.3s, box-shadow 0.3s",
               cursor: "pointer",
@@ -116,10 +116,10 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
 
           <button
             onClick={() => handleShowDeleteModal("exhibition", exhibition.id)}
-            className="btn text-light btn-lg"
+            className="btn text-light  mb-3 mb-sm-0"
             aria-label={`Delete exhibition ${exhibition.name}`}
             style={{
-              background: "rgba(133, 50, 38, 0.84)",
+              background: "rgba(250, 1, 63, 0.84)",
               transition: "transform 0.3s, box-shadow 0.3s",
               cursor: "pointer",
             }}

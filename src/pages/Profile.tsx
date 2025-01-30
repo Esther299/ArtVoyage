@@ -84,8 +84,8 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
     <div className="container m-5">
       {userData ? (
         <Card
-          className="mx-auto shadow-lg rounded"
-          style={{ maxWidth: "500px" }}
+          className="mx-auto shadow-lg rounded w-100"
+          style={{ maxWidth: "60%" }}
           aria-labelledby="userProfileCard"
         >
           <Card.Header
@@ -98,37 +98,37 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
           >
             Profile Information
           </Card.Header>
-          <Card.Body>
-            <div className="text-center mb-4">
-              <Image
-                src={
-                  userData.profilePicture ||
-                  "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png"
-                }
-                roundedCircle
-                alt="User Avatar"
-                style={{
-                  width: "130px",
-                  height: "130px",
-                  objectFit: "cover",
-                  border: "2px solid #54257A",
-                }}
-              />
-            </div>
-            <Row>
-              <Col>
-                <p>
-                  <strong>Email:</strong> {userData.email}
-                </p>
-                <p>
-                  <strong>First Name:</strong> {userData.firstName}
-                </p>
-                <p>
-                  <strong>Last Name:</strong> {userData.lastName}
-                </p>
-              </Col>
-            </Row>
-            <div className="d-flex justify-content-between mt-3">
+          <Card.Body className="d-flex flex-column">
+        <Row className="align-items-center mb-5">
+          <Col xs={12} md={4} className="text-center mb-4 mb-md-0">
+            <Image
+              src={
+                userData.profilePicture ||
+                "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png"
+              }
+              roundedCircle
+              alt="User Avatar"
+              style={{
+                width: "130px",
+                height: "130px",
+                objectFit: "cover",
+                border: "2px solid #54257A",
+              }}
+            />
+          </Col>
+          <Col xs={12} md={8}>
+            <p>
+              <strong>Email:</strong> {userData.email}
+            </p>
+            <p>
+              <strong>First Name:</strong> {userData.firstName}
+            </p>
+            <p>
+              <strong>Last Name:</strong> {userData.lastName}
+            </p>
+          </Col>
+        </Row>
+            <div className="d-flex justify-content-between mt-3 w-100">
               <Button
                 variant="warning"
                 onClick={openEditModal}
@@ -149,9 +149,9 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
       ) : (
         <p className="text-center text-muted">No user data available.</p>
       )}
-
+  
       {successMessage && <SuccessMessage message={successMessage} />}
-
+  
       <Modal
         show={showEditModal}
         onHide={() => setShowEditModal(false)}
@@ -212,7 +212,7 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
           </Button>
         </Modal.Footer>
       </Modal>
-
+  
       <DeleteModal
         show={showDeleteModal}
         handleClose={() => setShowDeleteModal(false)}
@@ -221,7 +221,7 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
         entityId={userId}
       />
     </div>
-  );
+  );  
 };
 
 export default Profile;
