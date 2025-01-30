@@ -34,6 +34,19 @@ const SearchBar: React.FC = () => {
     setErrorMessage(null);
     setTitleQuery("");
   };
+
+  const handleKeyDownArtist = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleSearchByArtist();
+    }
+  };
+
+  const handleKeyDownTitle = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleSearchByTitle();
+    }
+  };
+  
   return (
     <Container className="my-3">
       <Row className="justify-content-center">
@@ -44,6 +57,7 @@ const SearchBar: React.FC = () => {
             onChange={(e) => setArtistQuery(e.target.value)}
             placeholder="Search by Artist"
             aria-label="Search by Artist"
+            onKeyDown={handleKeyDownArtist}
           />
         </Col>
         <Col md={2} className="mb-3">
@@ -73,6 +87,7 @@ const SearchBar: React.FC = () => {
             onChange={(e) => setTitleQuery(e.target.value)}
             placeholder="Search by Title"
             aria-label="Search by Title"
+            onKeyDown={handleKeyDownTitle}
           />
         </Col>
         <Col md={2} className="mb-3">
