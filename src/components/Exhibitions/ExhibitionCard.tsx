@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Button } from "react-bootstrap";
 import { useDeleteModal } from "../../context/DeleteContext";
 import DeleteModal from "../DeleteModal";
 import EditExhibitionModal from "./EditExhibitionModal";
@@ -87,7 +87,7 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
       />
 
       <Row
-        className="mb-4 w-50 mx-auto"
+        className="mt-3"
         style={{
           backgroundColor: "transparent",
           border: "2px solid rgba(84, 37, 122, 0.84)",
@@ -95,10 +95,11 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
           padding: "20px",
         }}
       >
-        <Col className="d-flex flex-column flex-sm-row justify-content-between">
-          <button
+        <Col xs={6}>
+          <Button
+            variant="warning"
             onClick={() => handleShowEditModal(exhibition)}
-            className="btn btn-warning  mb-3 mb-sm-0"
+            className="w-100"
             style={{
               transition: "transform 0.3s, box-shadow 0.3s",
               cursor: "pointer",
@@ -112,11 +113,13 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
             aria-label={`Edit exhibition ${exhibition.name}`}
           >
             Edit Exhibition
-          </button>
-
-          <button
+          </Button>
+        </Col>
+        <Col xs={6}>
+          <Button
+            variant="danger"
             onClick={() => handleShowDeleteModal("exhibition", exhibition.id)}
-            className="btn text-light  mb-3 mb-sm-0"
+            className="w-100 text-light"
             aria-label={`Delete exhibition ${exhibition.name}`}
             style={{
               background: "rgba(250, 1, 63, 0.84)",
@@ -131,7 +134,7 @@ const ExhibitionCard: React.FC<ExhibitionCardProps> = ({
             }}
           >
             Delete Exhibition
-          </button>
+          </Button>
         </Col>
       </Row>
 
