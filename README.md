@@ -66,6 +66,7 @@ VITE_FIREBASE_STORAGE_BUCKET=your-storage-bucket
 VITE_FIREBASE_MESSAGING_SENDER_ID=your-messaging-sender-id
 VITE_FIREBASE_APP_ID=your-app-id
 ```
+Replace the values in your `.env` file with your actual Firebase project credentials.
 
 A `firebase.ts` file should already be inside the `src` directory with the Firebase configuration:
 
@@ -87,8 +88,6 @@ const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 ```
-
-Replace the values in your `.env` file with your actual Firebase project credentials.
 
 ### Running the Project
 
