@@ -89,6 +89,13 @@ VITE_FIREBASE_APP_ID=your-app-id
 ```
 Replace the values in your `.env` file with your actual Firebase project credentials.
 
+### Building for Production
+
+To create a production build, run:
+
+```sh
+npm run build
+```
 
 ### Running the Project
 
@@ -99,14 +106,6 @@ npm run dev
 ```
 
 The application will be available at `http://localhost:5173/`.
-
-### Building for Production
-
-To create a production build, run:
-
-```sh
-npm run build
-```
 
 ### Deployment
 
