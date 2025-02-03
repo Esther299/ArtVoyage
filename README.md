@@ -113,8 +113,7 @@ You can deploy the built project using GitHub Pages, Netlify, or another hosting
 
 ### Project Documentation
 
--**Deployed App**: Click [here](https://artvoyage2000.netlify.app/) to view the deployed app.
-
+- **Deployed App**: Click [here](https://artvoyage2000.netlify.app/) to view the deployed app.
 - **Video Walkthrough**: Click here to view a video walkthrough of the platform.
 - **API Integration**:
   1. [Cleveland Museum of Art](https://openaccess-api.clevelandart.org/)
