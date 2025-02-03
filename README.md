@@ -1,5 +1,5 @@
 # ArtVoyage
-This project was created as part of a reasearch for Tech Returners.
+This project was created as part of a research for Tech Returners.
 
 - Deployed Version: [ArtVoyage](https://artvoyage2000.netlify.app/)
 
