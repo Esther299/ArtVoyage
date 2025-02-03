@@ -56,18 +56,6 @@ npm install
 
 ### Firebase Configuration with Environment Variables
 
-Create a `.env` file at the root of your project with the following variables:
-
-```env
-VITE_FIREBASE_API_KEY=your-api-key
-VITE_FIREBASE_AUTH_DOMAIN=your-auth-domain
-VITE_FIREBASE_PROJECT_ID=your-project-id
-VITE_FIREBASE_STORAGE_BUCKET=your-storage-bucket
-VITE_FIREBASE_MESSAGING_SENDER_ID=your-messaging-sender-id
-VITE_FIREBASE_APP_ID=your-app-id
-```
-Replace the values in your `.env` file with your actual Firebase project credentials.
-
 A `firebase.ts` file should already be inside the `src` directory with the Firebase configuration:
 
 ```js
@@ -88,6 +76,19 @@ const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 ```
+
+Create a `.env` file at the root of your project with the following variables:
+
+```env
+VITE_FIREBASE_API_KEY=your-api-key
+VITE_FIREBASE_AUTH_DOMAIN=your-auth-domain
+VITE_FIREBASE_PROJECT_ID=your-project-id
+VITE_FIREBASE_STORAGE_BUCKET=your-storage-bucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=your-messaging-sender-id
+VITE_FIREBASE_APP_ID=your-app-id
+```
+Replace the values in your `.env` file with your actual Firebase project credentials.
+
 
 ### Running the Project
 
